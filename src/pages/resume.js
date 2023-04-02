@@ -1,5 +1,4 @@
 import React from "react";
-// import "./resume.css";
 
 export default function Resume() {
   return (
@@ -7,7 +6,9 @@ export default function Resume() {
       <section className="jumbotron text-center">
         <div className="container">
           <h1>Hello, World!</h1>
-          <p className="lead text-muted">I'm a full-stack web developer.</p>
+          <p className="lead text-muted">
+            I&apos;m a full-stack web developer.
+          </p>
         </div>
       </section>
 
@@ -56,37 +57,40 @@ export default function Resume() {
               <span className="answer">
                 &nbsp;&nbsp;=&gt; Latest Work Experience
                 <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; company: "ADM
-                Associates, Inc."
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; company: &quot;ADM
+                Associates, Inc.&quot;
                 <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; role: "IT Engineer"
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; role: &quot;IT
+                Engineer&quot;
                 <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; startDate: "March,
-                2012"
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; startDate:
+                &quot;March, 2012&quot;
                 <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; endDate: "Current,
-                2020"
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; endDate:
+                &quot;Current, 2020&quot;
                 <br />
                 <br />
               </span>
               &gt; Ala.resume
               <br />
               <span className="answer">
-                &nbsp;&nbsp;=&gt; "
+                &nbsp;&nbsp;=&gt; &quot;
                 <a target="_blank" href="alaarab.pdf">
                   alaarab.pdf
                 </a>
-                "<br />
+                &quot;
+                <br />
                 <br />
               </span>
               &gt; Ala.email
               <br />
               <span className="answer">
-                &nbsp;&nbsp;=&gt; "
+                &nbsp;&nbsp;=&gt; &quot;
                 <a target="_blank" href="mailto:alaarab@gmail.com">
                   alaarab@gmail.com
                 </a>
-                "<br />
+                &quot;
+                <br />
                 <br />
               </span>
             </div>
@@ -96,56 +100,54 @@ export default function Resume() {
 
       <section className="py-5 bg-light">
         <div className="container">
-          <h4 className="text-center py-3">Résumé</h4>
-
-          <div className="education py-3">
-            <h6 className="border-bottom border-gray pb-2 mb-2">Education</h6>
-            <div className="row pb-3">
-              <div className="col-md-9">
-                <b>University of California, San Diego</b>
-                <br />
-                Computer Science, B.S.
-              </div>
-              <div className="col-md-3">
-                2008-2011
-                <br />
-                San Diego, CA
-              </div>
+          <h6 className="border-bottom border-gray pb-2 mb-2">Education</h6>
+          <div className="row pb-3">
+            <div className="col-md-9">
+              <b>University of California, San Diego</b>
+              <br />
+              Computer Science, B.S.
             </div>
-            <div className="row pb-3">
-              <div className="col-md-9">
-                <b>University of California, Santa Cruz</b>
-                <br />
-                Computer Science and Engineering
-              </div>
-              <div className="col-md-3">
-                2006-2008
-                <br />
-                Santa Cruz, CA
-              </div>
-            </div>
-            <div>
-              Relevant Coursework:
-              <ul>
-                <li>Object-Oriented Programming</li>
-                <li>Data Structures and Object-Oriented Design</li>
-                <li>Computer Systems and Assembly Language</li>
-                <li>Algorithms and Abstract Data Types</li>
-                <li>Discrete Mathematics</li>
-                <li>Systems Programming</li>
-                <li>Advanced Data Structures</li>
-                <li>Design and Analysis of Algorithms</li>
-                <li>Software Engineering</li>
-                <li>Theory of Computability</li>
-                <li>Programming Languages: Principles and Paradigms</li>
-                <li>Database System Principles</li>
-                <li>Online Database Analytics Applications</li>
-                <li>Computer Architecture</li>
-              </ul>
+            <div className="col-md-3">
+              2008-2011
+              <br />
+              San Diego, CA
             </div>
           </div>
+          <div className="row pb-3">
+            <div className="col-md-9">
+              <b>University of California, Santa Cruz</b>
+              <br />
+              Computer Science and Engineering
+            </div>
+            <div className="col-md-3">
+              2006-2008
+              <br />
+              Santa Cruz, CA
+            </div>
+          </div>
+          <div>
+            Relevant Coursework:
+            <ul>
+              <li>Object-Oriented Programming</li>
+              <li>Data Structures and Object-Oriented Design</li>
+              <li>Computer Systems and Assembly Language</li>
+              <li>Algorithms and Abstract Data Types</li>
+              <li>Discrete Mathematics</li>
+              <li>Systems Programming</li>
+              <li>Advanced Data Structures</li>
+              <li>Design and Analysis of Algorithms</li>
+              <li>Software Engineering</li>
+              <li>Theory of Computability</li>
+              <li>Programming Languages: Principles and Paradigms</li>
+              <li>Database System Principles</li>
+              <li>Online Database Analytics Applications</li>
+              <li>Computer Architecture</li>
+            </ul>
+          </div>
+        </div>
 
-          <div className="experience py-3">
+        <div className="experience py-3">
+          <div className="container">
             <h6 className="border-bottom border-gray pb-2 mb-2">
               Work Experience
             </h6>
