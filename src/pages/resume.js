@@ -19,36 +19,36 @@ export default function Resume() {
               &gt; Ala.location
               <br />
               <span className="answer">
-                &nbsp;&nbsp;=&gt; "Sacramento, CA"
+                &nbsp;&nbsp;=&gt; &quot;Sacramento, CA&quot;
                 <br />
                 <br />
               </span>
               &gt; Ala.education
               <br />
               <span className="answer">
-                &nbsp;&nbsp;=&gt; "University of California, San Diego"
+                &nbsp;&nbsp;=&gt; &quot;University of California, San Diego&quot;
                 <br />
                 <br />
               </span>
               &gt; Ala.major
               <br />
               <span className="answer">
-                &nbsp;&nbsp;=&gt; "Computer Science"
+                &nbsp;&nbsp;=&gt; &quot;Computer Science&quot;
                 <br />
                 <br />
               </span>
               &gt; Ala.graduationDate
               <br />
               <span className="answer">
-                &nbsp;&nbsp;=&gt; "December 2011"
+                &nbsp;&nbsp;=&gt; &quot;December 2011&quot;
                 <br />
                 <br />
               </span>
               &gt; Ala.interests
               <br />
               <span className="answer">
-                &nbsp;&nbsp;=&gt; ["code", "music", "synthesizers", "coffee",
-                "climbing", "traveling", "fans"]
+                &nbsp;&nbsp;=&gt; [&quot;code&quot;, &quot;music&quot;, &quot;synthesizers&quot;, &quot;coffee&quot;,
+                &quot;climbing&quot;, &quot;traveling&quot;, &quot;fans&quot;]
                 <br />
                 <br />
               </span>
@@ -261,7 +261,7 @@ export default function Resume() {
               <div>
                 <p>
                   Providing technical support to students and parents to help
-                  them gain knowledge of Dell's product line with a goal to
+                  them gain knowledge of Dell&apos;s product line with a goal to
                   sell. Came up with ideas and strategies to help market for
                   Dell on-campus with a partner.
                 </p>
