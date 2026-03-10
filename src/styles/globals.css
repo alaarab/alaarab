@@ -1,179 +1,61 @@
+:root {
+  color-scheme: light;
+  --bg: #f4efe7;
+  --surface: rgba(255, 252, 246, 0.84);
+  --surface-strong: #fffaf3;
+  --surface-muted: #efe7db;
+  --ink: #1f1d1a;
+  --ink-soft: #5b534a;
+  --line: rgba(40, 32, 22, 0.12);
+  --accent: #0f766e;
+  --accent-strong: #0b5f58;
+  --accent-warm: #c96b3b;
+  --shadow: 0 20px 60px rgba(72, 52, 33, 0.08);
+}
 
-/* Custom Resume CSS */
+* {
+  box-sizing: border-box;
+}
 
-/* Global styles */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: "Helvetica Neue", Arial, sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-ul {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  list-style-position: outside;
-  list-style-image: none;
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(201, 107, 59, 0.12), transparent 26rem),
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.15), transparent 30rem),
+    linear-gradient(180deg, #f8f3ec 0%, #f4efe7 48%, #efe6d8 100%);
+  color: var(--ink);
+  font-family: var(--font-display), "Trebuchet MS", sans-serif;
 }
 
 a {
-  color: #007bff;
+  color: inherit;
   text-decoration: none;
-  background-color: transparent;
 }
 
-a:hover {
-  color: #0056b3;
-  text-decoration: underline;
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
-/* Section styles */
-.jumbotron {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-  margin-bottom: 0;
-  background-color: #fff;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul {
+  margin: 0;
 }
 
-@media (min-width: 768px) {
-  .jumbotron {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-
-.jumbotron p:last-child {
-  margin-bottom: 0;
-}
-
-.jumbotron h1 {
-  font-weight: 300;
-}
-
-.jumbotron .container {
-  max-width: 40rem;
-}
-
-footer {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
-footer p {
-  margin-bottom: .25rem;
-}
-
-#code {
-  border-radius: 5px;
-  width: 750px;
-  margin: 0 auto;
-  padding-top: 15px;
-  font-size: 30px;
-  background: #ccc;
-  font-family: 'Monaco', 'Courier New';
-  text-align: left;
-  font-size: 13px;
-  color: #fafafa;
-}
-
-#console {
-  padding: 40px;
-  height: 620px;
-  margin: 0 auto;
-  background: #383737;
-}
-
-.py-3 {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
-}
-
-.py-5 {
-  padding-top: 3rem !important;
-  padding-bottom: 3rem !important;
-}
-
-.bg-secondary {
-  background-color: #f7f7f7 !important;
-}
-
-.bg-light {
-  background-color: #fefefe !important;
-}
-
-.border-bottom {
-  border-bottom: 1px solid #dee2e6 !important;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem !important;
-}
-
-.pb-2 {
-  padding-bottom: 0.5rem !important;
-}
-
-.pb-3 {
-  padding-bottom: 1rem !important;
-}
-
-.text-center {
-  text-align: center !important;
-}
-
-.border-gray {
-  border-color: #dee2e6 !important;
-}
-
-/* Job section styles */
-.job {
-  margin-bottom: 2rem;
-}
-
-.job:last-of-type {
-  margin-bottom: 0;
-}
-
-.job p:last-child {
-  margin-bottom: 0;
-}
-
-.container-fluid .jumbotron, .container .jumbotron {
-  border-radius: 6px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-@media screen and (min-width: 768px)
-{
-.container-fluid .jumbotron, .container .jumbotron {
-    padding-left: 60px;
-    padding-right: 60px;
-}
-}
-
-@media screen and (min-width: 768px)
-{
-.jumbotron {
-    padding-bottom: 48px;
-    padding-top: 48px;
-}
-}
-
-.jumbotron {
-  background-color: #eee;
-  padding-left: 60px;
-  padding-right: 60px;
-  /* margin-bottom: 30px; */
-  padding-bottom: 30px;
-  padding-top: 30px;
+img {
+  max-width: 100%;
+  display: block;
 }
