@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import ThemeToggle from "@/components/ThemeToggle";
 import styles from "@/styles/Portfolio.module.css";
 import { projects, siteMeta } from "@/data/siteContent";
 
@@ -19,6 +21,7 @@ export default function ProjectPage({ project }) {
             <Link href="/">Portfolio</Link>
             <Link href="/projects">All projects</Link>
             <Link href="/resume">Resume</Link>
+            <ThemeToggle />
           </div>
           <div className={styles.projectHero}>
             <p className={styles.eyebrow}>{project.category}</p>
@@ -37,7 +40,7 @@ export default function ProjectPage({ project }) {
           </div>
         </header>
 
-        <main className={styles.projectStoryGrid}>
+        <Reveal as="main" className={styles.projectStoryGrid}>
           <section className={styles.storyCard}>
             <h2>Overview</h2>
             <p>{project.problem}</p>
@@ -76,7 +79,7 @@ export default function ProjectPage({ project }) {
               )}
             </div>
           </section>
-        </main>
+        </Reveal>
       </div>
     </>
   );

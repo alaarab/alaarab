@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import ThemeToggle from "@/components/ThemeToggle";
 import styles from "@/styles/Portfolio.module.css";
 import {
   educationItems,
@@ -32,16 +34,17 @@ export default function Resume() {
             <a href={siteMeta.linkedinHref} target="_blank" rel="noreferrer">
               LinkedIn
             </a>
+            <ThemeToggle />
           </div>
         </header>
 
         <main className={styles.resumeContent}>
-          <section className={styles.resumeSection}>
+          <Reveal as="section" className={styles.resumeSection}>
             <h2>Summary</h2>
             <p>{siteMeta.summary}</p>
-          </section>
+          </Reveal>
 
-          <section className={styles.resumeSection}>
+          <Reveal as="section" className={styles.resumeSection}>
             <h2>Experience</h2>
             <div className={styles.resumeStack}>
               {experienceItems.map((item) => (
@@ -60,9 +63,9 @@ export default function Resume() {
                 </article>
               ))}
             </div>
-          </section>
+          </Reveal>
 
-          <section className={styles.resumeSection}>
+          <Reveal as="section" className={styles.resumeSection}>
             <h2>Projects</h2>
             <div className={styles.resumeStack}>
               {projects.map((item) => (
@@ -81,9 +84,9 @@ export default function Resume() {
                 </article>
               ))}
             </div>
-          </section>
+          </Reveal>
 
-          <section className={styles.resumeSection}>
+          <Reveal as="section" className={styles.resumeSection}>
             <h2>Education</h2>
             <div className={styles.resumeStack}>
               {educationItems.map((item) => (
@@ -100,7 +103,7 @@ export default function Resume() {
                 </article>
               ))}
             </div>
-          </section>
+          </Reveal>
         </main>
       </div>
     </>

@@ -10,7 +10,42 @@
   --accent: #0f766e;
   --accent-strong: #0b5f58;
   --accent-warm: #c96b3b;
+  --accent-soft: rgba(15, 118, 110, 0.1);
+  --accent-line: rgba(15, 118, 110, 0.28);
+  --on-accent: #f6fbfa;
+  --panel-tint: rgba(239, 231, 219, 0.78);
+  --glass: rgba(255, 250, 243, 0.72);
+  --glass-strong: rgba(255, 250, 243, 0.84);
   --shadow: 0 20px 60px rgba(72, 52, 33, 0.08);
+  --page-bg:
+    radial-gradient(circle at top left, rgba(201, 107, 59, 0.12), transparent 26rem),
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.15), transparent 30rem),
+    linear-gradient(180deg, #f8f3ec 0%, #f4efe7 48%, #efe6d8 100%);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #14110c;
+  --surface: rgba(36, 31, 24, 0.82);
+  --surface-strong: #211c15;
+  --surface-muted: #241f17;
+  --ink: #f2ece0;
+  --ink-soft: #ada293;
+  --line: rgba(245, 235, 215, 0.13);
+  --accent: #2dd4bf;
+  --accent-strong: #5eead4;
+  --accent-warm: #e3935c;
+  --accent-soft: rgba(45, 212, 191, 0.14);
+  --accent-line: rgba(45, 212, 191, 0.34);
+  --on-accent: #07201d;
+  --panel-tint: rgba(46, 40, 31, 0.72);
+  --glass: rgba(33, 28, 21, 0.74);
+  --glass-strong: rgba(40, 34, 26, 0.82);
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --page-bg:
+    radial-gradient(circle at top left, rgba(227, 147, 92, 0.1), transparent 26rem),
+    radial-gradient(circle at top right, rgba(45, 212, 191, 0.12), transparent 30rem),
+    linear-gradient(180deg, #1a160f 0%, #14110c 52%, #100d09 100%);
 }
 
 * {
@@ -24,12 +59,12 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at top left, rgba(201, 107, 59, 0.12), transparent 26rem),
-    radial-gradient(circle at top right, rgba(15, 118, 110, 0.15), transparent 30rem),
-    linear-gradient(180deg, #f8f3ec 0%, #f4efe7 48%, #efe6d8 100%);
+  min-height: 100vh;
+  background: var(--page-bg);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-display), "Trebuchet MS", sans-serif;
+  transition: color 280ms ease;
 }
 
 a {
@@ -58,4 +93,24 @@ ul {
 img {
   max-width: 100%;
   display: block;
+}
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

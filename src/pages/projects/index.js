@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import ThemeToggle from "@/components/ThemeToggle";
 import styles from "@/styles/Portfolio.module.css";
 import { projects, siteMeta } from "@/data/siteContent";
 
@@ -27,12 +29,18 @@ export default function ProjectsIndex() {
             <Link href="/">Portfolio</Link>
             <Link href="/resume">Resume</Link>
             <a href={siteMeta.emailHref}>Email</a>
+            <ThemeToggle />
           </div>
         </header>
 
         <main className={styles.projectsList}>
-          {projects.map((project) => (
-            <article key={project.slug} className={styles.projectListCard}>
+          {projects.map((project, index) => (
+            <Reveal
+              as="article"
+              key={project.slug}
+              className={styles.projectListCard}
+              delay={Math.min(index * 80, 320)}
+            >
               <div className={styles.projectListMeta}>
                 <span>{project.category}</span>
                 <span>{project.year}</span>
@@ -49,7 +57,7 @@ export default function ProjectsIndex() {
               <div className={styles.projectLinks}>
                 <Link href={`/projects/${project.slug}`}>View project</Link>
               </div>
-            </article>
+            </Reveal>
           ))}
         </main>
       </div>

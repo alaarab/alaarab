@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import ThemeToggle from "@/components/ThemeToggle";
 import styles from "@/styles/Portfolio.module.css";
 import {
   contactLinks,
@@ -32,12 +34,13 @@ export default function Home() {
               <a href="#projects">Projects</a>
               <a href="#experience">Experience</a>
               <a href="#contact">Contact</a>
+              <ThemeToggle />
             </nav>
           </div>
         </header>
 
         <main id="top" className={styles.main}>
-          <section className={styles.hero}>
+          <Reveal as="section" className={styles.hero}>
             <div className={styles.heroCopy}>
               <p className={styles.eyebrow}>Portfolio</p>
               <h1>{siteMeta.title}</h1>
@@ -69,9 +72,9 @@ export default function Home() {
                 </a>
               </div>
             </aside>
-          </section>
+          </Reveal>
 
-          <section id="projects" className={styles.section}>
+          <Reveal as="section" id="projects" className={styles.section}>
             <div className={styles.sectionIntro}>
               <p className={styles.eyebrow}>Featured work</p>
               <h2>Selected work</h2>
@@ -118,9 +121,9 @@ export default function Home() {
                 All projects
               </Link>
             </div>
-          </section>
+          </Reveal>
 
-          <section id="experience" className={styles.section}>
+          <Reveal as="section" id="experience" className={styles.section}>
             <div className={styles.sectionIntro}>
               <p className={styles.eyebrow}>Background</p>
               <h2>Experience</h2>
@@ -140,9 +143,9 @@ export default function Home() {
                 </article>
               ))}
             </div>
-          </section>
+          </Reveal>
 
-          <section id="contact" className={styles.section}>
+          <Reveal as="section" id="contact" className={styles.section}>
             <div className={styles.contactPanel}>
               <div>
                 <p className={styles.eyebrow}>Contact</p>
@@ -171,7 +174,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-          </section>
+          </Reveal>
         </main>
 
         <footer className={styles.footer}>
