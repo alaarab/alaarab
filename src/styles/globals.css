@@ -1,5 +1,7 @@
 :root {
   color-scheme: light;
+  --font-display: "Space Grotesk";
+  --font-mono: "IBM Plex Mono";
   --bg: #f4efe7;
   --surface: rgba(255, 252, 246, 0.84);
   --surface-strong: #fffaf3;

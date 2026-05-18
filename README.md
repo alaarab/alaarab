@@ -45,13 +45,13 @@ Close to a decade across product engineering, backend systems, and the operation
 
 ### About this repo
 
-This doubles as my portfolio site: a Next.js app with a content-first layout, so projects update without anyone touching the design.
+This doubles as my portfolio site: a Bun-native app with React 19 and TypeScript 6. No meta-framework. Bun handles the dev server, bundling, and the production server. Content sits in one typed file, so projects update without anyone touching the layout.
 
 ```bash
-npm install
-npm run dev
+bun install
+bun dev
 ```
 
 Then open [localhost:3000](http://localhost:3000).
 
-Project content lives in `src/data/siteContent.js` and styles sit in `src/styles`. Run `npm run lint` and `npm run build` before shipping anything.
+Project content lives in `src/data/siteContent.ts` and styles sit in `src/styles`. Run `bun run typecheck` and `bun run build` before shipping anything. `bun start` runs the production server.

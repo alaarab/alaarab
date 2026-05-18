@@ -1,9 +1,17 @@
-export const siteMeta = {
+import type {
+  ActionLink,
+  EducationItem,
+  ExperienceItem,
+  Project,
+  QuickStat,
+  SiteMeta,
+} from "../types";
+
+export const siteMeta: SiteMeta = {
   name: "Ala Arab",
   title:
     "Full-stack developer building useful web products and internal tools.",
-  intro:
-    "I build software that is clear, reliable, and practical.",
+  intro: "I build software that is clear, reliable, and practical.",
   summary:
     "My background spans product-minded frontend work, backend systems, and the operational layer around shipping software well.",
   location: "Sacramento, California",
@@ -14,30 +22,27 @@ export const siteMeta = {
     "Available for product work, internal tooling, and selected consulting.",
 };
 
-export const quickStats = [
+export const quickStats: QuickStat[] = [
   { label: "Based in", value: "Sacramento, CA" },
   { label: "Focus", value: "Web products and internal tools" },
   { label: "Approach", value: "Clear, reliable, practical" },
 ];
 
-export const projects = [
+export const projects: Project[] = [
   {
     slug: "portfolio-refresh",
     title: "Portfolio Refresh",
     category: "Current",
     status: "In progress",
     year: "2026",
-    summary:
-      "A rebuild of this site into a cleaner, project-led portfolio.",
+    summary: "A rebuild of this site into a cleaner, project-led portfolio.",
     outcome:
       "A shorter structure, cleaner visual system, and a better place to add real project work.",
-    problem:
-      "The old site felt dated and made it awkward to add new work.",
+    problem: "The old site felt dated and made it awkward to add new work.",
     build:
       "I rebuilt it around concise sections, reusable project data, and simple case-study pages.",
-    impact:
-      "The portfolio now feels current and is easier to maintain.",
-    stack: ["Next.js", "CSS Modules", "Content-first structure"],
+    impact: "The portfolio now feels current and is easier to maintain.",
+    stack: ["Bun", "React", "TypeScript", "Content-first structure"],
     links: [
       { label: "Project page", href: "/projects/portfolio-refresh" },
       { label: "Resume page", href: "/resume" },
@@ -134,7 +139,7 @@ export const projects = [
       "It was an early example of a pattern I still value: making technical information useful to real people.",
     stack: ["JSON", "Web UI", "Sensor data"],
     links: [{ label: "Project page", href: "/projects/garden-sensor-network" }],
-    featured: true,
+    featured: false,
   },
   {
     slug: "retrofit-program-data-tools",
@@ -153,8 +158,10 @@ export const projects = [
     impact:
       "The result was better operational flow without pretending the environment was clean or simple.",
     stack: ["Ruby on Rails", "Excel", "iPad workflows", "Web applications"],
-    links: [{ label: "Project page", href: "/projects/retrofit-program-data-tools" }],
-    featured: true,
+    links: [
+      { label: "Project page", href: "/projects/retrofit-program-data-tools" },
+    ],
+    featured: false,
   },
   {
     slug: "internal-client-web-platforms",
@@ -172,15 +179,27 @@ export const projects = [
       "I designed and maintained web applications while supporting the databases and servers behind them.",
     impact:
       "It was sustained product and systems work rather than a single launch.",
-    stack: ["Web applications", "Databases", "Infrastructure", "Compliance-minded ops"],
-    links: [{ label: "Project page", href: "/projects/internal-client-web-platforms" }],
+    stack: [
+      "Web applications",
+      "Databases",
+      "Infrastructure",
+      "Compliance-minded ops",
+    ],
+    links: [
+      {
+        label: "Project page",
+        href: "/projects/internal-client-web-platforms",
+      },
+    ],
     featured: false,
   },
 ];
 
-export const featuredProjects = projects.filter((project) => project.featured);
+export const featuredProjects: Project[] = projects.filter(
+  (project) => project.featured,
+);
 
-export const experienceItems = [
+export const experienceItems: ExperienceItem[] = [
   {
     company: "ADM Associates, Inc.",
     role: "Software Engineer",
@@ -215,7 +234,7 @@ export const experienceItems = [
   },
 ];
 
-export const educationItems = [
+export const educationItems: EducationItem[] = [
   {
     school: "University of California, San Diego",
     detail: "B.S. in Computer Science",
@@ -228,11 +247,8 @@ export const educationItems = [
   },
 ];
 
-export const contactLinks = [
+export const contactLinks: ActionLink[] = [
   { label: "Email", href: "mailto:alaarab@gmail.com" },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/ala-arab-a995b155/",
-  },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/ala-arab-a995b155/" },
   { label: "Resume", href: "/resume" },
 ];
