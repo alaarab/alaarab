@@ -45,6 +45,78 @@ export const projects = [
     featured: true,
   },
   {
+    slug: "phren",
+    title: "Phren",
+    category: "Open source",
+    status: "Active",
+    year: "2026",
+    summary:
+      "A persistent memory layer for AI coding agents — findings, tasks, and patterns kept in a git repo you control.",
+    outcome:
+      "Agents stop forgetting. Context starts flowing automatically across sessions, projects, and machines.",
+    problem:
+      "AI coding agents lose everything between sessions, so the same context has to be rebuilt over and over.",
+    build:
+      "I built a TypeScript monorepo with an MCP server, a CLI, and a hook system that captures findings and tasks into plain markdown — no database, no vendor lock-in.",
+    impact:
+      "It works across Claude, Copilot, Cursor, and Codex, and reloads cleanly on a new machine with a single init command.",
+    stack: ["TypeScript", "MCP", "Turborepo", "Node.js"],
+    links: [
+      { label: "Project page", href: "/projects/phren" },
+      { label: "GitHub", href: "https://github.com/alaarab/phren" },
+      { label: "Docs", href: "https://alaarab.github.io/phren/" },
+    ],
+    featured: true,
+  },
+  {
+    slug: "ogrid",
+    title: "OGrid",
+    category: "Open source",
+    status: "Active",
+    year: "2026",
+    summary:
+      "Spreadsheet behavior for any table — headless React hooks for inline edit, range select, fill handle, and copy/paste.",
+    outcome:
+      "Teams get real spreadsheet interactions on the table chrome they already use, without adopting a heavy grid framework.",
+    problem:
+      "Most data grids force you into their styling and component model just to get spreadsheet-style editing.",
+    build:
+      "I built a headless, React-first library as a Turborepo monorepo, with hooks that drop onto shadcn, Material, Fluent, or a plain table, plus a built-in OGrid component.",
+    impact:
+      "It ships as MIT-licensed npm packages with documentation and an AG Grid migration guide.",
+    stack: ["React", "TypeScript", "Headless UI", "npm"],
+    links: [
+      { label: "Project page", href: "/projects/ogrid" },
+      { label: "GitHub", href: "https://github.com/alaarab/ogrid" },
+      { label: "Docs", href: "https://alaarab.github.io/ogrid/" },
+    ],
+    featured: true,
+  },
+  {
+    slug: "m4l-builder",
+    title: "m4l-builder",
+    category: "Open source",
+    status: "Active",
+    year: "2026",
+    summary:
+      "A Python library for building Max for Live (.amxd) devices in code — no Max GUI required.",
+    outcome:
+      "Audio devices become scriptable, reproducible, and version-controllable instead of being trapped in a visual editor.",
+    problem:
+      "Building Max for Live devices means clicking around a GUI, which makes the work hard to version, review, or reproduce.",
+    build:
+      "I built a pure-stdlib Python library that emits valid .amxd files, with modules for UI, DSP, jsui visual engines, and a theme system.",
+    impact:
+      "It ships on PyPI with 880+ tests and a set of example plugins covering filters, compressors, delays, and saturation.",
+    stack: ["Python", "Max for Live", "Audio DSP", "PyPI"],
+    links: [
+      { label: "Project page", href: "/projects/m4l-builder" },
+      { label: "GitHub", href: "https://github.com/alaarab/m4l-builder" },
+      { label: "PyPI", href: "https://pypi.org/project/m4l-builder/" },
+    ],
+    featured: true,
+  },
+  {
     slug: "garden-sensor-network",
     title: "Garden Sensor Network",
     category: "Legacy case study",
