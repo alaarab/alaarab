@@ -51,6 +51,7 @@ export const projects: Project[] = [
   },
   {
     slug: "phren",
+    accent: "#7c3aed",
     title: "Phren",
     category: "Open source",
     status: "Active",
@@ -75,6 +76,7 @@ export const projects: Project[] = [
   },
   {
     slug: "ogrid",
+    accent: "#217346",
     title: "OGrid",
     category: "Open source",
     status: "Active",
@@ -99,6 +101,7 @@ export const projects: Project[] = [
   },
   {
     slug: "m4l-builder",
+    accent: "#b45309",
     title: "m4l-builder",
     category: "Open source",
     status: "Active",

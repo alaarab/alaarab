@@ -69,6 +69,33 @@ test.describe("projects", () => {
   });
 });
 
+test.describe("project accents", () => {
+  test("featured cards carry each app's brand color", async ({ page }) => {
+    await page.goto("/");
+
+    const cardFor = (name: string) =>
+      page.locator("article", {
+        has: page.getByRole("heading", { level: 3, name }),
+      });
+
+    await expect(cardFor("Phren")).toHaveCSS("--project-accent", "#7c3aed");
+    await expect(cardFor("OGrid")).toHaveCSS("--project-accent", "#217346");
+    await expect(cardFor("m4l-builder")).toHaveCSS(
+      "--project-accent",
+      "#b45309",
+    );
+  });
+
+  test("the detail page tints with the project accent", async ({ page }) => {
+    await page.goto("/projects/ogrid");
+    // The eyebrow resolves var(--project-accent) to OGrid's green.
+    await expect(page.getByText("Open source", { exact: true })).toHaveCSS(
+      "color",
+      "rgb(33, 115, 70)",
+    );
+  });
+});
+
 test("an unknown route shows the 404 page", async ({ page }) => {
   await page.goto("/this-page-does-not-exist");
 

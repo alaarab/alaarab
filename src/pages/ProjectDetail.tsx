@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router";
 import { ActionLinks } from "../components/ActionLinks";
 import { projects, siteMeta } from "../data/siteContent";
+import { accentStyle } from "../lib/accentStyle";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import styles from "../styles/Portfolio.module.css";
 import { NotFound } from "./NotFound";
@@ -20,7 +21,7 @@ export function ProjectDetail() {
   }
 
   return (
-    <div className={styles.projectPageShell}>
+    <div className={styles.projectPageShell} style={accentStyle(project.accent)}>
       <header className={styles.projectPageHeader}>
         <div className={styles.resumeLinks}>
           <Link to="/">Portfolio</Link>

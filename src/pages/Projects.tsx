@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { projects, siteMeta } from "../data/siteContent";
+import { accentStyle } from "../lib/accentStyle";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import styles from "../styles/Portfolio.module.css";
 
@@ -25,7 +26,11 @@ export function Projects() {
 
       <main className={styles.projectsList}>
         {projects.map((project) => (
-          <article key={project.slug} className={styles.projectListCard}>
+          <article
+            key={project.slug}
+            className={styles.projectListCard}
+            style={accentStyle(project.accent)}
+          >
             <div className={styles.projectListMeta}>
               <span>{project.category}</span>
               <span>{project.year}</span>

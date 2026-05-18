@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { ActionLinks } from "../components/ActionLinks";
+import { accentStyle } from "../lib/accentStyle";
 import {
   contactLinks,
   experienceItems,
@@ -70,7 +71,11 @@ export function Home() {
           </div>
           <div className={styles.projectGrid}>
             {featuredProjects.map((project) => (
-              <article key={project.slug} className={styles.projectCard}>
+              <article
+                key={project.slug}
+                className={styles.projectCard}
+                style={accentStyle(project.accent)}
+              >
                 <div className={styles.projectHeader}>
                   <span className={styles.statusPill}>
                     {project.category} · {project.year}

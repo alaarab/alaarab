@@ -22,6 +22,8 @@ export interface ActionLink {
 
 export interface Project {
   slug: string;
+  /** Brand color carried over from the project itself. Falls back to the site accent. */
+  accent?: string;
   title: string;
   category: string;
   status: string;
