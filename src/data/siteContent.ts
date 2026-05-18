@@ -167,34 +167,24 @@ export const projects: Project[] = [
     featured: false,
   },
   {
-    slug: "internal-client-web-platforms",
-    title: "Internal and Client Web Platforms",
-    category: "Long-term work",
-    status: "Delivered over multiple years",
-    year: "2012 to 2020",
+    slug: "intranet-erp",
+    title: "Intranet ERP",
+    category: "Flagship product",
+    status: "Primary company ERP for a decade",
+    year: "2013 to 2023",
     summary:
-      "Application and infrastructure work across internal tools, client systems, and data-heavy environments.",
+      "The project-based ERP I built and grew into ADM Associates' system of record, then licensed to outside clients.",
     outcome:
-      "Supported teams by keeping products and the systems around them useful and dependable.",
+      "One platform for project management, budgeting, accounting, and workflows that replaced Deltek Vision across the company.",
     problem:
-      "Teams needed reliable applications and supporting infrastructure in environments where stability mattered.",
+      "The company ran on Deltek Vision and a legacy VB.NET application that never fit how a project-based consulting firm actually works.",
     build:
-      "I designed and maintained web applications while supporting the databases and servers behind them.",
+      "I started Intranet shortly after joining and owned it for the next ten years as it grew from a small app into a full ERP. The engineering team, the CI/CD pipeline, and the infrastructure all grew up around it.",
     impact:
-      "It was sustained product and systems work rather than a single launch.",
-    stack: [
-      "Web applications",
-      "Databases",
-      "Infrastructure",
-      "Compliance-minded ops",
-    ],
-    links: [
-      {
-        label: "Project page",
-        href: "/projects/internal-client-web-platforms",
-      },
-    ],
-    featured: false,
+      "It became the primary ERP of the company and a product in its own right, run internally and sold to clients.",
+    stack: ["Ruby on Rails", "PostgreSQL", "MS SQL", "Docker", "GitHub Actions"],
+    links: [{ label: "Project page", href: "/projects/intranet-erp" }],
+    featured: true,
   },
 ];
 
@@ -206,10 +196,10 @@ export const experienceItems: ExperienceItem[] = [
   {
     company: "ADM Associates, Inc.",
     role: "Software Engineer",
-    years: "2012 to 2020",
+    years: "2012 to 2025",
     location: "Sacramento, CA",
     summary:
-      "Built and maintained web applications while supporting infrastructure and data workflows in a compliance-sensitive environment.",
+      "Thirteen years here, most of it building Intranet, the project-based ERP that became the company's primary system and replaced Deltek Vision. Helped grow the software engineering team, stood up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure alongside the MongoDB, PostgreSQL, MySQL, and MS SQL databases behind it.",
   },
   {
     company: "Greater Sacramento Pediatrics Association",

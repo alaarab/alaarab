@@ -12,7 +12,13 @@ test.describe("homepage", () => {
       page.getByRole("heading", { level: 2, name: "Selected work" }),
     ).toBeVisible();
 
-    for (const name of ["Portfolio Refresh", "Phren", "OGrid", "m4l-builder"]) {
+    for (const name of [
+      "Portfolio Refresh",
+      "Phren",
+      "OGrid",
+      "m4l-builder",
+      "Intranet ERP",
+    ]) {
       await expect(
         page.getByRole("heading", { level: 3, name }),
       ).toBeVisible();

@@ -34,7 +34,7 @@ A pattern is showing up here: I make music in Ableton, I got annoyed at the tool
 
 ## Before the open-source detour
 
-Close to a decade across product engineering, backend systems, and the operations layer around shipping software. Most of it at ADM Associates, building and keeping web apps alive in a compliance-heavy environment where stability was the entire job.
+Thirteen years at ADM Associates. Most of it went into Intranet, a project-based ERP I grew into the company's primary system and licensed to clients, the one that replaced Deltek Vision. Along the way I helped build out the engineering team, set up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure.
 
 ## Say hi
 
