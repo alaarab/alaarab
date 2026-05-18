@@ -51,13 +51,13 @@ export const projects = [
     status: "Active",
     year: "2026",
     summary:
-      "A persistent memory layer for AI coding agents — findings, tasks, and patterns kept in a git repo you control.",
+      "Persistent memory for AI coding agents. Findings, tasks, and patterns stay as markdown in a git repo you own.",
     outcome:
       "Agents stop forgetting. Context starts flowing automatically across sessions, projects, and machines.",
     problem:
       "AI coding agents lose everything between sessions, so the same context has to be rebuilt over and over.",
     build:
-      "I built a TypeScript monorepo with an MCP server, a CLI, and a hook system that captures findings and tasks into plain markdown — no database, no vendor lock-in.",
+      "I built it as a TypeScript monorepo: an MCP server, a CLI, and hooks that capture findings and tasks into plain markdown. No database, no vendor lock-in.",
     impact:
       "It works across Claude, Copilot, Cursor, and Codex, and reloads cleanly on a new machine with a single init command.",
     stack: ["TypeScript", "MCP", "Turborepo", "Node.js"],
@@ -75,7 +75,7 @@ export const projects = [
     status: "Active",
     year: "2026",
     summary:
-      "Spreadsheet behavior for any table — headless React hooks for inline edit, range select, fill handle, and copy/paste.",
+      "Spreadsheet behavior for any table. Headless React hooks for inline edit, range select, the fill handle, and copy/paste.",
     outcome:
       "Teams get real spreadsheet interactions on the table chrome they already use, without adopting a heavy grid framework.",
     problem:
@@ -99,7 +99,7 @@ export const projects = [
     status: "Active",
     year: "2026",
     summary:
-      "A Python library for building Max for Live (.amxd) devices in code — no Max GUI required.",
+      "A Python library for building Max for Live (.amxd) devices in code, no Max GUI required.",
     outcome:
       "Audio devices become scriptable, reproducible, and version-controllable instead of being trapped in a visual editor.",
     problem:
