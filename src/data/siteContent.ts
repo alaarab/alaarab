@@ -291,6 +291,36 @@ export const featuredProjects: Project[] = projects.filter(
   (project) => project.featured,
 );
 
+export type NowItem = {
+  heading: string;
+  body: string;
+};
+
+/**
+ * What I'm focused on this season — a /now page in the spirit of
+ * nownownow.com. Refresh whenever the focus actually shifts.
+ */
+export const nowMeta = {
+  asOf: "May 2026",
+  intro:
+    "A snapshot of what I'm actually spending hours on right now. Lighter than a roadmap, more honest than a Twitter bio.",
+};
+
+export const nowItems: NowItem[] = [
+  {
+    heading: "Shipping Phren past the prototype",
+    body: "Memory layer for coding agents. Getting the retrieval ranker to a place where I'd trust it on my own repos before pitching it to anyone else.",
+  },
+  {
+    heading: "Music tooling for myself first",
+    body: "LiveMCP and m4l-builder both started because I wanted them. Continuing in that spirit — only adding features I'd actually use in a session.",
+  },
+  {
+    heading: "Looking for the next thing",
+    body: "Open to staff/principal full-stack roles where the team is small enough that I'd own real surface area. Bay Area, Sacramento, or remote.",
+  },
+];
+
 export const experienceItems: ExperienceItem[] = [
   {
     company: "ADM Associates, Inc.",

@@ -1112,6 +1112,43 @@
   }
 }
 
+.nowList {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.nowItem {
+  position: relative;
+  padding: 1.3rem 1.5rem 1.3rem 1.8rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background: rgba(255, 250, 243, 0.7);
+  overflow: hidden;
+}
+
+.nowItem::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.nowItem h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+
+.nowItem p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
 @media print {
   .resumeShell {
     max-width: none;

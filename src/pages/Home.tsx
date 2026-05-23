@@ -203,7 +203,8 @@ export function Home() {
           >
             GitHub
           </a>
-          .
+          . What I'm focused on right{" "}
+          <Link to="/now">now</Link>.
         </p>
       </footer>
     </div>

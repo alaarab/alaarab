@@ -10,6 +10,7 @@ function buildSitemap() {
     `${SITE_ORIGIN}/`,
     `${SITE_ORIGIN}/projects`,
     `${SITE_ORIGIN}/resume`,
+    `${SITE_ORIGIN}/now`,
     ...projects.map((project) => `${SITE_ORIGIN}/projects/${project.slug}`),
   ];
   const body = urls
