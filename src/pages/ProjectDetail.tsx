@@ -81,6 +81,13 @@ export function ProjectDetail() {
         ) : null}
       </header>
 
+      {project.quote ? (
+        <blockquote className={styles.projectQuote}>
+          <p>{project.quote}</p>
+          <cite>— from the project README</cite>
+        </blockquote>
+      ) : null}
+
       <main className={styles.projectStoryGrid}>
         <section className={styles.storyCard}>
           <h2>Overview</h2>

@@ -37,6 +37,8 @@ export interface Project {
   metrics?: string[];
   /** Optional thematic grouping (e.g. "Agent tooling", "Music tooling"). */
   thread?: string;
+  /** Pull-quote from the project itself (often from its README). */
+  quote?: string;
   links: ActionLink[];
   featured: boolean;
 }

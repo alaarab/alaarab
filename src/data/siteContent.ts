@@ -54,6 +54,7 @@ export const projects: Project[] = [
       "Claude / Copilot / Cursor / Codex",
     ],
     thread: "Agent tooling",
+    quote: "Your agents forget everything. Phren doesn't.",
     links: [
       { label: "Project page", href: "/projects/phren" },
       { label: "GitHub", href: "https://github.com/alaarab/phren" },
@@ -85,6 +86,8 @@ export const projects: Project[] = [
       "Sigstore + SBOM releases",
     ],
     thread: "Agent tooling",
+    quote:
+      "Halo's web UI, but you live in your editor. Files are real Markdown, your editor gets a folder, your AI gets a corpus.",
     links: [
       { label: "Project page", href: "/projects/halo-explorer" },
       { label: "GitHub", href: "https://github.com/alaarab/halo" },
@@ -145,6 +148,8 @@ export const projects: Project[] = [
       "Reverse-engineering pipeline",
     ],
     thread: "Music tooling",
+    quote:
+      "Write scripts, emit .amxd files straight to your Ableton User Library. No Max GUI required.",
     links: [
       { label: "Project page", href: "/projects/m4l-builder" },
       { label: "GitHub", href: "https://github.com/alaarab/m4l-builder" },
@@ -176,6 +181,8 @@ export const projects: Project[] = [
       "macOS / Windows / WSL",
     ],
     thread: "Music tooling",
+    quote:
+      "Tools are for actions. Resources are for inspection. LiveMCP turns Ableton Live into an MCP-accessible control surface.",
     links: [
       { label: "Project page", href: "/projects/livemcp" },
       { label: "GitHub", href: "https://github.com/alaarab/livemcp" },

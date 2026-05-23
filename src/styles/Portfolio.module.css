@@ -874,6 +874,45 @@
   margin-top: 1rem;
 }
 
+.projectQuote {
+  position: relative;
+  margin: 1.4rem 0 0;
+  padding: 1.4rem 1.6rem 1.4rem 2.2rem;
+  border-radius: 1.4rem;
+  background: color-mix(
+    in srgb,
+    var(--project-accent, var(--accent)) 8%,
+    rgba(255, 250, 243, 0.85)
+  );
+  border: 1px solid var(--line);
+  font-family: var(--font-display), "Trebuchet MS", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.projectQuote::before {
+  content: "\201C";
+  position: absolute;
+  top: 0.4rem;
+  left: 0.9rem;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--project-accent, var(--accent)) 60%, transparent);
+}
+
+.projectQuote cite {
+  display: block;
+  margin-top: 0.6rem;
+  font-family: var(--font-mono), "Courier New", monospace;
+  font-size: 0.72rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
 .storyCard {
   display: grid;
   gap: 0.9rem;
