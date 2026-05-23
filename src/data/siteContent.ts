@@ -30,6 +30,32 @@ export const quickStats: QuickStat[] = [
 
 export const projects: Project[] = [
   {
+    slug: "intrapath",
+    accent: "#f43f5e",
+    title: "Intrapath",
+    category: "Current",
+    status: "In active development",
+    year: "2026",
+    summary:
+      "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. React on Bun this time, with a better take on how project management and workflow want to be modeled.",
+    outcome:
+      "An ERP that's actually conducive to project management and workflow — not a system that survived because everyone learned to work around it.",
+    problem:
+      "After ten-plus years running the original Intranet on Ruby on Rails, I learned a lot about what fit a project-based business and what was a compromise that calcified. Time to start fresh, with the workflow modeled right from the data layer up.",
+    build:
+      "React on Bun. Rebuilding the data model and workflow primitives from scratch, with a stronger handle on how project-based organizational styles actually want to be modeled — not bending an existing CRM or PM tool to fit.",
+    impact:
+      "Active development. No public release yet.",
+    stack: ["React", "Bun", "TypeScript"],
+    metrics: [
+      "Successor to Intranet",
+      "React + Bun",
+      "Workflow-first data model",
+    ],
+    links: [{ label: "Project page", href: "/projects/intrapath" }],
+    featured: true,
+  },
+  {
     slug: "phren",
     accent: "#7c3aed",
     title: "Phren",
@@ -212,6 +238,48 @@ export const projects: Project[] = [
     ],
     links: [{ label: "Project page", href: "/projects/intranet-erp" }],
     featured: true,
+  },
+  {
+    slug: "emv",
+    accent: "#84cc16",
+    title: "EMV",
+    category: "Legacy case study",
+    status: "Shipped at ADM",
+    year: "2014 to 2025",
+    summary:
+      "An internal MongoDB-backed app built at ADM Associates for a workflow that fit a document store better than a relational one. Sister system to Intranet.",
+    outcome:
+      "Filled a slice of the company's internal toolkit that Intranet wasn't the right shape for.",
+    problem:
+      "Not every workflow at ADM mapped cleanly into the relational data model behind Intranet — some wanted to be modeled as documents.",
+    build:
+      "Node.js on MongoDB.",
+    impact:
+      "Ran internally at ADM as one of the apps that made up the day-to-day software stack.",
+    stack: ["MongoDB", "Node.js"],
+    links: [{ label: "Project page", href: "/projects/emv" }],
+    featured: false,
+  },
+  {
+    slug: "equipment-tracker",
+    accent: "#06b6d4",
+    title: "Equipment Tracker",
+    category: "Legacy case study",
+    status: "Shipped at ADM",
+    year: "2018 to 2025",
+    summary:
+      "An internal app for tracking equipment, on PostgreSQL and Node. Built at ADM Associates as part of the operations toolkit alongside Intranet.",
+    outcome:
+      "Equipment records lived in one place instead of across spreadsheets and people's heads.",
+    problem:
+      "Field and lab equipment got tracked in whatever the previous owner happened to be using, which was usually a spreadsheet.",
+    build:
+      "Node service on PostgreSQL with an internal UI for the operations side.",
+    impact:
+      "Used across the operations side of the company as part of the broader app suite.",
+    stack: ["PostgreSQL", "Node.js"],
+    links: [{ label: "Project page", href: "/projects/equipment-tracker" }],
+    featured: false,
   },
   {
     slug: "alphalens",

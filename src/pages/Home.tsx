@@ -51,11 +51,12 @@ function FeaturedCard({ project }: { project: Project }) {
 export function Home() {
   useDocumentTitle(`${siteMeta.name} | Portfolio`);
 
-  const currentlyBuildingProjects = featuredProjects.filter(
-    (project) => project.category === "Open source",
+  const CURRENT_CATEGORIES = new Set(["Open source", "Current"]);
+  const currentlyBuildingProjects = featuredProjects.filter((project) =>
+    CURRENT_CATEGORIES.has(project.category),
   );
   const previouslyProjects = featuredProjects.filter(
-    (project) => project.category !== "Open source",
+    (project) => !CURRENT_CATEGORIES.has(project.category),
   );
 
   return (
