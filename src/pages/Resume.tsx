@@ -6,13 +6,25 @@ import {
   siteMeta,
 } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { buildPersonSchema } from "../lib/personSchema";
 import styles from "../styles/Portfolio.module.css";
 
 export function Resume() {
   useDocumentTitle(`${siteMeta.name} | Resume`);
 
+  const personSchema = buildPersonSchema({
+    siteMeta,
+    experienceItems,
+    educationItems,
+  });
+
   return (
     <div className={styles.resumeShell}>
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, locally generated JSON
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
       <header className={styles.resumeHeader}>
         <div>
           <p className={styles.eyebrow}>Resume</p>
