@@ -16,6 +16,9 @@ export function Home() {
 
   return (
     <div className={styles.pageShell}>
+      <a className="skip-link" href="#top">
+        Skip to content
+      </a>
       <header className={styles.header}>
         <div className={styles.navWrap}>
           <a href="#top" className={styles.wordmark}>
@@ -152,10 +155,10 @@ export function Home() {
           <div className={styles.contactPanel}>
             <div>
               <p className={styles.eyebrow}>Contact</p>
-              <h2>Simple, direct, and easy to reach.</h2>
+              <h2>Say hi.</h2>
               <p className={styles.contactText}>
-                If you want to talk about a product build, an internal tool, or
-                a consulting project, get in touch.
+                Product work, internal tooling, or selected consulting. Email
+                lands; LinkedIn works; the resume is a click away.
               </p>
             </div>
             <ActionLinks links={contactLinks} className={styles.contactLinks} />
@@ -164,7 +167,18 @@ export function Home() {
       </main>
 
       <footer className={styles.footer}>
-        <p>{new Date().getFullYear()} Ala Arab</p>
+        <p>© {new Date().getFullYear()} Ala Arab</p>
+        <p className={styles.footerNote}>
+          Built with Bun, React 19, and TypeScript. Source on{" "}
+          <a
+            href="https://github.com/alaarab/alaarab"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            GitHub
+          </a>
+          .
+        </p>
       </footer>
     </div>
   );

@@ -606,6 +606,17 @@
   font-size: 0.95rem;
 }
 
+.footerNote a {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  text-underline-offset: 3px;
+}
+
+.footerNote a:hover {
+  text-decoration-color: var(--accent-strong);
+}
+
 .resumeShell {
   max-width: 980px;
   margin: 0 auto;
