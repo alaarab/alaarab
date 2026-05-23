@@ -308,11 +308,11 @@ export const nowMeta = {
 export const nowItems: NowItem[] = [
   {
     heading: "Systems Software Architect at Qualus Corp",
-    body: "Day job. Architecting internal software systems across the engineering org.",
+    body: "Day job. Database management systems for client portfolios, plus the internal tools that move data across the company — CRM through APIs into Power BI and Tableau. Lots of Node, React, and Angular.",
   },
   {
     heading: "Rebuilding the ERP from scratch",
-    body: "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. Same problem space, fresh stack, no legacy baggage.",
+    body: "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. The original was Ruby on Rails over ten-plus years; this one's React on Bun, built around a better take on how project management and workflow actually want to be modeled.",
   },
   {
     heading: "Shipping Phren past the prototype",
@@ -320,7 +320,7 @@ export const nowItems: NowItem[] = [
   },
   {
     heading: "Music tooling for myself first",
-    body: "LiveMCP and m4l-builder both started because I wanted them. Continuing in that spirit — only adding features I'd actually use in a session.",
+    body: "I produce electronic music in Ableton, and got tired of waiting for the tools to exist. LiveMCP and m4l-builder both started that way. Continuing in that spirit — only features I'd actually use in a session.",
   },
 ];
 
@@ -331,7 +331,7 @@ export const experienceItems: ExperienceItem[] = [
     years: "2025 to present",
     location: "Los Angeles, CA",
     summary:
-      "Architecting internal software systems across the engineering org.",
+      "Architecting database management systems for client portfolios, plus the internal tools and automation that move data across the company — CRM through APIs into Power BI and Tableau reporting. Stack is Node, React, and Angular sitting on top of the databases.",
   },
   {
     company: "ADM Associates, Inc.",
@@ -339,7 +339,7 @@ export const experienceItems: ExperienceItem[] = [
     years: "2012 to 2025",
     location: "Sacramento, CA",
     summary:
-      "Thirteen years here, starting in IT and moving into systems software. Built Intranet, the project-based ERP that became the company's primary system and replaced Deltek Vision. Helped grow the software engineering team, stood up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure alongside the MongoDB, PostgreSQL, MySQL, and MS SQL databases behind it.",
+      "Thirteen years, starting in IT and moving into systems software. Built and ran a stack of internal apps — Intranet (the project-based ERP that replaced Deltek Vision, on PostgreSQL + Rails), EMV (MongoDB), an Equipment Tracker (PostgreSQL + Node) — and most of the company's web presence. Stood up the data science infrastructure so analysts could deploy R workloads to R Server and ship Shiny apps. Ran the Linux fleet, the multi-database backend (MongoDB, PostgreSQL, MySQL, MS SQL), and the SOC 2 environment underneath all of it. Helped grow the engineering team and stood up CI/CD on GitHub Actions.",
   },
   {
     company: "Greater Sacramento Pediatrics Association",

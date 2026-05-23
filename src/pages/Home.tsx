@@ -135,8 +135,9 @@ export function Home() {
             <p className={styles.sectionNote}>
               Two threads run through most of the open-source side. Tooling
               for AI coding agents that fixes the "forgets everything between
-              sessions" problem, and tooling for music production that came
-              out of being annoyed at how Ableton handles version control.
+              sessions" problem, and tooling for my own music — I produce
+              electronic music in Ableton and started writing the plugins
+              and bridges I kept wishing existed.
             </p>
           </div>
 
