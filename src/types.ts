@@ -34,6 +34,7 @@ export interface Project {
   build: string;
   impact: string;
   stack: string[];
+  metrics?: string[];
   links: ActionLink[];
   featured: boolean;
 }

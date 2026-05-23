@@ -32,6 +32,13 @@ export function ProjectDetail() {
           <p className={styles.eyebrow}>{project.category}</p>
           <h1>{project.title}</h1>
           <p className={styles.heroText}>{project.summary}</p>
+          {project.metrics && project.metrics.length > 0 ? (
+            <ul className={styles.metricsList}>
+              {project.metrics.map((metric) => (
+                <li key={metric}>{metric}</li>
+              ))}
+            </ul>
+          ) : null}
         </div>
         <div className={styles.projectFacts}>
           <div>

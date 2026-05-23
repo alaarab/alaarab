@@ -83,6 +83,13 @@ export function Home() {
                   <h3>{project.title}</h3>
                 </div>
                 <p>{project.summary}</p>
+                {project.metrics && project.metrics.length > 0 ? (
+                  <ul className={styles.metricsList}>
+                    {project.metrics.map((metric) => (
+                      <li key={metric}>{metric}</li>
+                    ))}
+                  </ul>
+                ) : null}
                 <p className={styles.outcome}>{project.outcome}</p>
                 <ul className={styles.tagList}>
                   {project.stack.map((item) => (

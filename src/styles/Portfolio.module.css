@@ -432,6 +432,40 @@
   font-size: 0.92rem;
 }
 
+.metricsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.85rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-family: var(--font-mono), "Courier New", monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--project-accent, var(--accent)) 78%, var(--ink));
+  text-transform: uppercase;
+}
+
+.metricsList li {
+  position: relative;
+  padding-right: 0.85rem;
+}
+
+.metricsList li::after {
+  content: "·";
+  position: absolute;
+  right: 0;
+  color: var(--ink-soft);
+}
+
+.metricsList li:last-child {
+  padding-right: 0;
+}
+
+.metricsList li:last-child::after {
+  content: "";
+}
+
 .projectLinks {
   display: flex;
   flex-wrap: wrap;
