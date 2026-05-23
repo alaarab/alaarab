@@ -371,6 +371,34 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.featuredGroup {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1.6rem;
+}
+
+.featuredGroup:first-of-type {
+  margin-top: 0.4rem;
+}
+
+.featuredGroupLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono), "Courier New", monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.featuredGroupLabel::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
 .projectCard {
   display: flex;
   flex-direction: column;

@@ -10,9 +10,53 @@ import {
 } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import styles from "../styles/Portfolio.module.css";
+import type { Project } from "../types";
+
+function FeaturedCard({ project }: { project: Project }) {
+  return (
+    <article
+      className={styles.projectCard}
+      style={accentStyle(project.accent)}
+    >
+      <div className={styles.projectHeader}>
+        <div className={styles.pillRow}>
+          <span className={styles.statusPill}>
+            {project.category} · {project.year}
+          </span>
+          {project.thread ? (
+            <span className={styles.threadPill}>{project.thread}</span>
+          ) : null}
+        </div>
+        <h3>{project.title}</h3>
+      </div>
+      <p>{project.summary}</p>
+      {project.metrics && project.metrics.length > 0 ? (
+        <ul className={styles.metricsList}>
+          {project.metrics.map((metric) => (
+            <li key={metric}>{metric}</li>
+          ))}
+        </ul>
+      ) : null}
+      <p className={styles.outcome}>{project.outcome}</p>
+      <ul className={styles.tagList}>
+        {project.stack.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+      <ActionLinks links={project.links} className={styles.projectLinks} />
+    </article>
+  );
+}
 
 export function Home() {
   useDocumentTitle(`${siteMeta.name} | Portfolio`);
+
+  const currentlyBuildingProjects = featuredProjects.filter(
+    (project) => project.category === "Open source",
+  );
+  const previouslyProjects = featuredProjects.filter(
+    (project) => project.category !== "Open source",
+  );
 
   return (
     <div className={styles.pageShell}>
@@ -72,53 +116,35 @@ export function Home() {
             <p className={styles.eyebrow}>Featured work</p>
             <h2>Selected work</h2>
             <p className={styles.sectionNote}>
-              Two threads run through most of this. Tooling for AI coding
-              agents that fixes the "forgets everything between sessions"
-              problem, and tooling for music production that came out of
-              being annoyed at how Ableton handles version control.
+              Two threads run through most of the open-source side. Tooling
+              for AI coding agents that fixes the "forgets everything between
+              sessions" problem, and tooling for music production that came
+              out of being annoyed at how Ableton handles version control.
             </p>
           </div>
-          <div className={styles.projectGrid}>
-            {featuredProjects.map((project) => (
-              <article
-                key={project.slug}
-                className={styles.projectCard}
-                style={accentStyle(project.accent)}
-              >
-                <div className={styles.projectHeader}>
-                  <div className={styles.pillRow}>
-                    <span className={styles.statusPill}>
-                      {project.category} · {project.year}
-                    </span>
-                    {project.thread ? (
-                      <span className={styles.threadPill}>
-                        {project.thread}
-                      </span>
-                    ) : null}
-                  </div>
-                  <h3>{project.title}</h3>
-                </div>
-                <p>{project.summary}</p>
-                {project.metrics && project.metrics.length > 0 ? (
-                  <ul className={styles.metricsList}>
-                    {project.metrics.map((metric) => (
-                      <li key={metric}>{metric}</li>
-                    ))}
-                  </ul>
-                ) : null}
-                <p className={styles.outcome}>{project.outcome}</p>
-                <ul className={styles.tagList}>
-                  {project.stack.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <ActionLinks
-                  links={project.links}
-                  className={styles.projectLinks}
-                />
-              </article>
-            ))}
-          </div>
+
+          {currentlyBuildingProjects.length > 0 ? (
+            <div className={styles.featuredGroup}>
+              <p className={styles.featuredGroupLabel}>Currently building</p>
+              <div className={styles.projectGrid}>
+                {currentlyBuildingProjects.map((project) => (
+                  <FeaturedCard key={project.slug} project={project} />
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {previouslyProjects.length > 0 ? (
+            <div className={styles.featuredGroup}>
+              <p className={styles.featuredGroupLabel}>Previously</p>
+              <div className={styles.projectGrid}>
+                {previouslyProjects.map((project) => (
+                  <FeaturedCard key={project.slug} project={project} />
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           <div className={styles.sectionCtaRow}>
             <Link className={styles.secondaryCta} to="/projects">
               All projects
