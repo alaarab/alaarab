@@ -1,0 +1,16 @@
+{
+  "name": "Ala Arab",
+  "short_name": "Ala Arab",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "background_color": "#f4efe7",
+  "theme_color": "#0f766e",
+  "description": "Portfolio of Ala Arab, full-stack developer in Sacramento.",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32 64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
