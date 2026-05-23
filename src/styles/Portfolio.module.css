@@ -259,6 +259,13 @@
   margin-bottom: 1.25rem;
 }
 
+.sectionNote {
+  max-width: 52ch;
+  margin-top: 0.4rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
 .sectionIntro h2,
 .contactPanel h2,
 .resumeSection h2 {
@@ -406,6 +413,25 @@
   );
   color: color-mix(in srgb, var(--project-accent, var(--accent)) 82%, var(--ink));
   font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.threadPill {
+  padding: 0.32rem 0.6rem;
+  border-radius: 999px;
+  border: 1px dashed
+    color-mix(in srgb, var(--project-accent, var(--accent)) 50%, var(--line));
+  color: var(--ink-soft);
+  font-family: var(--font-mono), "Courier New", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 

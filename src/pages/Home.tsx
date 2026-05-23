@@ -68,6 +68,12 @@ export function Home() {
           <div className={styles.sectionIntro}>
             <p className={styles.eyebrow}>Featured work</p>
             <h2>Selected work</h2>
+            <p className={styles.sectionNote}>
+              Two threads run through most of this. Tooling for AI coding
+              agents that fixes the "forgets everything between sessions"
+              problem, and tooling for music production that came out of
+              being annoyed at how Ableton handles version control.
+            </p>
           </div>
           <div className={styles.projectGrid}>
             {featuredProjects.map((project) => (
@@ -77,9 +83,16 @@ export function Home() {
                 style={accentStyle(project.accent)}
               >
                 <div className={styles.projectHeader}>
-                  <span className={styles.statusPill}>
-                    {project.category} · {project.year}
-                  </span>
+                  <div className={styles.pillRow}>
+                    <span className={styles.statusPill}>
+                      {project.category} · {project.year}
+                    </span>
+                    {project.thread ? (
+                      <span className={styles.threadPill}>
+                        {project.thread}
+                      </span>
+                    ) : null}
+                  </div>
                   <h3>{project.title}</h3>
                 </div>
                 <p>{project.summary}</p>

@@ -35,6 +35,8 @@ export interface Project {
   impact: string;
   stack: string[];
   metrics?: string[];
+  /** Optional thematic grouping (e.g. "Agent tooling", "Music tooling"). */
+  thread?: string;
   links: ActionLink[];
   featured: boolean;
 }

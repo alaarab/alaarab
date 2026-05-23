@@ -53,6 +53,7 @@ export const projects: Project[] = [
       "FTS5 + semantic fallback",
       "Claude / Copilot / Cursor / Codex",
     ],
+    thread: "Agent tooling",
     links: [
       { label: "Project page", href: "/projects/phren" },
       { label: "GitHub", href: "https://github.com/alaarab/phren" },
@@ -83,6 +84,7 @@ export const projects: Project[] = [
       "Loopback-only, read-only allowlist",
       "Sigstore + SBOM releases",
     ],
+    thread: "Agent tooling",
     links: [
       { label: "Project page", href: "/projects/halo-explorer" },
       { label: "GitHub", href: "https://github.com/alaarab/halo" },
@@ -142,6 +144,7 @@ export const projects: Project[] = [
       "880+ tests",
       "Reverse-engineering pipeline",
     ],
+    thread: "Music tooling",
     links: [
       { label: "Project page", href: "/projects/m4l-builder" },
       { label: "GitHub", href: "https://github.com/alaarab/m4l-builder" },
@@ -172,6 +175,7 @@ export const projects: Project[] = [
       "Tools + live:// / max:// / docs:// resources",
       "macOS / Windows / WSL",
     ],
+    thread: "Music tooling",
     links: [
       { label: "Project page", href: "/projects/livemcp" },
       { label: "GitHub", href: "https://github.com/alaarab/livemcp" },
