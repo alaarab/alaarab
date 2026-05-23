@@ -22,7 +22,7 @@ export function buildPersonSchema({
     sameAs: [siteMeta.linkedinHref, "https://github.com/alaarab"],
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Sacramento",
+      addressLocality: "Los Angeles",
       addressRegion: "CA",
       addressCountry: "US",
     },

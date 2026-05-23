@@ -3,9 +3,9 @@
   "short_name": "Ala Arab",
   "start_url": "/",
   "display": "minimal-ui",
-  "background_color": "#f4efe7",
-  "theme_color": "#0f766e",
-  "description": "Portfolio of Ala Arab, full-stack developer in Sacramento.",
+  "background_color": "#0e0c0a",
+  "theme_color": "#0e0c0a",
+  "description": "Portfolio of Ala Arab, full-stack developer in Los Angeles.",
   "icons": [
     {
       "src": "/favicon.ico",

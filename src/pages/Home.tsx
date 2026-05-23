@@ -64,13 +64,27 @@ export function Home() {
         Skip to content
       </a>
       <header className={styles.header}>
+        <div className={styles.marquee}>
+          <span>
+            <span className={styles.statusDot} aria-hidden="true" />
+            Open to selected consulting
+          </span>
+          <span className={styles.marqueeSep}>/</span>
+          <span>Los Angeles, CA</span>
+          <span className={styles.marqueeSep}>/</span>
+          <span>Systems Software Architect @ Qualus</span>
+          <span className={styles.marqueeSep}>/</span>
+          <span>May 2026</span>
+        </div>
         <div className={styles.navWrap}>
           <a href="#top" className={styles.wordmark}>
             {siteMeta.name}
           </a>
           <nav className={styles.nav}>
-            <a href="#projects">Projects</a>
+            <a href="#projects">Work</a>
             <a href="#experience">Experience</a>
+            <Link to="/now">Now</Link>
+            <Link to="/resume">Resume</Link>
             <a href="#contact">Contact</a>
           </nav>
         </div>
@@ -79,16 +93,19 @@ export function Home() {
       <main id="top" className={styles.main}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>Portfolio</p>
-            <h1>{siteMeta.title}</h1>
+            <p className={styles.eyebrow}>Portfolio · 2026</p>
+            <h1>
+              Full-stack developer building web products and the{" "}
+              <em>unglamorous</em> tools that keep them running.
+            </h1>
             <p className={styles.heroText}>{siteMeta.intro}</p>
             <p className={styles.heroSubtext}>{siteMeta.summary}</p>
             <div className={styles.ctaRow}>
               <a className={styles.primaryCta} href="#projects">
-                View featured work
+                See the work
               </a>
               <Link className={styles.secondaryCta} to="/resume">
-                Resume
+                Read the resume
               </Link>
             </div>
           </div>
