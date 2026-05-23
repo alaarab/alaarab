@@ -649,6 +649,40 @@
   margin-top: 1rem;
 }
 
+.projectsGroups {
+  display: grid;
+  gap: 1.6rem;
+  margin-top: 1rem;
+}
+
+.projectsGroup {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.projectsGroupHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0.2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.projectsGroupHeading h2 {
+  font-family: var(--font-display), "Trebuchet MS", sans-serif;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  letter-spacing: -0.03em;
+}
+
+.projectsGroupHeading span {
+  font-family: var(--font-mono), "Courier New", monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
 .projectListCard {
   display: grid;
   grid-template-columns: minmax(180px, 0.35fr) minmax(0, 1fr) auto;
