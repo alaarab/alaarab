@@ -19,8 +19,7 @@ export const siteMeta: SiteMeta = {
   email: "alaarab@gmail.com",
   emailHref: "mailto:alaarab@gmail.com",
   linkedinHref: "https://www.linkedin.com/in/ala-arab-a995b155/",
-  availability:
-    "Available for product work, internal tooling, and selected consulting.",
+  availability: "Open to selected consulting.",
 };
 
 export const quickStats: QuickStat[] = [
@@ -308,6 +307,14 @@ export const nowMeta = {
 
 export const nowItems: NowItem[] = [
   {
+    heading: "Systems Software Architect at Qualus Corp",
+    body: "Day job. Architecting internal software systems across the engineering org.",
+  },
+  {
+    heading: "Rebuilding the ERP from scratch",
+    body: "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. Same problem space, fresh stack, no legacy baggage.",
+  },
+  {
     heading: "Shipping Phren past the prototype",
     body: "Memory layer for coding agents. Getting the retrieval ranker to a place where I'd trust it on my own repos before pitching it to anyone else.",
   },
@@ -315,20 +322,24 @@ export const nowItems: NowItem[] = [
     heading: "Music tooling for myself first",
     body: "LiveMCP and m4l-builder both started because I wanted them. Continuing in that spirit — only adding features I'd actually use in a session.",
   },
-  {
-    heading: "Looking for the next thing",
-    body: "Open to staff/principal full-stack roles where the team is small enough that I'd own real surface area. Bay Area, Sacramento, or remote.",
-  },
 ];
 
 export const experienceItems: ExperienceItem[] = [
   {
+    company: "Qualus Corp",
+    role: "Systems Software Architect",
+    years: "2025 to present",
+    location: "Sacramento, CA",
+    summary:
+      "Architecting internal software systems across the engineering org.",
+  },
+  {
     company: "ADM Associates, Inc.",
-    role: "Software Engineer",
+    role: "IT Engineer, then Systems Software Engineer",
     years: "2012 to 2025",
     location: "Sacramento, CA",
     summary:
-      "Thirteen years here, most of it building Intranet, the project-based ERP that became the company's primary system and replaced Deltek Vision. Helped grow the software engineering team, stood up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure alongside the MongoDB, PostgreSQL, MySQL, and MS SQL databases behind it.",
+      "Thirteen years here, starting in IT and moving into systems software. Built Intranet, the project-based ERP that became the company's primary system and replaced Deltek Vision. Helped grow the software engineering team, stood up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure alongside the MongoDB, PostgreSQL, MySQL, and MS SQL databases behind it.",
   },
   {
     company: "Greater Sacramento Pediatrics Association",
