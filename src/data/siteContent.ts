@@ -249,16 +249,16 @@ export const projects: Project[] = [
     status: "Shipped",
     year: "2011",
     summary:
-      "A web interface for live sensor data used by a learning center.",
+      "A web interface for a learning-center garden wired up with light, temperature, and moisture sensors. Built at UCSD with a cross-discipline engineering team.",
     outcome:
-      "Turned raw readings into something non-technical users could act on.",
+      "Sensor data became something the Learning Center staff could actually read — and use to decide how to take care of their plants.",
     problem:
-      "The team needed a clearer view of light, temperature, and moisture data.",
+      "Sensors were streaming readings as JSON, but no one at the center had a way to see them in context.",
     build:
-      "I designed and built a page that surfaced incoming JSON sensor data in a usable way.",
+      "Designed and implemented the web UI on top of the incoming JSON stream. Collaborated with computer science, electrical, and mechanical engineers on the surrounding hardware-software stack, and extended a Processing-based UCSD Music Video Game in the same program.",
     impact:
-      "It was an early example of a pattern I still value: making technical information useful to real people.",
-    stack: ["JSON", "Web UI", "Sensor data"],
+      "An early example of a pattern I still value: take technical readings and make them useful to real people. Built as part of UCSD TIES at the Town and Country Learning Center.",
+    stack: ["JSON", "Web UI", "Processing", "Sensor data"],
     links: [{ label: "Project page", href: "/projects/garden-sensor-network" }],
     featured: false,
   },
@@ -269,16 +269,16 @@ export const projects: Project[] = [
     status: "Shipped",
     year: "2012 to 2013",
     summary:
-      "Workflow applications and migration tooling for retrofit program operations.",
+      "Web applications, iPad data-entry tools, and migration tooling for a retrofit program based in Maryland. Built at Matrix Energy Services.",
     outcome:
-      "Helped move data between systems and supported field and program workflows.",
+      "Field crews could capture and move data between disconnected systems without exporting through Excel by hand.",
     problem:
-      "Teams needed practical software around disconnected systems and messy operational workflows.",
+      "The retrofit program ran on a mix of legacy systems and spreadsheets, with no clean path from the field back into the database.",
     build:
-      "I built migration tools, supported testing, and contributed to the surrounding web application work.",
+      "Led web application development alongside the project managers. Built iPad apps for field capture, Ruby on Rails services on the backend, and Excel-based migrators for the data already in flight. Wrote and ran the test procedures, and redeveloped the company website in the same window.",
     impact:
-      "The result was better operational flow without pretending the environment was clean or simple.",
-    stack: ["Ruby on Rails", "Excel", "iPad workflows", "Web applications"],
+      "Cleaner operational flow without pretending the environment was clean or simple — the same instinct that later became Intranet at ADM.",
+    stack: ["Ruby on Rails", "iPad apps", "Excel", "Web applications"],
     links: [
       { label: "Project page", href: "/projects/retrofit-program-data-tools" },
     ],
@@ -347,7 +347,7 @@ export const experienceItems: ExperienceItem[] = [
     years: "2019",
     location: "Sacramento, CA",
     summary:
-      "Improved support processes and handled domain and email migration to Office 365.",
+      "Proposed and implemented system enhancements while documenting existing and new processes for the IT support team. Migrated the domain and email to Office 365 and ran the server fleet in a VMware environment.",
   },
   {
     company: "Matrix Energy Services, Inc.",
@@ -355,22 +355,30 @@ export const experienceItems: ExperienceItem[] = [
     years: "2012 to 2013",
     location: "Sacramento, CA",
     summary:
-      "Built tools for retrofit programs, moved data between systems, and supported delivery work.",
+      "Worked alongside project managers to lead web application development for a retrofit program in Maryland. Built iPad apps, Ruby on Rails services, and Excel-based tooling for migrating data between systems and databases. Wrote and ran the test procedures, and redeveloped the company website.",
   },
   {
-    company: "UC San Diego TIES",
-    role: "Developer",
+    company: "UC San Diego TIES — Town and Country Learning Center",
+    role: "Computer Science Developer",
     years: "2011",
     location: "San Diego, CA",
     summary:
-      "Built educational web interfaces around sensor data and collaborative learning-center projects.",
+      "Designed and built the web interface for a Garden Sensor Network that turned incoming JSON sensor readings — light, temperature, moisture — into something the Learning Center could actually act on. Also extended a UCSD Music Video Game written in Processing. Worked across CS, electrical, and mechanical engineering teams to bring inventive ideas into the center.",
+  },
+  {
+    company: "Dell",
+    role: "Campus Marketing, Advertising, and Technical Support",
+    years: "2008 to 2009",
+    location: "Santa Cruz, CA",
+    summary:
+      "Dell's on-campus presence at UC Santa Cruz. Provided technical support to students and parents on the Dell product line with a sales goal, and ran on-campus marketing strategies with a partner.",
   },
 ];
 
 export const educationItems: EducationItem[] = [
   {
     school: "University of California, San Diego",
-    detail: "B.S. in Computer Science",
+    detail: "B.S. in Computer Science · graduated December 2011",
     years: "2008 to 2011",
   },
   {
