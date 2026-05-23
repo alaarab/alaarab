@@ -571,6 +571,30 @@
   gap: 0.75rem;
 }
 
+.printButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.8rem;
+  padding: 0 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 250, 243, 0.82);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.printButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(15, 118, 110, 0.28);
+  color: var(--accent-strong);
+}
+
 .footer {
   display: flex;
   justify-content: space-between;
@@ -869,5 +893,68 @@
   .projectCard:hover,
   .projectListCard:hover {
     transform: none;
+  }
+}
+
+@media print {
+  .resumeShell {
+    max-width: none;
+    padding: 0;
+  }
+
+  .resumeHeader,
+  .resumeSection,
+  .resumeCard {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .resumeHeader {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1rem;
+    page-break-after: avoid;
+  }
+
+  .resumeContent {
+    gap: 0.8rem;
+    margin-top: 0.6rem;
+  }
+
+  .resumeSection {
+    padding: 0.4rem 0;
+    border-top: 1px solid var(--line);
+    page-break-inside: avoid;
+  }
+
+  .resumeStack {
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+  }
+
+  .resumeCard {
+    padding: 0.2rem 0;
+    page-break-inside: avoid;
+  }
+
+  .resumeHeader h1 {
+    font-size: 22pt;
+  }
+
+  .resumeSection h2 {
+    font-size: 13pt;
+    margin: 0;
+  }
+
+  .resumeLead,
+  .resumeCard p {
+    font-size: 10.5pt;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.3rem;
   }
 }

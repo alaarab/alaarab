@@ -19,12 +19,19 @@ export function Resume() {
           <h1>{siteMeta.name}</h1>
           <p className={styles.resumeLead}>{siteMeta.title}</p>
         </div>
-        <div className={styles.resumeLinks}>
+        <div className={styles.resumeLinks} data-print-hide>
           <Link to="/">Back to portfolio</Link>
           <a href={siteMeta.emailHref}>Email</a>
           <a href={siteMeta.linkedinHref} target="_blank" rel="noreferrer">
             LinkedIn
           </a>
+          <button
+            type="button"
+            className={styles.printButton}
+            onClick={() => window.print()}
+          >
+            Print or save as PDF
+          </button>
         </div>
       </header>
 

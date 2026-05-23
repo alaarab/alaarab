@@ -61,3 +61,49 @@ img {
   max-width: 100%;
   display: block;
 }
+
+@media print {
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-strong: #ffffff;
+    --surface-muted: #ffffff;
+    --ink: #111111;
+    --ink-soft: #333333;
+    --line: rgba(0, 0, 0, 0.16);
+    --accent: #111111;
+    --accent-strong: #000000;
+    --accent-warm: #444444;
+    --shadow: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111111;
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  .print-hide,
+  nav,
+  header [data-print-hide],
+  [data-print-hide] {
+    display: none !important;
+  }
+}
