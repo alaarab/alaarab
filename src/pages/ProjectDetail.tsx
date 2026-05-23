@@ -4,7 +4,23 @@ import { projects, siteMeta } from "../data/siteContent";
 import { accentStyle } from "../lib/accentStyle";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import styles from "../styles/Portfolio.module.css";
+import type { Project } from "../types";
 import { NotFound } from "./NotFound";
+
+function pickRelated(current: Project, all: Project[]): Project[] {
+  const sameThread = current.thread
+    ? all.filter(
+        (item) => item.slug !== current.slug && item.thread === current.thread,
+      )
+    : [];
+  const sameCategory = all.filter(
+    (item) =>
+      item.slug !== current.slug &&
+      item.category === current.category &&
+      !sameThread.includes(item),
+  );
+  return [...sameThread, ...sameCategory].slice(0, 3);
+}
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -20,6 +36,8 @@ export function ProjectDetail() {
     return <NotFound />;
   }
 
+  const related = pickRelated(project, projects);
+
   return (
     <div className={styles.projectPageShell} style={accentStyle(project.accent)}>
       <header className={styles.projectPageHeader}>
@@ -29,7 +47,12 @@ export function ProjectDetail() {
           <Link to="/resume">Resume</Link>
         </div>
         <div className={styles.projectHero}>
-          <p className={styles.eyebrow}>{project.category}</p>
+          <div className={styles.pillRow}>
+            <p className={styles.eyebrow}>{project.category}</p>
+            {project.thread ? (
+              <span className={styles.threadPill}>{project.thread}</span>
+            ) : null}
+          </div>
           <h1>{project.title}</h1>
           <p className={styles.heroText}>{project.summary}</p>
           {project.metrics && project.metrics.length > 0 ? (
@@ -50,6 +73,12 @@ export function ProjectDetail() {
             <strong>{project.status}</strong>
           </div>
         </div>
+        {project.links.length > 0 ? (
+          <ActionLinks
+            links={project.links}
+            className={styles.projectHeaderLinks}
+          />
+        ) : null}
       </header>
 
       <main className={styles.projectStoryGrid}>
@@ -72,9 +101,38 @@ export function ProjectDetail() {
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <ActionLinks links={project.links} className={styles.projectLinks} />
         </section>
       </main>
+
+      {related.length > 0 ? (
+        <section className={styles.relatedSection}>
+          <div className={styles.sectionIntro}>
+            <p className={styles.eyebrow}>Related</p>
+            <h2>Next door</h2>
+          </div>
+          <div className={styles.relatedGrid}>
+            {related.map((item) => (
+              <Link
+                key={item.slug}
+                to={`/projects/${item.slug}`}
+                className={styles.relatedCard}
+                style={accentStyle(item.accent)}
+              >
+                <div className={styles.pillRow}>
+                  <span className={styles.statusPill}>
+                    {item.category} · {item.year}
+                  </span>
+                  {item.thread ? (
+                    <span className={styles.threadPill}>{item.thread}</span>
+                  ) : null}
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.summary}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }
