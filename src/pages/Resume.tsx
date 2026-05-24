@@ -6,25 +6,44 @@ import {
   siteMeta,
 } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { buildPersonSchema } from "../lib/personSchema";
 import styles from "../styles/Portfolio.module.css";
 
 export function Resume() {
   useDocumentTitle(`${siteMeta.name} | Resume`);
 
+  const personSchema = buildPersonSchema({
+    siteMeta,
+    experienceItems,
+    educationItems,
+  });
+
   return (
     <div className={styles.resumeShell}>
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, locally generated JSON
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
       <header className={styles.resumeHeader}>
         <div>
           <p className={styles.eyebrow}>Resume</p>
           <h1>{siteMeta.name}</h1>
           <p className={styles.resumeLead}>{siteMeta.title}</p>
         </div>
-        <div className={styles.resumeLinks}>
+        <div className={styles.resumeLinks} data-print-hide>
           <Link to="/">Back to portfolio</Link>
           <a href={siteMeta.emailHref}>Email</a>
           <a href={siteMeta.linkedinHref} target="_blank" rel="noreferrer">
             LinkedIn
           </a>
+          <button
+            type="button"
+            className={styles.printButton}
+            onClick={() => window.print()}
+          >
+            Print or save as PDF
+          </button>
         </div>
       </header>
 

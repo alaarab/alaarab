@@ -28,7 +28,10 @@ export function ActionLinks({ links, className }: ActionLinksProps) {
             key={link.label}
             href={link.href}
             target={external ? "_blank" : undefined}
-            rel={external ? "noreferrer" : undefined}
+            rel={external ? "noreferrer noopener" : undefined}
+            aria-label={
+              external ? `${link.label} (opens in a new tab)` : undefined
+            }
           >
             {link.label}
           </a>

@@ -13,10 +13,11 @@ test.describe("homepage", () => {
     ).toBeVisible();
 
     for (const name of [
-      "Portfolio Refresh",
       "Phren",
+      "Halo Explorer",
       "OGrid",
       "m4l-builder",
+      "LiveMCP",
       "Intranet ERP",
     ]) {
       await expect(
@@ -48,10 +49,10 @@ test.describe("projects", () => {
     ).toBeVisible();
 
     const viewLinks = page.getByRole("link", { name: "View project" });
-    await expect(viewLinks).toHaveCount(7);
+    await expect(viewLinks).toHaveCount(9);
 
     await viewLinks.first().click();
-    await expect(page).toHaveURL(/\/projects\/portfolio-refresh$/);
+    await expect(page).toHaveURL(/\/projects\/phren$/);
   });
 
   test("renders a detail page from a direct deep link", async ({ page }) => {
