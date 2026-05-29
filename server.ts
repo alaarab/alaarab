@@ -1,48 +1,86 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import index from "./index.html";
-import { projects } from "./src/data/siteContent";
+import {
+  SITE_ORIGIN,
+  buildRobots,
+  buildSitemap,
+  knownProjectSlugs,
+} from "./src/lib/routeMeta";
 
 const isProd = process.env.NODE_ENV === "production";
-const SITE_ORIGIN = process.env.SITE_ORIGIN ?? "https://alaarab.com";
+const port = Number(process.env.PORT ?? 3000);
+const DIST = join(import.meta.dir, "dist");
 
-function buildSitemap() {
-  const today = new Date().toISOString().slice(0, 10);
-  const urls = [
-    `${SITE_ORIGIN}/`,
-    `${SITE_ORIGIN}/projects`,
-    `${SITE_ORIGIN}/resume`,
-    `${SITE_ORIGIN}/now`,
-    ...projects.map((project) => `${SITE_ORIGIN}/projects/${project.slug}`),
-  ];
-  const body = urls
-    .map(
-      (loc) => `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>`,
-    )
-    .join("\n");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+const XML_HEADERS = { "content-type": "application/xml; charset=utf-8" };
+const TEXT_HEADERS = { "content-type": "text/plain; charset=utf-8" };
+
+const sitemap = () => new Response(buildSitemap(SITE_ORIGIN), { headers: XML_HEADERS });
+const robots = () => new Response(buildRobots(SITE_ORIGIN), { headers: TEXT_HEADERS });
+
+if (isProd) {
+  // Production serves the prerendered static build: one HTML file per route
+  // with its own metadata, hashed assets cached forever, and real 404s.
+  if (!existsSync(join(DIST, "index.html"))) {
+    console.error(
+      "dist/ is missing or incomplete. Run `bun run build` before `bun server.ts` in production.",
+    );
+    process.exit(1);
+  }
+
+  const html = (file: string, status = 200) =>
+    new Response(Bun.file(file), {
+      status,
+      headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
+    });
+  const notFound = () => html(join(DIST, "404.html"), 404);
+
+  const server = Bun.serve({
+    port,
+    development: false,
+    routes: {
+      "/sitemap.xml": sitemap,
+      "/robots.txt": robots,
+      "/og.png": () =>
+        new Response(Bun.file(join(DIST, "og.png")), {
+          headers: { "cache-control": "public, max-age=86400" },
+        }),
+      "/": () => html(join(DIST, "index.html")),
+      "/projects": () => html(join(DIST, "projects", "index.html")),
+      "/resume": () => html(join(DIST, "resume", "index.html")),
+      "/now": () => html(join(DIST, "now", "index.html")),
+      "/projects/:slug": (req) => {
+        const { slug } = req.params;
+        if (!knownProjectSlugs.has(slug)) return notFound();
+        return html(join(DIST, "projects", slug, "index.html"));
+      },
+      // Hashed, content-addressed assets at the dist root. Anything else 404s.
+      "/*": async (req) => {
+        const pathname = new URL(req.url).pathname;
+        const resolved = join(DIST, pathname);
+        if (pathname === "/" || !resolved.startsWith(DIST)) return notFound();
+        const file = Bun.file(resolved);
+        if (!(await file.exists())) return notFound();
+        return new Response(file, {
+          headers: { "cache-control": "public, max-age=31536000, immutable" },
+        });
+      },
+    },
+  });
+
+  console.log(`alaarab portfolio (prod) serving dist/ at ${server.url}`);
+} else {
+  // Dev serves the SPA shell with HMR; React Router owns every path.
+  const server = Bun.serve({
+    port,
+    development: { hmr: true, console: true },
+    routes: {
+      "/sitemap.xml": sitemap,
+      "/robots.txt": robots,
+      "/og.png": () => new Response(Bun.file(join(import.meta.dir, "public", "og.png"))),
+      "/*": index,
+    },
+  });
+
+  console.log(`alaarab portfolio (dev) running at ${server.url}`);
 }
-
-const ROBOTS_TXT = `User-agent: *
-Allow: /
-
-Sitemap: ${SITE_ORIGIN}/sitemap.xml
-`;
-
-const server = Bun.serve({
-  port: Number(process.env.PORT ?? 3000),
-  development: isProd ? false : { hmr: true, console: true },
-  routes: {
-    "/sitemap.xml": () =>
-      new Response(buildSitemap(), {
-        headers: { "content-type": "application/xml; charset=utf-8" },
-      }),
-    "/robots.txt": () =>
-      new Response(ROBOTS_TXT, {
-        headers: { "content-type": "text/plain; charset=utf-8" },
-      }),
-    // Every other path resolves to the SPA shell. React Router takes it from
-    // there, so deep links like /projects/phren survive a hard refresh.
-    "/*": index,
-  },
-});
-
-console.log(`alaarab portfolio running at ${server.url}`);
