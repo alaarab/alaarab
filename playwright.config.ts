@@ -15,9 +15,9 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: `NODE_ENV=production PORT=${PORT} bun server.ts`,
+    command: `bun run build && NODE_ENV=production PORT=${PORT} bun server.ts`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
-    timeout: 30_000,
+    timeout: 60_000,
   },
 });

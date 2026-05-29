@@ -62,4 +62,4 @@ bun dev
 
 Then open [localhost:3000](http://localhost:3000).
 
-Project content lives in `src/data/siteContent.ts` and styles sit in `src/styles`. Run `bun run typecheck` and `bun run build` before shipping anything. `bun start` runs the production server.
+Project content lives in `src/data/siteContent.ts` and styles sit in `src/styles`. `bun run build` bundles the app and then prerenders one static HTML file per route (`scripts/prerender.ts`) — each with its own title, description, canonical URL, and Open Graph card — so links unfurl correctly and crawlers get real metadata instead of an empty shell. Unknown URLs return a real 404. `bun run og` regenerates the social card at `public/og.png`. Run `bun run typecheck` and `bun run build` before shipping anything; `bun start` builds and serves the static output.

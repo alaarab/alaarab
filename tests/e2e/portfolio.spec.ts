@@ -49,7 +49,7 @@ test.describe("projects", () => {
     ).toBeVisible();
 
     const viewLinks = page.getByRole("link", { name: "View project" });
-    await expect(viewLinks).toHaveCount(9);
+    await expect(viewLinks).toHaveCount(12);
 
     await viewLinks.first().click();
     await expect(page).toHaveURL(/\/projects\/phren$/);
@@ -109,4 +109,41 @@ test("an unknown route shows the 404 page", async ({ page }) => {
   await expect(
     page.getByRole("heading", { level: 1, name: "Nothing here." }),
   ).toBeVisible();
+});
+
+test.describe("prerendered metadata", () => {
+  test("each route serves its own head without running JS", async ({
+    request,
+  }) => {
+    const project = await request.get("/projects/phren");
+    expect(project.status()).toBe(200);
+    const html = await project.text();
+    expect(html).toContain("<title>Phren — Ala Arab</title>");
+    expect(html).toContain(
+      'property="og:url" content="https://alaarab.com/projects/phren"',
+    );
+    expect(html).toContain(
+      'rel="canonical" href="https://alaarab.com/projects/phren"',
+    );
+    expect(html).toContain('property="og:image" content="https://alaarab.com/og.png"');
+    expect(html).toContain('name="twitter:card" content="summary_large_image"');
+
+    const home = await (await request.get("/")).text();
+    expect(home).toContain(
+      "<title>Ala Arab — Full-stack developer, Los Angeles</title>",
+    );
+  });
+
+  test("the Open Graph card is a real PNG", async ({ request }) => {
+    const res = await request.get("/og.png");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("image/png");
+  });
+
+  test("unknown routes return a 404 status", async ({ request }) => {
+    expect((await request.get("/no-such-page")).status()).toBe(404);
+    expect((await request.get("/projects/not-a-real-project")).status()).toBe(
+      404,
+    );
+  });
 });
