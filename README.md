@@ -1,6 +1,6 @@
 # Ala Arab
 
-Full-stack developer in Sacramento. I build web products and the unglamorous internal tools that keep them running after launch. I like software that is honest about what it does and stays that way once the demo is over.
+Full-stack developer in Los Angeles. I build web products and the unglamorous internal tools that keep them running after launch. I like software that is honest about what it does and stays that way once the demo is over.
 
 You probably landed here because this repo shares my name. Convenient. So here is what I have actually been building.
 
@@ -11,6 +11,12 @@ You probably landed here because this repo shares my name. Convenient. So here i
 Persistent memory for AI coding agents. Findings, tasks, and patterns live as markdown in a git repo you own, so the next session starts where the last one ended. No database, no lock-in. Plays nice with Claude, Copilot, Cursor, and Codex.
 
 [github.com/alaarab/phren](https://github.com/alaarab/phren)
+
+### Halo Explorer
+
+Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP. Loopback-only with a read-only allowlist, sigstore-signed releases, and an SBOM.
+
+[github.com/alaarab/halo](https://github.com/alaarab/halo)
 
 ### OGrid
 
@@ -35,6 +41,8 @@ A pattern is showing up here: I make music in Ableton, I got annoyed at the tool
 ## Before the open-source detour
 
 Thirteen years at ADM Associates. Most of it went into Intranet, a project-based ERP I grew into the company's primary system and licensed to clients, the one that replaced Deltek Vision. Along the way I helped build out the engineering team, set up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure.
+
+These days I'm rebuilding that ERP from scratch as Intrapath — React on Bun this time, with the workflow modeled right from the data layer up.
 
 ## Say hi
 

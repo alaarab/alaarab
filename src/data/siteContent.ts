@@ -14,7 +14,7 @@ export const siteMeta: SiteMeta = {
   intro:
     "I like software that is honest about what it does and stays that way once the demo is over.",
   summary:
-    "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years building an internal ERP that became the system of record for a consulting firm and a licensed product on the side.",
+    "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years at a consulting firm — most of it on Intranet, an internal ERP that became the company's system of record and a licensed product on the side.",
   location: "Los Angeles, California",
   email: "alaarab@gmail.com",
   emailHref: "mailto:alaarab@gmail.com",
