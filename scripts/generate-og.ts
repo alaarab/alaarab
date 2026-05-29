@@ -1,22 +1,27 @@
 /**
- * Generates the 1200x630 Open Graph card at public/og.png. No image library:
- * we paint into an RGBA buffer and hand-roll a PNG (zlib IDAT via node:zlib),
- * with a small bitmap font so the wordmark reads as the site's mono accent.
+ * Generates the Open Graph cards under public/: og.png (the site card) and
+ * og/<slug>.png for each project, tinted with that project's accent color.
+ * No image library — we paint into an RGBA buffer and hand-roll a PNG (zlib
+ * IDAT via node:zlib), with a 5x7 bitmap font.
  *
  * Run with: bun scripts/generate-og.ts (or `bun run og`).
  */
 import { deflateSync } from "node:zlib";
 import { Buffer } from "node:buffer";
+import { projects, siteMeta } from "../src/data/siteContent";
 
 type RGB = [number, number, number];
 
 const WIDTH = 1200;
 const HEIGHT = 630;
+const MARGIN_X = 100;
+const MAX_TEXT_WIDTH = 1000;
 
 const BG: RGB = [14, 12, 10]; // --bg #0e0c0a
 const INK: RGB = [241, 235, 222]; // --ink #f1ebde
 const INK_SOFT: RGB = [179, 169, 154]; // --ink-soft #b3a99a
-const ACCENT: RGB = [255, 91, 31]; // --accent #ff5b1f
+const INK_DIM: RGB = [117, 105, 90]; // --ink-dim #75695a
+const SITE_ACCENT: RGB = [255, 91, 31]; // --accent #ff5b1f
 
 const px = new Uint8Array(WIDTH * HEIGHT * 4);
 
@@ -50,7 +55,16 @@ function fillRect(
   }
 }
 
-// 5x7 uppercase bitmap font, just the glyphs the card needs.
+function hexToRgb(hex: string): RGB {
+  const v = hex.replace("#", "");
+  return [
+    Number.parseInt(v.slice(0, 2), 16),
+    Number.parseInt(v.slice(2, 4), 16),
+    Number.parseInt(v.slice(4, 6), 16),
+  ];
+}
+
+// 5x7 bitmap font: uppercase, digits, and the punctuation the cards use.
 const GLYPHS: Record<string, string[]> = {
   " ": ["     ", "     ", "     ", "     ", "     ", "     ", "     "],
   "-": ["     ", "     ", "     ", "#####", "     ", "     ", "     "],
@@ -61,17 +75,42 @@ const GLYPHS: Record<string, string[]> = {
   D: ["####.", "#...#", "#...#", "#...#", "#...#", "#...#", "####."],
   E: ["#####", "#....", "#....", "####.", "#....", "#....", "#####"],
   F: ["#####", "#....", "#....", "####.", "#....", "#....", "#...."],
+  G: [".####", "#....", "#....", "#.###", "#...#", "#...#", ".###."],
+  H: ["#...#", "#...#", "#...#", "#####", "#...#", "#...#", "#...#"],
+  I: ["#####", "..#..", "..#..", "..#..", "..#..", "..#..", "#####"],
+  J: ["..###", "...#.", "...#.", "...#.", "#..#.", "#..#.", ".##.."],
   K: ["#...#", "#..#.", "#.#..", "##...", "#.#..", "#..#.", "#...#"],
   L: ["#....", "#....", "#....", "#....", "#....", "#....", "#####"],
   M: ["#...#", "##.##", "#.#.#", "#.#.#", "#...#", "#...#", "#...#"],
+  N: ["#...#", "##..#", "#.#.#", "#.#.#", "#..##", "#...#", "#...#"],
   O: [".###.", "#...#", "#...#", "#...#", "#...#", "#...#", ".###."],
   P: ["####.", "#...#", "#...#", "####.", "#....", "#....", "#...."],
+  Q: [".###.", "#...#", "#...#", "#...#", "#.#.#", "#..#.", ".##.#"],
   R: ["####.", "#...#", "#...#", "####.", "#.#..", "#..#.", "#...#"],
   S: [".####", "#....", "#....", ".###.", "....#", "....#", "####."],
   T: ["#####", "..#..", "..#..", "..#..", "..#..", "..#..", "..#.."],
   U: ["#...#", "#...#", "#...#", "#...#", "#...#", "#...#", ".###."],
   V: ["#...#", "#...#", "#...#", "#...#", "#...#", ".#.#.", "..#.."],
+  W: ["#...#", "#...#", "#...#", "#.#.#", "#.#.#", "##.##", "#...#"],
+  X: ["#...#", "#...#", ".#.#.", "..#..", ".#.#.", "#...#", "#...#"],
+  Y: ["#...#", "#...#", ".#.#.", "..#..", "..#..", "..#..", "..#.."],
+  Z: ["#####", "....#", "...#.", "..#..", ".#...", "#....", "#####"],
+  "0": [".###.", "#..##", "#.#.#", "#.#.#", "##..#", "#...#", ".###."],
+  "1": ["..#..", ".##..", "..#..", "..#..", "..#..", "..#..", ".###."],
+  "2": [".###.", "#...#", "....#", "..##.", ".#...", "#....", "#####"],
+  "3": ["#####", "...#.", "..#..", "...#.", "....#", "#...#", ".###."],
+  "4": ["...#.", "..##.", ".#.#.", "#..#.", "#####", "...#.", "...#."],
+  "5": ["#####", "#....", "####.", "....#", "....#", "#...#", ".###."],
+  "6": [".###.", "#....", "#....", "####.", "#...#", "#...#", ".###."],
+  "7": ["#####", "....#", "...#.", "..#..", ".#...", ".#...", ".#..."],
+  "8": [".###.", "#...#", "#...#", ".###.", "#...#", "#...#", ".###."],
+  "9": [".###.", "#...#", "#...#", ".####", "....#", "....#", ".###."],
 };
+
+function textCells(text: string): number {
+  // 5px per glyph + 1px gap, minus the trailing gap.
+  return text.length * 6 - 1;
+}
 
 function drawChar(
   x: number,
@@ -91,29 +130,71 @@ function drawChar(
   }
 }
 
-/** Draws text and returns the rendered width in pixels. */
 function drawText(
   x: number,
   y: number,
   text: string,
   scale: number,
   color: RGB,
-): number {
+): void {
   let cursor = x;
   for (const ch of text.toUpperCase()) {
     drawChar(cursor, y, ch, scale, color);
-    cursor += 6 * scale; // 5px glyph + 1px gap
+    cursor += 6 * scale;
   }
-  return cursor - x - scale;
 }
+
+/** Largest scale (capped) at which `text` fits within MAX_TEXT_WIDTH. */
+function fitScale(text: string, max: number): number {
+  const scale = Math.floor(MAX_TEXT_WIDTH / textCells(text.toUpperCase()));
+  return Math.max(6, Math.min(max, scale));
+}
+
+interface CardOptions {
+  eyebrow?: string;
+  title: string;
+  subtitle: string;
+  footer: string;
+  accent: RGB;
+}
+
+function renderCard(opts: CardOptions): Buffer {
+  fillRect(0, 0, WIDTH, HEIGHT, BG);
+
+  // Warm radial glow in the top-left, tinted with the card's accent.
+  const glowX = 130;
+  const glowY = 80;
+  const glowR = 620;
+  for (let y = 0; y < HEIGHT; y++) {
+    for (let x = 0; x < WIDTH; x++) {
+      const d = Math.hypot(x - glowX, y - glowY);
+      const t = Math.max(0, 1 - d / glowR);
+      if (t > 0) setPixel(x, y, opts.accent, Math.round(t * t * 0.4 * 255));
+    }
+  }
+
+  if (opts.eyebrow) drawText(MARGIN_X, 92, opts.eyebrow, 4, INK_DIM);
+
+  const titleScale = fitScale(opts.title, 15);
+  const titleY = 168;
+  drawText(MARGIN_X, titleY, opts.title, titleScale, INK);
+
+  const ruleY = titleY + 7 * titleScale + 30;
+  fillRect(MARGIN_X + 2, ruleY, 210, 9, opts.accent);
+
+  drawText(MARGIN_X + 2, ruleY + 28, opts.subtitle, 6, INK_SOFT);
+  drawText(MARGIN_X + 2, 476, opts.footer, 5, opts.accent);
+
+  return encodePng();
+}
+
+// --- PNG encoding -----------------------------------------------------------
 
 function crc32Table(): Uint32Array {
   const table = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
     let c = n;
-    for (let k = 0; k < 8; k++) {
-      c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    }
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
     table[n] = c >>> 0;
   }
   return table;
@@ -146,57 +227,49 @@ function encodePng(): Buffer {
   ihdr.writeUInt32BE(HEIGHT, 4);
   ihdr[8] = 8; // bit depth
   ihdr[9] = 6; // color type: RGBA
-  ihdr[10] = 0; // compression
-  ihdr[11] = 0; // filter
-  ihdr[12] = 0; // interlace
 
   const raw = Buffer.alloc(HEIGHT * (1 + WIDTH * 4));
   let o = 0;
   for (let y = 0; y < HEIGHT; y++) {
-    raw[o++] = 0; // filter type "none" for this scanline
+    raw[o++] = 0; // filter "none"
     raw.set(px.subarray(y * WIDTH * 4, (y + 1) * WIDTH * 4), o);
     o += WIDTH * 4;
   }
-  const idat = deflateSync(raw, { level: 9 });
 
   return Buffer.concat([
     signature,
     chunk("IHDR", ihdr),
-    chunk("IDAT", idat),
+    chunk("IDAT", deflateSync(raw, { level: 9 })),
     chunk("IEND", Buffer.alloc(0)),
   ]);
 }
 
-// --- paint the card ---------------------------------------------------------
+// --- generate ---------------------------------------------------------------
 
-fillRect(0, 0, WIDTH, HEIGHT, BG);
+await Bun.write(
+  "public/og.png",
+  renderCard({
+    title: "Ala Arab",
+    subtitle: "Full-stack developer",
+    footer: "alaarab.com",
+    accent: SITE_ACCENT,
+  }),
+);
 
-// Warm radial glow in the top-left, echoing the site's background.
-const glowX = 130;
-const glowY = 80;
-const glowR = 620;
-for (let y = 0; y < HEIGHT; y++) {
-  for (let x = 0; x < WIDTH; x++) {
-    const d = Math.hypot(x - glowX, y - glowY);
-    const t = Math.max(0, 1 - d / glowR);
-    if (t > 0) setPixel(x, y, ACCENT, Math.round(t * t * 0.4 * 255));
-  }
+for (const project of projects) {
+  await Bun.write(
+    `public/og/${project.slug}.png`,
+    renderCard({
+      eyebrow: "Ala Arab",
+      title: project.title,
+      subtitle: project.category,
+      footer: "alaarab.com",
+      accent: project.accent ? hexToRgb(project.accent) : SITE_ACCENT,
+    }),
+  );
 }
 
-const wordmark = "ALA ARAB";
-const tagline = "FULL-STACK DEVELOPER";
-const url = "ALAARAB.COM";
-
-drawText(96, 172, wordmark, 15, INK);
-fillRect(98, 312, 210, 9, ACCENT);
-drawText(100, 360, tagline, 6, INK_SOFT);
-drawText(100, 476, url, 5, ACCENT);
-
-// --- write + verify ---------------------------------------------------------
-
-const png = encodePng();
-await Bun.write("public/og.png", png);
-
+// Verify the font once so a typo can't ship silently.
 function preview(text: string): void {
   const rows = ["", "", "", "", "", "", ""];
   for (const ch of text.toUpperCase()) {
@@ -207,8 +280,9 @@ function preview(text: string): void {
   for (const r of rows) console.log(r.replace(/#/g, "█").replace(/ /g, "·"));
 }
 
-console.log(`Wrote public/og.png — ${WIDTH}x${HEIGHT}, ${png.length} bytes`);
 console.log(
-  `PNG signature ok: ${png.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))}`,
+  `Wrote public/og.png + ${projects.length} project cards (public/og/<slug>.png) for ${siteMeta.name}`,
 );
-for (const line of [wordmark, tagline, url]) preview(line);
+preview("ABCDEFGHIJKLM");
+preview("NOPQRSTUVWXYZ");
+preview("0123456789 -.");

@@ -61,9 +61,12 @@ if (isProd) {
         if (pathname === "/" || !resolved.startsWith(DIST)) return notFound();
         const file = Bun.file(resolved);
         if (!(await file.exists())) return notFound();
-        return new Response(file, {
-          headers: { "cache-control": "public, max-age=31536000, immutable" },
-        });
+        // OG cards keep a stable name, so cache them for a day rather than
+        // forever; hashed bundles are content-addressed and immutable.
+        const cacheControl = pathname.startsWith("/og/")
+          ? "public, max-age=86400"
+          : "public, max-age=31536000, immutable";
+        return new Response(file, { headers: { "cache-control": cacheControl } });
       },
     },
   });

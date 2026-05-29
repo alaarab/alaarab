@@ -17,10 +17,16 @@ export interface RouteMeta {
   description: string;
   /** Path this page lives at, e.g. "/" or "/projects/phren". */
   path: string;
+  /** Open Graph image path, relative to the origin. */
+  ogImage: string;
+  /** Alt text for the Open Graph image. */
+  ogImageAlt: string;
 }
 
 const HOME_DESCRIPTION =
   "Portfolio of Ala Arab. Full-stack developer in Los Angeles building open-source tooling for AI agents, audio production, and ticket workflows, after a decade running an internal ERP at ADM Associates.";
+
+const SITE_OG_ALT = "Ala Arab — full-stack developer in Los Angeles";
 
 /** Static routes that always exist, in sitemap order. */
 const STATIC_ROUTES: RouteMeta[] = [
@@ -28,23 +34,31 @@ const STATIC_ROUTES: RouteMeta[] = [
     path: "/",
     title: "Ala Arab — Full-stack developer, Los Angeles",
     description: HOME_DESCRIPTION,
+    ogImage: OG_IMAGE_PATH,
+    ogImageAlt: SITE_OG_ALT,
   },
   {
     path: "/projects",
     title: "Projects — Ala Arab",
     description:
       "Selected work from Ala Arab: open-source tooling for AI coding agents and music production, plus a decade of internal ERP and operations software.",
+    ogImage: OG_IMAGE_PATH,
+    ogImageAlt: SITE_OG_ALT,
   },
   {
     path: "/resume",
     title: "Resume — Ala Arab",
     description:
       "Resume of Ala Arab, full-stack developer in Los Angeles. Systems software at Qualus, thirteen years at ADM Associates, and a shelf of open-source projects.",
+    ogImage: OG_IMAGE_PATH,
+    ogImageAlt: SITE_OG_ALT,
   },
   {
     path: "/now",
     title: "Now — Ala Arab",
     description: `${nowMeta.intro} As of ${nowMeta.asOf}.`,
+    ogImage: OG_IMAGE_PATH,
+    ogImageAlt: SITE_OG_ALT,
   },
 ];
 
@@ -52,6 +66,8 @@ const NOT_FOUND_META: RouteMeta = {
   path: "/404",
   title: "Not found — Ala Arab",
   description: "That page does not exist, or it moved.",
+  ogImage: OG_IMAGE_PATH,
+  ogImageAlt: SITE_OG_ALT,
 };
 
 function projectMeta(slug: string): RouteMeta | null {
@@ -61,6 +77,8 @@ function projectMeta(slug: string): RouteMeta | null {
     path: `/projects/${project.slug}`,
     title: `${project.title} — Ala Arab`,
     description: project.summary,
+    ogImage: `/og/${project.slug}.png`,
+    ogImageAlt: `${project.title} — ${project.category}`,
   };
 }
 
@@ -127,7 +145,7 @@ export function applyRouteMeta(
   origin: string = SITE_ORIGIN,
 ): string {
   const canonical = meta.path === "/" ? `${origin}/` : `${origin}${meta.path}`;
-  const ogImage = `${origin}${OG_IMAGE_PATH}`;
+  const ogImage = `${origin}${meta.ogImage}`;
   const title = escapeText(meta.title);
   const titleAttr = escapeAttr(meta.title);
   const descAttr = escapeAttr(meta.description);
@@ -169,6 +187,12 @@ export function applyRouteMeta(
     /<meta property="og:image" content="[^"]*" \/>/,
     `<meta property="og:image" content="${escapeAttr(ogImage)}" />`,
     "og:image",
+  );
+  out = replaceOrThrow(
+    out,
+    /<meta property="og:image:alt" content="[^"]*" \/>/,
+    `<meta property="og:image:alt" content="${escapeAttr(meta.ogImageAlt)}" />`,
+    "og:image:alt",
   );
   out = replaceOrThrow(
     out,

@@ -125,19 +125,26 @@ test.describe("prerendered metadata", () => {
     expect(html).toContain(
       'rel="canonical" href="https://alaarab.com/projects/phren"',
     );
-    expect(html).toContain('property="og:image" content="https://alaarab.com/og.png"');
+    expect(html).toContain(
+      'property="og:image" content="https://alaarab.com/og/phren.png"',
+    );
     expect(html).toContain('name="twitter:card" content="summary_large_image"');
 
     const home = await (await request.get("/")).text();
     expect(home).toContain(
       "<title>Ala Arab — Full-stack developer, Los Angeles</title>",
     );
+    expect(home).toContain(
+      'property="og:image" content="https://alaarab.com/og.png"',
+    );
   });
 
-  test("the Open Graph card is a real PNG", async ({ request }) => {
-    const res = await request.get("/og.png");
-    expect(res.status()).toBe(200);
-    expect(res.headers()["content-type"]).toContain("image/png");
+  test("the Open Graph cards are real PNGs", async ({ request }) => {
+    for (const path of ["/og.png", "/og/phren.png"]) {
+      const res = await request.get(path);
+      expect(res.status()).toBe(200);
+      expect(res.headers()["content-type"]).toContain("image/png");
+    }
   });
 
   test("unknown routes return a 404 status", async ({ request }) => {
