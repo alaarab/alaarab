@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun --hot server.ts",
     "start": "bun run build && NODE_ENV=production bun server.ts",
-    "build": "bun build ./index.html --outdir=dist --minify --sourcemap=linked --public-path=/ && bun scripts/prerender.ts",
+    "build": "bun build ./index.html --outdir=dist --minify --sourcemap=linked --public-path=/ && bun build ./src/entry-server.tsx --target=bun --outdir=ssr-build --minify && bun scripts/prerender.ts",
     "prerender": "bun scripts/prerender.ts",
     "og": "bun scripts/generate-og.ts",
     "typecheck": "tsc --noEmit",

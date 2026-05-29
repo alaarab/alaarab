@@ -139,6 +139,18 @@ test.describe("prerendered metadata", () => {
     );
   });
 
+  test("server-renders the body so content is in the raw HTML", async ({
+    request,
+  }) => {
+    const home = await (await request.get("/")).text();
+    // The shell is no longer an empty #root — the body is prerendered.
+    expect(home).not.toContain('<div id="root"></div>');
+    expect(home).toContain("Selected work");
+
+    const phren = await (await request.get("/projects/phren")).text();
+    expect(phren).toContain("Persistent memory for AI coding agents");
+  });
+
   test("the Open Graph cards are real PNGs", async ({ request }) => {
     for (const path of ["/og.png", "/og/phren.png"]) {
       const res = await request.get(path);
