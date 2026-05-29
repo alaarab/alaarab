@@ -3,6 +3,7 @@
 
 # build output
 /dist
+/ssr-build
 
 # playwright
 /test-results

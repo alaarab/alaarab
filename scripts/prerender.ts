@@ -1,11 +1,12 @@
 /**
- * Post-build step: turn the single SPA shell in dist/ into one static HTML
- * file per route, each with its own <title>, description, canonical, and
- * Open Graph / Twitter tags. Also emits a real 404.html, the sitemap and
- * robots.txt, and copies the OG card to the site root.
+ * Post-build step: turn the SPA shell in dist/ into one static HTML file per
+ * route. Each page gets its own <title>, description, canonical, and Open
+ * Graph / Twitter tags (via applyRouteMeta) AND its server-rendered body, so
+ * crawlers, social unfurlers, and no-JS clients see real content; React
+ * hydrates it on the client.
  *
- * Crawlers and social unfurlers — which mostly don't run JS — now get correct
- * per-route metadata. The page body is still hydrated by React on the client.
+ * The body comes from the server bundle in ssr-build/, built with the same
+ * bundler as the client so CSS-module class names match and hydration is clean.
  *
  * Runs after `bun build` (see package.json), or standalone via `bun run prerender`.
  */
@@ -17,6 +18,7 @@ import {
   buildRobots,
   buildSitemap,
   notFoundMeta,
+  type RouteMeta,
 } from "../src/lib/routeMeta";
 
 const repoRoot = join(import.meta.dir, "..");
@@ -30,19 +32,41 @@ if (!(await templateFile.exists())) {
 }
 const template = await templateFile.text();
 
+const serverEntry = join(repoRoot, "ssr-build", "entry-server.js");
+if (!(await Bun.file(serverEntry).exists())) {
+  throw new Error(
+    "ssr-build/entry-server.js not found. Build the server bundle before prerendering (see package.json).",
+  );
+}
+const { render } = (await import(serverEntry)) as {
+  render: (location: string) => string;
+};
+
+const ROOT_MARKER = '<div id="root"></div>';
+
+/** Per-route head metadata plus the server-rendered body, in the shell. */
+function renderRoute(route: RouteMeta): string {
+  const html = applyRouteMeta(template, route);
+  if (!html.includes(ROOT_MARKER)) {
+    throw new Error(
+      "prerender: could not find the #root marker to inject server markup.",
+    );
+  }
+  return html.replace(ROOT_MARKER, `<div id="root">${render(route.path)}</div>`);
+}
+
 let pages = 0;
 for (const route of allRoutes()) {
-  const html = applyRouteMeta(template, route);
   const outPath =
     route.path === "/"
       ? join(distDir, "index.html")
       : join(distDir, route.path, "index.html");
-  await Bun.write(outPath, html);
+  await Bun.write(outPath, renderRoute(route));
   pages += 1;
 }
 
 // A real 404 document for static hosts and the production server.
-await Bun.write(join(distDir, "404.html"), applyRouteMeta(template, notFoundMeta));
+await Bun.write(join(distDir, "404.html"), renderRoute(notFoundMeta));
 
 // OG cards aren't referenced from index.html, so the bundler doesn't copy
 // them: the site card plus one per project (tinted with its accent).
