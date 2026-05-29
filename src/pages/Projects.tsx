@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { SkipLink } from "../components/SkipLink";
 import { projects, siteMeta } from "../data/siteContent";
 import { accentStyle } from "../lib/accentStyle";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
@@ -37,6 +38,7 @@ export function Projects() {
 
   return (
     <div className={styles.projectsShell}>
+      <SkipLink />
       <header className={styles.projectsHeader}>
         <div>
           <p className={styles.eyebrow}>Projects</p>
@@ -52,7 +54,7 @@ export function Projects() {
         </div>
       </header>
 
-      <main className={styles.projectsGroups}>
+      <main id="main" className={styles.projectsGroups}>
         {groups.map(([category, items]) => (
           <section key={category} className={styles.projectsGroup}>
             <div className={styles.projectsGroupHeading}>

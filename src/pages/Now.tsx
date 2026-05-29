@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { SkipLink } from "../components/SkipLink";
 import { nowItems, nowMeta, siteMeta } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import styles from "../styles/Portfolio.module.css";
@@ -8,6 +9,7 @@ export function Now() {
 
   return (
     <div className={styles.projectsShell}>
+      <SkipLink />
       <header className={styles.projectsHeader}>
         <div>
           <p className={styles.eyebrow}>What I'm doing now</p>
@@ -32,14 +34,16 @@ export function Now() {
         </div>
       </header>
 
-      <ul className={styles.nowList}>
-        {nowItems.map((item) => (
-          <li key={item.heading} className={styles.nowItem}>
-            <h2>{item.heading}</h2>
-            <p>{item.body}</p>
-          </li>
-        ))}
-      </ul>
+      <main id="main">
+        <ul className={styles.nowList}>
+          {nowItems.map((item) => (
+            <li key={item.heading} className={styles.nowItem}>
+              <h2>{item.heading}</h2>
+              <p>{item.body}</p>
+            </li>
+          ))}
+        </ul>
+      </main>
     </div>
   );
 }

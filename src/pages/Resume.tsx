@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { SkipLink } from "../components/SkipLink";
 import {
   educationItems,
   experienceItems,
@@ -25,6 +26,7 @@ export function Resume() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, locally generated JSON
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
       />
+      <SkipLink />
       <header className={styles.resumeHeader}>
         <div>
           <p className={styles.eyebrow}>Resume</p>
@@ -47,7 +49,7 @@ export function Resume() {
         </div>
       </header>
 
-      <main className={styles.resumeContent}>
+      <main id="main" className={styles.resumeContent}>
         <section className={styles.resumeSection}>
           <h2>Summary</h2>
           <p>{siteMeta.summary}</p>

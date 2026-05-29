@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { SkipLink } from "../components/SkipLink";
 import { siteMeta } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import styles from "../styles/Portfolio.module.css";
@@ -8,8 +9,9 @@ export function NotFound() {
 
   return (
     <div className={styles.projectsShell}>
+      <SkipLink />
       <header className={styles.projectsHeader}>
-        <div>
+        <div id="main">
           <p className={styles.eyebrow}>404</p>
           <h1>Nothing here.</h1>
           <p className={styles.heroText}>
