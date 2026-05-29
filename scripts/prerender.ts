@@ -10,6 +10,7 @@
  * Runs after `bun build` (see package.json), or standalone via `bun run prerender`.
  */
 import { join } from "node:path";
+import { projects } from "../src/data/siteContent";
 import {
   allRoutes,
   applyRouteMeta,
@@ -43,11 +44,18 @@ for (const route of allRoutes()) {
 // A real 404 document for static hosts and the production server.
 await Bun.write(join(distDir, "404.html"), applyRouteMeta(template, notFoundMeta));
 
-// The OG card isn't referenced from index.html, so the bundler doesn't copy it.
+// OG cards aren't referenced from index.html, so the bundler doesn't copy
+// them: the site card plus one per project (tinted with its accent).
 await Bun.write(
   join(distDir, "og.png"),
   Bun.file(join(repoRoot, "public", "og.png")),
 );
+for (const project of projects) {
+  await Bun.write(
+    join(distDir, "og", `${project.slug}.png`),
+    Bun.file(join(repoRoot, "public", "og", `${project.slug}.png`)),
+  );
+}
 
 await Bun.write(join(distDir, "sitemap.xml"), buildSitemap());
 await Bun.write(join(distDir, "robots.txt"), buildRobots());
