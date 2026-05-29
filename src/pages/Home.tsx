@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { ActionLinks } from "../components/ActionLinks";
+import { SkipLink } from "../components/SkipLink";
 import { accentStyle } from "../lib/accentStyle";
 import {
   contactLinks,
@@ -48,6 +49,22 @@ function FeaturedCard({ project }: { project: Project }) {
   );
 }
 
+/** The hero headline lives in siteMeta.title; we only emphasize one word here. */
+function HeroHeadline() {
+  const accent = "unglamorous";
+  if (!siteMeta.title.includes(accent)) {
+    return <h1>{siteMeta.title}</h1>;
+  }
+  const [head, tail] = siteMeta.title.split(accent);
+  return (
+    <h1>
+      {head}
+      <em>{accent}</em>
+      {tail}
+    </h1>
+  );
+}
+
 export function Home() {
   useDocumentTitle(`${siteMeta.name} | Portfolio`);
 
@@ -61,9 +78,7 @@ export function Home() {
 
   return (
     <div className={styles.pageShell}>
-      <a className="skip-link" href="#top">
-        Skip to content
-      </a>
+      <SkipLink targetId="top" />
       <header className={styles.header}>
         <div className={styles.marquee}>
           <span>
@@ -95,10 +110,7 @@ export function Home() {
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>Portfolio · 2026</p>
-            <h1>
-              Full-stack developer building web products and the{" "}
-              <em>unglamorous</em> tools that keep them running.
-            </h1>
+            <HeroHeadline />
             <p className={styles.heroText}>{siteMeta.intro}</p>
             <p className={styles.heroSubtext}>{siteMeta.summary}</p>
             <div className={styles.ctaRow}>

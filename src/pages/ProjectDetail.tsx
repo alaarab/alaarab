@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router";
 import { ActionLinks } from "../components/ActionLinks";
+import { SkipLink } from "../components/SkipLink";
 import { projects, siteMeta } from "../data/siteContent";
 import { accentStyle } from "../lib/accentStyle";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
@@ -40,6 +41,7 @@ export function ProjectDetail() {
 
   return (
     <div className={styles.projectPageShell} style={accentStyle(project.accent)}>
+      <SkipLink />
       <header className={styles.projectPageHeader}>
         <div className={styles.resumeLinks}>
           <Link to="/">Portfolio</Link>
@@ -88,7 +90,7 @@ export function ProjectDetail() {
         </blockquote>
       ) : null}
 
-      <main className={styles.projectStoryGrid}>
+      <main id="main" className={styles.projectStoryGrid}>
         <section className={styles.storyCard}>
           <h2>Overview</h2>
           <p>{project.problem}</p>
