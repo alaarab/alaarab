@@ -61,7 +61,8 @@
   font-size: 0.86rem;
   line-height: 1.7;
   color: var(--ink-soft);
-  max-height: 22rem;
+  min-height: 12rem;
+  max-height: 24rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
