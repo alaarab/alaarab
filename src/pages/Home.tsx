@@ -7,7 +7,6 @@ import {
   contactLinks,
   experienceItems,
   featuredProjects,
-  quickStats,
   siteMeta,
 } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
@@ -123,40 +122,13 @@ export function Home() {
               </Link>
             </div>
           </div>
-          <aside className={styles.heroPanel}>
-            <p className={styles.panelLabel}>At a glance</p>
-            <ul className={styles.statList}>
-              {quickStats.map((item) => (
-                <li key={item.label}>
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </li>
-              ))}
-            </ul>
-            <div className={styles.contactBlock}>
-              <span>{siteMeta.availability}</span>
-              <a href={siteMeta.linkedinHref} target="_blank" rel="noreferrer">
-                LinkedIn
-              </a>
-            </div>
-          </aside>
-        </section>
-
-        <section className={styles.section} aria-label="Interactive terminal">
-          <div className={styles.sectionIntro}>
-            <p className={styles.eyebrow}>$ ./poke-around</p>
-            <h2>Or just use the shell.</h2>
-            <p className={styles.sectionNote}>
-              This whole page is also a terminal. Type{" "}
-              <code className={styles.kbd}>help</code>, list the{" "}
-              <code className={styles.kbd}>projects</code>,{" "}
-              <code className={styles.kbd}>cat</code> one open. Arrow keys walk
-              your history, tab completes. <code className={styles.kbd}>sudo</code>{" "}
-              if you're feeling brave.
-            </p>
-          </div>
-          <div className={styles.terminalWrap}>
+          <div className={styles.heroSide}>
             <Terminal />
+            <p className={styles.terminalTip}>
+              New here? type <code className={styles.kbd}>help</code> or{" "}
+              <code className={styles.kbd}>ls</code> the projects — arrow keys
+              for history, tab to complete. Or just keep scrolling ↓
+            </p>
           </div>
         </section>
 
