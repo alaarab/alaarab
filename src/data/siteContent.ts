@@ -14,7 +14,7 @@ export const siteMeta: SiteMeta = {
   intro:
     "I like software that is honest about what it does and stays that way once the demo is over.",
   summary:
-    "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years at a consulting firm — most of it on Intranet, an internal ERP that became the company's system of record and a licensed product on the side.",
+    "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years at a consulting firm, where I built Intranet — an internal ERP that became the company's system of record and a licensed product on the side — and grew the engineering team and infrastructure around it.",
   location: "Los Angeles, California",
   email: "alaarab@gmail.com",
   emailHref: "mailto:alaarab@gmail.com",
@@ -84,38 +84,6 @@ export const projects: Project[] = [
       { label: "Project page", href: "/projects/phren" },
       { label: "GitHub", href: "https://github.com/alaarab/phren" },
       { label: "Docs", href: "https://alaarab.github.io/phren/" },
-    ],
-    featured: true,
-  },
-  {
-    slug: "halo-explorer",
-    accent: "#2ab8a8",
-    title: "Halo Explorer",
-    category: "Open source",
-    status: "Stable",
-    year: "2026",
-    summary:
-      "Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP.",
-    outcome:
-      "Tickets become a corpus your editor and your agents can both read. The browser tab strip stops eating your context.",
-    problem:
-      "Halo only ships a SPA. Forty open tickets, filters that reset on reload, no way to grep, and nothing an AI tool can investigate without a half-dozen round trips.",
-    build:
-      "Bun + Hono server, no-bundler ES module frontend, force-directed D3 graph, MCP server with one fan-out tool that returns a full investigation envelope. Loopback-only with a read-only allowlist on the upstream API.",
-    impact:
-      "Stable since 1.0.0 with a sigstore-signed release pipeline, CycloneDX SBOM, CodeQL, a smell-check workflow that blocks writes outside the allowlist, and an operational /health endpoint.",
-    stack: ["Bun", "Hono", "D3", "MCP", "Biome"],
-    metrics: [
-      "14 typed MCP tools",
-      "Loopback-only, read-only allowlist",
-      "Sigstore + SBOM releases",
-    ],
-    thread: "Agent tooling",
-    quote:
-      "Halo's web UI, but you live in your editor. Files are real Markdown, your editor gets a folder, your AI gets a corpus.",
-    links: [
-      { label: "Project page", href: "/projects/halo-explorer" },
-      { label: "GitHub", href: "https://github.com/alaarab/halo" },
     ],
     featured: true,
   },
@@ -212,6 +180,35 @@ export const projects: Project[] = [
       { label: "Project page", href: "/projects/livemcp" },
       { label: "GitHub", href: "https://github.com/alaarab/livemcp" },
     ],
+    featured: true,
+  },
+  {
+    slug: "halo-explorer",
+    accent: "#2ab8a8",
+    title: "Halo Explorer",
+    category: "Open source",
+    status: "Stable",
+    year: "2026",
+    summary:
+      "Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP.",
+    outcome:
+      "Tickets become a corpus your editor and your agents can both read. The browser tab strip stops eating your context.",
+    problem:
+      "Halo only ships a SPA. Forty open tickets, filters that reset on reload, no way to grep, and nothing an AI tool can investigate without a half-dozen round trips.",
+    build:
+      "Bun + Hono server, no-bundler ES module frontend, force-directed D3 graph, MCP server with one fan-out tool that returns a full investigation envelope. Loopback-only with a read-only allowlist on the upstream API.",
+    impact:
+      "Stable since 1.0.0 with a sigstore-signed release pipeline, CycloneDX SBOM, CodeQL, a smell-check workflow that blocks writes outside the allowlist, and an operational /health endpoint.",
+    stack: ["Bun", "Hono", "D3", "MCP", "Biome"],
+    metrics: [
+      "14 typed MCP tools",
+      "Loopback-only, read-only allowlist",
+      "Sigstore + SBOM releases",
+    ],
+    thread: "Agent tooling",
+    quote:
+      "Halo's web UI, but you live in your editor. Files are real Markdown, your editor gets a folder, your AI gets a corpus.",
+    links: [{ label: "Project page", href: "/projects/halo-explorer" }],
     featured: true,
   },
   {
