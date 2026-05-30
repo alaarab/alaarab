@@ -168,22 +168,6 @@
   padding-left: 0.2rem;
 }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  top: 1.6rem;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    var(--accent) 0%,
-    var(--accent) 4rem,
-    var(--line) 4rem,
-    var(--line) 100%
-  );
-}
-
 .heroCopy {
   display: flex;
   flex-direction: column;
