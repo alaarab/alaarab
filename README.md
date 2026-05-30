@@ -34,7 +34,7 @@ A pattern is showing up here: I make music in Ableton, I got annoyed at the tool
 
 ### Atlas
 
-Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP. Loopback-only with a read-only allowlist, sigstore-signed releases, and an SBOM. Private for now — drop me a line if you want a look.
+Your ticketing system's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP. Loopback-only with a read-only allowlist, sigstore-signed releases, and an SBOM. Private for now — drop me a line if you want a look.
 
 ## Before the open-source detour
 

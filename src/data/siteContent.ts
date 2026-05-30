@@ -190,11 +190,11 @@ export const projects: Project[] = [
     status: "Stable",
     year: "2026",
     summary:
-      "Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP.",
+      "Your ticketing system's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP.",
     outcome:
       "Tickets become a corpus your editor and your agents can both read. The browser tab strip stops eating your context.",
     problem:
-      "Halo only ships a SPA. Forty open tickets, filters that reset on reload, no way to grep, and nothing an AI tool can investigate without a half-dozen round trips.",
+      "The ticketing system only ships a SPA. Forty open tickets, filters that reset on reload, no way to grep, and nothing an AI tool can investigate without a half-dozen round trips.",
     build:
       "Bun + Hono server, no-bundler ES module frontend, force-directed D3 graph, MCP server with one fan-out tool that returns a full investigation envelope. Loopback-only with a read-only allowlist on the upstream API.",
     impact:
@@ -207,7 +207,7 @@ export const projects: Project[] = [
     ],
     thread: "Agent tooling",
     quote:
-      "Halo's web UI, but you live in your editor. Files are real Markdown, your editor gets a folder, your AI gets a corpus.",
+      "Your ticketing system's web UI, but you live in your editor. Files are real Markdown, your editor gets a folder, your AI gets a corpus.",
     links: [{ label: "Project page", href: "/projects/atlas" }],
     featured: true,
   },
