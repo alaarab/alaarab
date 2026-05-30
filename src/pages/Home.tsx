@@ -109,7 +109,7 @@ export function Home() {
       <main id="top" className={styles.main}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>Portfolio · 2026</p>
+            <p className={styles.eyebrow}>{siteMeta.name} · Personal portfolio</p>
             <HeroHeadline />
             <p className={styles.heroText}>{siteMeta.intro}</p>
             <p className={styles.heroSubtext}>{siteMeta.summary}</p>
