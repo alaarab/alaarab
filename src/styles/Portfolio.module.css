@@ -420,6 +420,21 @@
   line-height: 1.65;
 }
 
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: var(--accent);
+  background: var(--bg-elev-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.05em 0.4em;
+}
+
+.terminalWrap {
+  margin-top: 2.2rem;
+  max-width: 64rem;
+}
+
 /* ============================================================
    Project Grid (Featured Cards)
    ============================================================ */
