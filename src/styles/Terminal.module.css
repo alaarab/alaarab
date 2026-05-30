@@ -1,8 +1,7 @@
 .window {
   border: 1px solid var(--line-strong);
   border-radius: 12px;
-  background:
-    linear-gradient(180deg, rgba(20, 16, 12, 0.92), rgba(14, 12, 10, 0.96));
+  background: linear-gradient(180deg, var(--bg-elev), var(--bg));
   box-shadow: var(--shadow);
   overflow: hidden;
   font-family: var(--font-mono);

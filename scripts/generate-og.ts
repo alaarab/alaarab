@@ -17,11 +17,11 @@ const HEIGHT = 630;
 const MARGIN_X = 100;
 const MAX_TEXT_WIDTH = 1000;
 
-const BG: RGB = [14, 12, 10]; // --bg #0e0c0a
-const INK: RGB = [241, 235, 222]; // --ink #f1ebde
-const INK_SOFT: RGB = [179, 169, 154]; // --ink-soft #b3a99a
-const INK_DIM: RGB = [117, 105, 90]; // --ink-dim #75695a
-const SITE_ACCENT: RGB = [255, 91, 31]; // --accent #ff5b1f
+const BG: RGB = [8, 11, 8]; // --bg #080b08
+const INK: RGB = [233, 243, 233]; // --ink #e9f3e9
+const INK_SOFT: RGB = [167, 189, 169]; // --ink-soft #a7bda9
+const INK_DIM: RGB = [98, 117, 95]; // --ink-dim #62755f
+const SITE_ACCENT: RGB = [54, 226, 122]; // --accent #36e27a
 
 const px = new Uint8Array(WIDTH * HEIGHT * 4);
 

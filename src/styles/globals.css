@@ -5,23 +5,23 @@
   --font-body: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Inter",
     "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 
-  --bg: #0e0c0a;
-  --bg-elev: #181410;
-  --bg-elev-2: #221c16;
-  --bg-warm: #2a2118;
+  --bg: #080b08;
+  --bg-elev: #0f150f;
+  --bg-elev-2: #16201a;
+  --bg-warm: #1b261d;
 
-  --ink: #f1ebde;
-  --ink-soft: #b3a99a;
-  --ink-dim: #75695a;
+  --ink: #e9f3e9;
+  --ink-soft: #a7bda9;
+  --ink-dim: #62755f;
 
-  --line: rgba(241, 235, 222, 0.08);
-  --line-strong: rgba(241, 235, 222, 0.18);
-  --line-hot: rgba(255, 91, 31, 0.5);
+  --line: rgba(180, 240, 200, 0.08);
+  --line-strong: rgba(180, 240, 200, 0.18);
+  --line-hot: rgba(54, 226, 122, 0.5);
 
-  --accent: #ff5b1f;
-  --accent-soft: #ff7a48;
-  --accent-warm: #f5b048;
-  --accent-cool: #6fd4b8;
+  --accent: #36e27a;
+  --accent-soft: #62f29a;
+  --accent-warm: #b6f24a;
+  --accent-cool: #5ef2c4;
 
   --shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
   --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.3);
@@ -57,17 +57,17 @@ body::before {
   background:
     radial-gradient(
       ellipse 80% 50% at 15% 0%,
-      rgba(255, 91, 31, 0.18),
+      rgba(54, 226, 122, 0.16),
       transparent 60%
     ),
     radial-gradient(
       ellipse 60% 40% at 90% 10%,
-      rgba(245, 176, 72, 0.1),
+      rgba(94, 242, 196, 0.1),
       transparent 60%
     ),
     radial-gradient(
       ellipse 80% 50% at 50% 100%,
-      rgba(111, 212, 184, 0.06),
+      rgba(54, 226, 122, 0.06),
       transparent 60%
     ),
     var(--bg);
