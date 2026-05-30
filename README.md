@@ -12,12 +12,6 @@ Persistent memory for AI coding agents. Findings, tasks, and patterns live as ma
 
 [github.com/alaarab/phren](https://github.com/alaarab/phren)
 
-### Halo Explorer
-
-Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP. Loopback-only with a read-only allowlist, sigstore-signed releases, and an SBOM.
-
-[github.com/alaarab/halo](https://github.com/alaarab/halo)
-
 ### OGrid
 
 Spreadsheet behavior for any table. Headless React hooks for inline edit, range select, the fill handle, and copy/paste. Drop them on shadcn, Material, Fluent, or a plain old table element. MIT licensed.
@@ -38,9 +32,13 @@ An MCP bridge for Ableton Live. Around 170 tools for driving sessions, clips, de
 
 A pattern is showing up here: I make music in Ableton, I got annoyed at the tooling, and half of these projects are what came out the other side.
 
+### Halo Explorer
+
+Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP. Loopback-only with a read-only allowlist, sigstore-signed releases, and an SBOM. Private for now — drop me a line if you want a look.
+
 ## Before the open-source detour
 
-Thirteen years at ADM Associates. Most of it went into Intranet, a project-based ERP I grew into the company's primary system and licensed to clients, the one that replaced Deltek Vision. Along the way I helped build out the engineering team, set up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure.
+Thirteen years at ADM Associates. I built Intranet, a project-based ERP that grew into the company's primary system and got licensed to clients — the one that replaced Deltek Vision. I also built out the engineering team, set up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure.
 
 These days I'm rebuilding that ERP from scratch as Intrapath — React on Bun this time, with the workflow modeled right from the data layer up.
 
