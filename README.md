@@ -32,7 +32,7 @@ An MCP bridge for Ableton Live. Around 170 tools for driving sessions, clips, de
 
 A pattern is showing up here: I make music in Ableton, I got annoyed at the tooling, and half of these projects are what came out the other side.
 
-### Halo Explorer
+### Atlas
 
 Halo's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP. Loopback-only with a read-only allowlist, sigstore-signed releases, and an SBOM. Private for now — drop me a line if you want a look.
 

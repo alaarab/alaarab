@@ -183,9 +183,9 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    slug: "halo-explorer",
+    slug: "atlas",
     accent: "#2ab8a8",
-    title: "Halo Explorer",
+    title: "Atlas",
     category: "Open source",
     status: "Stable",
     year: "2026",
@@ -208,7 +208,7 @@ export const projects: Project[] = [
     thread: "Agent tooling",
     quote:
       "Halo's web UI, but you live in your editor. Files are real Markdown, your editor gets a folder, your AI gets a corpus.",
-    links: [{ label: "Project page", href: "/projects/halo-explorer" }],
+    links: [{ label: "Project page", href: "/projects/atlas" }],
     featured: true,
   },
   {
