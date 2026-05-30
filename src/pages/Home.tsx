@@ -49,19 +49,19 @@ function FeaturedCard({ project }: { project: Project }) {
   );
 }
 
-/** The hero headline lives in siteMeta.title; we only emphasize one word here. */
-function HeroHeadline() {
+/** The tagline lives in siteMeta.title; we only emphasize one word here. */
+function HeroTagline() {
   const accent = "unglamorous";
   if (!siteMeta.title.includes(accent)) {
-    return <h1>{siteMeta.title}</h1>;
+    return <>{siteMeta.title}</>;
   }
   const [head, tail] = siteMeta.title.split(accent);
   return (
-    <h1>
+    <>
       {head}
-      <em>{accent}</em>
+      <em className={styles.taglineEm}>{accent}</em>
       {tail}
-    </h1>
+    </>
   );
 }
 
@@ -109,10 +109,12 @@ export function Home() {
       <main id="top" className={styles.main}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>{siteMeta.name} · Personal portfolio</p>
-            <HeroHeadline />
-            <p className={styles.heroText}>{siteMeta.intro}</p>
-            <p className={styles.heroSubtext}>{siteMeta.summary}</p>
+            <p className={styles.eyebrow}>Personal portfolio</p>
+            <h1>{siteMeta.name}</h1>
+            <p className={styles.heroLede}>
+              <HeroTagline />
+            </p>
+            <p className={styles.heroSubtext}>{siteMeta.intro}</p>
             <div className={styles.ctaRow}>
               <a className={styles.primaryCta} href="#projects">
                 See the work
