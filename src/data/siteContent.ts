@@ -190,13 +190,13 @@ export const projects: Project[] = [
     status: "Stable",
     year: "2026",
     summary:
-      "Your ticketing system's web UI, but you live in your editor. A local-first CLI and four-view desktop app that pulls every ticket onto disk as markdown, then exposes them to any AI tool through MCP.",
+      "A full ITSM platform you run in the browser. On top of the ticket views, Atlas mirrors every ticket to disk as markdown and exposes them to any AI tool through MCP, so the same queue lives in your editor and your agents too.",
     outcome:
-      "Tickets become a corpus your editor and your agents can both read. The browser tab strip stops eating your context.",
+      "Service management runs in the browser, while the same tickets become a corpus your editor and your agents can both read.",
     problem:
-      "The ticketing system only ships a SPA. Forty open tickets, filters that reset on reload, no way to grep, and nothing an AI tool can investigate without a half-dozen round trips.",
+      "Most ITSM tools lock everything behind a browser SPA — no local files, no way to grep a queue, and nothing an AI tool can investigate without a half-dozen round trips.",
     build:
-      "Bun + Hono server, no-bundler ES module frontend, force-directed D3 graph, MCP server with one fan-out tool that returns a full investigation envelope. Loopback-only with a read-only allowlist on the upstream API.",
+      "Bun + Hono server, no-bundler ES module frontend, force-directed D3 graph for ticket relationships, and an MCP server with one fan-out tool that returns a full investigation envelope. The markdown mirror is loopback-only with a read-only allowlist.",
     impact:
       "Stable since 1.0.0 with a sigstore-signed release pipeline, CycloneDX SBOM, CodeQL, a smell-check workflow that blocks writes outside the allowlist, and an operational /health endpoint.",
     stack: ["Bun", "Hono", "D3", "MCP", "Biome"],
@@ -207,7 +207,7 @@ export const projects: Project[] = [
     ],
     thread: "Agent tooling",
     quote:
-      "Your ticketing system's web UI, but you live in your editor. Files are real Markdown, your editor gets a folder, your AI gets a corpus.",
+      "A full ITSM in the browser — and the same tickets as real Markdown on disk, so your editor gets a folder and your AI gets a corpus.",
     links: [{ label: "Project page", href: "/projects/atlas" }],
     featured: true,
   },
