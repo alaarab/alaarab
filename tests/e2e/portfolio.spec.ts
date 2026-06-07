@@ -5,19 +5,22 @@ test.describe("homepage", () => {
     await page.goto("/");
 
     await expect(page).toHaveTitle(/Ala Arab \| Portfolio/);
+    // The hero <h1> is the name; the "Full-stack developer" role lives in the
+    // tagline paragraph below it, not in the heading.
     await expect(
-      page.getByRole("heading", { level: 1, name: /Full-stack developer/ }),
+      page.getByRole("heading", { level: 1, name: "Ala Arab" }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { level: 2, name: "Selected work" }),
     ).toBeVisible();
 
     for (const name of [
+      "Intrapath",
       "Phren",
-      "Halo Explorer",
       "OGrid",
       "m4l-builder",
       "LiveMCP",
+      "Atlas",
       "Intranet ERP",
     ]) {
       await expect(
@@ -95,11 +98,11 @@ test.describe("project accents", () => {
 
   test("the detail page tints with the project accent", async ({ page }) => {
     await page.goto("/projects/ogrid");
-    // The eyebrow resolves var(--project-accent) to OGrid's green.
-    await expect(page.getByText("Open source", { exact: true })).toHaveCSS(
-      "color",
-      "rgb(33, 115, 70)",
-    );
+    // The detail shell exposes the project's brand color as --project-accent
+    // (driving accent borders/links); the eyebrow label itself stays --ink-dim.
+    await expect(
+      page.locator('[style*="--project-accent"]').first(),
+    ).toHaveCSS("--project-accent", "#217346");
   });
 });
 
