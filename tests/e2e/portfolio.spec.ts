@@ -15,11 +15,12 @@ test.describe("homepage", () => {
     ).toBeVisible();
 
     for (const name of [
+      "Intrapath",
       "Phren",
-      "Halo Explorer",
       "OGrid",
       "m4l-builder",
       "LiveMCP",
+      "Atlas",
       "Intranet ERP",
     ]) {
       await expect(
