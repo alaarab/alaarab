@@ -19,11 +19,11 @@ type Line = { id: number; node: ReactNode };
 
 const PROMPT = "ala@portfolio:~$";
 
-// Static intro — rendered identically on server and client so hydration
+// Static intro, rendered identically on server and client so hydration
 // matches and the terminal reads as a finished session without JS.
 const INTRO: ReactNode[] = [
   <span key="b" className={styles.dim}>
-    {siteMeta.name} — interactive shell. Type{" "}
+    {siteMeta.name} · interactive shell. Type{" "}
     <span className={styles.accent}>help</span> and hit enter.
   </span>,
   <span key="w">
@@ -106,7 +106,7 @@ export function Terminal() {
       case "whoami":
         out.push(
           <span className={styles.out}>
-            {siteMeta.name} — {siteMeta.title}
+            {siteMeta.name} · {siteMeta.title}
           </span>,
           <span className={styles.dim}>
             {siteMeta.location} · {siteMeta.availability}
@@ -175,7 +175,7 @@ export function Terminal() {
         out.push(
           ...experienceItems.map((e) => (
             <span className={styles.out}>
-              <span className={styles.accent}>{e.years}</span> — {e.role} @{" "}
+              <span className={styles.accent}>{e.years}</span> · {e.role} @{" "}
               {e.company}
             </span>
           )),
@@ -280,7 +280,7 @@ export function Terminal() {
           <i data-c="y" />
           <i data-c="g" />
         </span>
-        <span className={styles.title}>{PROMPT} — zsh</span>
+        <span className={styles.title}>{PROMPT} · zsh</span>
         <span className={styles.barHint}>interactive</span>
       </div>
       <div className={styles.body} ref={bodyRef}>

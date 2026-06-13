@@ -14,7 +14,7 @@ export const siteMeta: SiteMeta = {
   intro:
     "I like software that is honest about what it does and stays that way once the demo is over.",
   summary:
-    "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years at a consulting firm, where I built Intranet — an internal ERP that became the company's system of record and a licensed product on the side — and grew the engineering team and infrastructure around it.",
+    "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years at a consulting firm. I built Intranet there, an internal ERP that became the company's system of record (and a licensed product on the side), and grew the engineering team and infrastructure around it.",
   location: "Los Angeles, California",
   email: "alaarab@gmail.com",
   emailHref: "mailto:alaarab@gmail.com",
@@ -39,11 +39,11 @@ export const projects: Project[] = [
     summary:
       "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. React on Bun this time, with a better take on how project management and workflow want to be modeled.",
     outcome:
-      "An ERP that's actually conducive to project management and workflow — not a system that survived because everyone learned to work around it.",
+      "An ERP that's actually built for project management and workflow, not one that survived because everyone learned to work around it.",
     problem:
       "After ten-plus years running the original Intranet on Ruby on Rails, I learned a lot about what fit a project-based business and what was a compromise that calcified. Time to start fresh, with the workflow modeled right from the data layer up.",
     build:
-      "React on Bun. Rebuilding the data model and workflow primitives from scratch, with a stronger handle on how project-based organizational styles actually want to be modeled — not bending an existing CRM or PM tool to fit.",
+      "React on Bun. Rebuilding the data model and workflow primitives from scratch, with a stronger handle on how project-based organizations actually want to be modeled, rather than bending an existing CRM or PM tool to fit.",
     impact:
       "Active development. No public release yet.",
     stack: ["React", "Bun", "TypeScript"],
@@ -194,7 +194,7 @@ export const projects: Project[] = [
     outcome:
       "Service management runs in the browser, while the same tickets become a corpus your editor and your agents can both read.",
     problem:
-      "Most ITSM tools lock everything behind a browser SPA — no local files, no way to grep a queue, and nothing an AI tool can investigate without a half-dozen round trips.",
+      "Most ITSM tools lock everything behind a browser SPA: no local files, no way to grep a queue, and nothing an AI tool can investigate without a half-dozen round trips.",
     build:
       "Bun + Hono server, no-bundler ES module frontend, force-directed D3 graph for ticket relationships, and an MCP server with one fan-out tool that returns a full investigation envelope. The markdown mirror is loopback-only with a read-only allowlist.",
     impact:
@@ -207,7 +207,7 @@ export const projects: Project[] = [
     ],
     thread: "Agent tooling",
     quote:
-      "A full ITSM in the browser — and the same tickets as real Markdown on disk, so your editor gets a folder and your AI gets a corpus.",
+      "A full ITSM in the browser, with the same tickets as real Markdown on disk, so your editor gets a folder and your AI gets a corpus.",
     links: [{ label: "Project page", href: "/projects/atlas" }],
     featured: true,
   },
@@ -248,7 +248,7 @@ export const projects: Project[] = [
     outcome:
       "Filled a slice of the company's internal toolkit that Intranet wasn't the right shape for.",
     problem:
-      "Not every workflow at ADM mapped cleanly into the relational data model behind Intranet — some wanted to be modeled as documents.",
+      "Not every workflow at ADM mapped cleanly onto the relational data model behind Intranet. Some of them wanted to be documents.",
     build:
       "Node.js on MongoDB.",
     impact:
@@ -316,7 +316,7 @@ export const projects: Project[] = [
     summary:
       "A web interface for a learning-center garden wired up with light, temperature, and moisture sensors. Built at UCSD with a cross-discipline engineering team.",
     outcome:
-      "Sensor data became something the Learning Center staff could actually read — and use to decide how to take care of their plants.",
+      "Sensor data became something the Learning Center staff could actually read, and use to decide how to take care of their plants.",
     problem:
       "Sensors were streaming readings as JSON, but no one at the center had a way to see them in context.",
     build:
@@ -342,7 +342,7 @@ export const projects: Project[] = [
     build:
       "Led web application development alongside the project managers. Built iPad apps for field capture, Ruby on Rails services on the backend, and Excel-based migrators for the data already in flight. Wrote and ran the test procedures, and redeveloped the company website in the same window.",
     impact:
-      "Cleaner operational flow without pretending the environment was clean or simple — the same instinct that later became Intranet at ADM.",
+      "Cleaner operational flow without pretending the environment was clean or simple. That same instinct later turned into Intranet at ADM.",
     stack: ["Ruby on Rails", "iPad apps", "Excel", "Web applications"],
     links: [
       { label: "Project page", href: "/projects/retrofit-program-data-tools" },
@@ -361,7 +361,7 @@ export type NowItem = {
 };
 
 /**
- * What I'm focused on this season — a /now page in the spirit of
+ * What I'm focused on this season: a /now page in the spirit of
  * nownownow.com. Refresh whenever the focus actually shifts.
  */
 export const nowMeta = {
@@ -373,7 +373,7 @@ export const nowMeta = {
 export const nowItems: NowItem[] = [
   {
     heading: "Systems Software Architect at Qualus Corp",
-    body: "Day job. Database management systems for client portfolios, plus the internal tools that move data across the company — CRM through APIs into Power BI and Tableau. Lots of Node, React, and Angular.",
+    body: "Day job. Database management systems for client portfolios, plus the internal tools that move data across the company: CRM through APIs into Power BI and Tableau. Lots of Node, React, and Angular.",
   },
   {
     heading: "Rebuilding the ERP from scratch",
@@ -385,7 +385,7 @@ export const nowItems: NowItem[] = [
   },
   {
     heading: "Music tooling for myself first",
-    body: "I produce electronic music in Ableton, and got tired of waiting for the tools to exist. LiveMCP and m4l-builder both started that way. Continuing in that spirit — only features I'd actually use in a session.",
+    body: "I produce electronic music in Ableton, and got tired of waiting for the tools to exist. LiveMCP and m4l-builder both started that way. Still going in that spirit. Only the features I'd actually use in a session.",
   },
 ];
 
@@ -396,7 +396,7 @@ export const experienceItems: ExperienceItem[] = [
     years: "2025 to present",
     location: "Los Angeles, CA",
     summary:
-      "Architecting database management systems for client portfolios, plus the internal tools and automation that move data across the company — CRM through APIs into Power BI and Tableau reporting. Stack is Node, React, and Angular sitting on top of the databases.",
+      "Architecting database management systems for client portfolios, plus the internal tools and automation that move data across the company: CRM through APIs into Power BI and Tableau reporting. Stack is Node, React, and Angular sitting on top of the databases.",
   },
   {
     company: "ADM Associates, Inc.",
@@ -404,7 +404,7 @@ export const experienceItems: ExperienceItem[] = [
     years: "2012 to 2025",
     location: "Sacramento, CA",
     summary:
-      "Thirteen years, starting in IT and moving into systems software. Built and ran a stack of internal apps — Intranet (the project-based ERP that replaced Deltek Vision, on PostgreSQL + Rails), EMV (MongoDB), an Equipment Tracker (PostgreSQL + Node) — and most of the company's web presence. Stood up the data science infrastructure so analysts could deploy R workloads to R Server and ship Shiny apps. Ran the Linux fleet, the multi-database backend (MongoDB, PostgreSQL, MySQL, MS SQL), and the SOC 2 environment underneath all of it. Helped grow the engineering team and stood up CI/CD on GitHub Actions.",
+      "Thirteen years, starting in IT and moving into systems software. Built and ran a stack of internal apps: Intranet (the project-based ERP that replaced Deltek Vision, on PostgreSQL + Rails), EMV (MongoDB), and an Equipment Tracker (PostgreSQL + Node), plus most of the company's web presence. Stood up the data science infrastructure so analysts could deploy R workloads to R Server and ship Shiny apps. Ran the Linux fleet, the multi-database backend (MongoDB, PostgreSQL, MySQL, MS SQL), and the SOC 2 environment underneath all of it. Helped grow the engineering team and stood up CI/CD on GitHub Actions.",
   },
   {
     company: "Greater Sacramento Pediatrics Association",
@@ -423,12 +423,12 @@ export const experienceItems: ExperienceItem[] = [
       "Worked alongside project managers to lead web application development for a retrofit program in Maryland. Built iPad apps, Ruby on Rails services, and Excel-based tooling for migrating data between systems and databases. Wrote and ran the test procedures, and redeveloped the company website.",
   },
   {
-    company: "UC San Diego TIES — Town and Country Learning Center",
+    company: "UC San Diego TIES, Town and Country Learning Center",
     role: "Computer Science Developer",
     years: "2011",
     location: "San Diego, CA",
     summary:
-      "Designed and built the web interface for a Garden Sensor Network that turned incoming JSON sensor readings — light, temperature, moisture — into something the Learning Center could actually act on. Also extended a UCSD Music Video Game written in Processing. Worked across CS, electrical, and mechanical engineering teams to bring inventive ideas into the center.",
+      "Designed and built the web interface for a Garden Sensor Network that turned incoming JSON sensor readings (light, temperature, moisture) into something the Learning Center could actually act on. Also extended a UCSD Music Video Game written in Processing. Worked across CS, electrical, and mechanical engineering teams to bring inventive ideas into the center.",
   },
   {
     company: "Dell",
