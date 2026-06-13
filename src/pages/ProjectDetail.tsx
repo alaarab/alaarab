@@ -86,7 +86,7 @@ export function ProjectDetail() {
       {project.quote ? (
         <blockquote className={styles.projectQuote}>
           <p>{project.quote}</p>
-          <cite>— from the project README</cite>
+          <cite>from the project README</cite>
         </blockquote>
       ) : null}
 

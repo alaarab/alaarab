@@ -1,7 +1,7 @@
 /**
  * Generates the Open Graph cards under public/: og.png (the site card) and
  * og/<slug>.png for each project, tinted with that project's accent color.
- * No image library — we paint into an RGBA buffer and hand-roll a PNG (zlib
+ * No image library: we paint into an RGBA buffer and hand-roll a PNG (zlib
  * IDAT via node:zlib), with a 5x7 bitmap font.
  *
  * Run with: bun scripts/generate-og.ts (or `bun run og`).

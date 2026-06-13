@@ -298,7 +298,7 @@
   border-color: var(--accent);
 }
 
-/* Hero side panel — field notes style, not a card */
+/* Hero side panel: field notes style, not a card */
 .heroPanel {
   display: flex;
   flex-direction: column;

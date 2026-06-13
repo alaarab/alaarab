@@ -34,13 +34,13 @@ A pattern is showing up here: I make music in Ableton, I got annoyed at the tool
 
 ### Atlas
 
-A full ITSM platform you run in the browser. On top of the ticket views, Atlas mirrors every ticket to disk as markdown and exposes them to any AI tool through MCP, so the same queue lives in your editor and your agents too. The markdown mirror is loopback-only with a read-only allowlist, with sigstore-signed releases and an SBOM. Private for now — drop me a line if you want a look.
+A full ITSM platform you run in the browser. On top of the ticket views, Atlas mirrors every ticket to disk as markdown and exposes them to any AI tool through MCP, so the same queue lives in your editor and your agents too. The markdown mirror is loopback-only with a read-only allowlist, with sigstore-signed releases and an SBOM. Private for now, but drop me a line if you want a look.
 
 ## Before the open-source detour
 
-Thirteen years at ADM Associates. I built Intranet, a project-based ERP that grew into the company's primary system and got licensed to clients — the one that replaced Deltek Vision. I also built out the engineering team, set up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure.
+Thirteen years at ADM Associates. I built Intranet, a project-based ERP that grew into the company's primary system and got licensed to clients. It's the one that replaced Deltek Vision. I also built out the engineering team, set up CI/CD on GitHub Actions, and ran SOC 2-compliant Linux servers and on-prem infrastructure.
 
-These days I'm rebuilding that ERP from scratch as Intrapath — React on Bun this time, with the workflow modeled right from the data layer up.
+These days I'm rebuilding that ERP from scratch as Intrapath. React on Bun this time, with the workflow modeled right from the data layer up.
 
 ## Say hi
 
@@ -60,4 +60,4 @@ bun dev
 
 Then open [localhost:3000](http://localhost:3000).
 
-Project content lives in `src/data/siteContent.ts` and styles sit in `src/styles`. `bun run build` bundles the app, builds a server-render bundle, and prerenders one static HTML file per route (`scripts/prerender.ts`) — each with its own title, description, canonical URL, Open Graph card, and server-rendered body — so crawlers and social unfurlers get real content and metadata, not an empty shell. React hydrates the prerendered markup on the client. Unknown URLs return a real 404. `bun run og` regenerates the social cards under `public/og/`. Run `bun run typecheck` and `bun run build` before shipping anything; `bun start` builds and serves the static output.
+Project content lives in `src/data/siteContent.ts` and styles sit in `src/styles`. `bun run build` bundles the app, builds a server-render bundle, and prerenders one static HTML file per route (`scripts/prerender.ts`). Each one gets its own title, description, canonical URL, Open Graph card, and server-rendered body, so crawlers and social unfurlers get real content and metadata, not an empty shell. React hydrates the prerendered markup on the client. Unknown URLs return a real 404. `bun run og` regenerates the social cards under `public/og/`. Run `bun run typecheck` and `bun run build` before shipping anything; `bun start` builds and serves the static output.

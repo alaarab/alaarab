@@ -128,7 +128,7 @@ export function Home() {
             <Terminal />
             <p className={styles.terminalTip}>
               New here? type <code className={styles.kbd}>help</code> or{" "}
-              <code className={styles.kbd}>ls</code> the projects — arrow keys
+              <code className={styles.kbd}>ls</code> the projects. Arrow keys
               for history, tab to complete. Or just keep scrolling ↓
             </p>
           </div>
@@ -141,8 +141,8 @@ export function Home() {
             <p className={styles.sectionNote}>
               Two threads run through most of the open-source side. Tooling
               for AI coding agents that fixes the "forgets everything between
-              sessions" problem, and tooling for my own music — I produce
-              electronic music in Ableton and started writing the plugins
+              sessions" problem, and tooling for my own music. I produce
+              electronic music in Ableton, and started writing the plugins
               and bridges I kept wishing existed.
             </p>
           </div>
