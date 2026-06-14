@@ -12,7 +12,7 @@ export const siteMeta: SiteMeta = {
   title:
     "Full-stack developer building web products and the unglamorous tools that keep them running.",
   intro:
-    "I like software that is honest about what it does and stays that way once the demo is over.",
+    "Mostly TypeScript and Python these days, across web apps, developer tooling, and audio software.",
   summary:
     "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years at a consulting firm. I built Intranet there, an internal ERP that became the company's system of record (and a licensed product on the side), and grew the engineering team and infrastructure around it.",
   location: "Los Angeles, California",
@@ -25,7 +25,7 @@ export const siteMeta: SiteMeta = {
 export const quickStats: QuickStat[] = [
   { label: "Based in", value: "Los Angeles, CA" },
   { label: "Focus", value: "Web products and internal tools" },
-  { label: "Approach", value: "Honest, reliable, useful past demo day" },
+  { label: "Stack", value: "TypeScript, Python, React, Bun" },
 ];
 
 export const projects: Project[] = [
@@ -37,13 +37,13 @@ export const projects: Project[] = [
     status: "In active development",
     year: "2026",
     summary:
-      "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. React on Bun this time, with a better take on how project management and workflow want to be modeled.",
+      "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. React on Bun this time, with the data model designed around project workflows from the start.",
     outcome:
-      "An ERP that's actually built for project management and workflow, not one that survived because everyone learned to work around it.",
+      "A project-based ERP with the workflow modeled into the data layer from day one.",
     problem:
       "After ten-plus years running the original Intranet on Ruby on Rails, I learned a lot about what fit a project-based business and what was a compromise that calcified. Time to start fresh, with the workflow modeled right from the data layer up.",
     build:
-      "React on Bun. Rebuilding the data model and workflow primitives from scratch, with a stronger handle on how project-based organizations actually want to be modeled, rather than bending an existing CRM or PM tool to fit.",
+      "React on Bun. Rebuilding the data model and workflow primitives from scratch, modeling project-based organizations directly in the schema rather than bending an existing CRM or PM tool to fit.",
     impact:
       "Active development. No public release yet.",
     stack: ["React", "Bun", "TypeScript"],
@@ -65,7 +65,7 @@ export const projects: Project[] = [
     summary:
       "Persistent memory for AI coding agents. Findings, tasks, and patterns stay as markdown in a git repo you own.",
     outcome:
-      "Agents stop forgetting. Context starts flowing automatically across sessions, projects, and machines.",
+      "Findings, tasks, and context persist as markdown across sessions, projects, and machines, and reload automatically.",
     problem:
       "AI coding agents lose everything between sessions, so the same context has to be rebuilt over and over.",
     build:
@@ -79,7 +79,7 @@ export const projects: Project[] = [
       "Claude / Copilot / Cursor / Codex",
     ],
     thread: "Agent tooling",
-    quote: "Your agents forget everything. Phren doesn't.",
+    quote: "Agents lose context between sessions. Phren keeps it in a git repo you own.",
     links: [
       { label: "Project page", href: "/projects/phren" },
       { label: "GitHub", href: "https://github.com/alaarab/phren" },
@@ -246,9 +246,9 @@ export const projects: Project[] = [
     summary:
       "An internal MongoDB-backed app built at ADM Associates for a workflow that fit a document store better than a relational one. Sister system to Intranet.",
     outcome:
-      "Filled a slice of the company's internal toolkit that Intranet wasn't the right shape for.",
+      "Covered internal workflows that fit a document store better than Intranet's relational model.",
     problem:
-      "Not every workflow at ADM mapped cleanly onto the relational data model behind Intranet. Some of them wanted to be documents.",
+      "Not every workflow at ADM mapped cleanly onto the relational data model behind Intranet. Some fit a document store better.",
     build:
       "Node.js on MongoDB.",
     impact:
@@ -322,7 +322,7 @@ export const projects: Project[] = [
     build:
       "Designed and implemented the web UI on top of the incoming JSON stream. Collaborated with computer science, electrical, and mechanical engineers on the surrounding hardware-software stack, and extended a Processing-based UCSD Music Video Game in the same program.",
     impact:
-      "An early example of a pattern I still value: take technical readings and make them useful to real people. Built as part of UCSD TIES at the Town and Country Learning Center.",
+      "Turned a raw JSON sensor stream into a readable interface non-technical staff could act on. Built as part of UCSD TIES at the Town and Country Learning Center.",
     stack: ["JSON", "Web UI", "Processing", "Sensor data"],
     links: [{ label: "Project page", href: "/projects/garden-sensor-network" }],
     featured: false,
@@ -342,7 +342,7 @@ export const projects: Project[] = [
     build:
       "Led web application development alongside the project managers. Built iPad apps for field capture, Ruby on Rails services on the backend, and Excel-based migrators for the data already in flight. Wrote and ran the test procedures, and redeveloped the company website in the same window.",
     impact:
-      "Cleaner operational flow without pretending the environment was clean or simple. That same instinct later turned into Intranet at ADM.",
+      "Gave field crews a clean path from capture to database across otherwise disconnected systems.",
     stack: ["Ruby on Rails", "iPad apps", "Excel", "Web applications"],
     links: [
       { label: "Project page", href: "/projects/retrofit-program-data-tools" },
@@ -367,7 +367,7 @@ export type NowItem = {
 export const nowMeta = {
   asOf: "May 2026",
   intro:
-    "A snapshot of what I'm actually spending hours on right now. Lighter than a roadmap, more honest than a Twitter bio.",
+    "What I'm actively working on right now. Updated when the focus actually changes.",
 };
 
 export const nowItems: NowItem[] = [
@@ -377,7 +377,7 @@ export const nowItems: NowItem[] = [
   },
   {
     heading: "Rebuilding the ERP from scratch",
-    body: "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. The original was Ruby on Rails over ten-plus years; this one's React on Bun, built around a better take on how project management and workflow actually want to be modeled.",
+    body: "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. The original was Ruby on Rails over ten-plus years; this one's React on Bun, with the data model built around project workflows from the start.",
   },
   {
     heading: "Shipping Phren past the prototype",
