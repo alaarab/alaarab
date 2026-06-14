@@ -139,11 +139,10 @@ export function Home() {
             <p className={styles.eyebrow}>Featured work</p>
             <h2>Selected work</h2>
             <p className={styles.sectionNote}>
-              Two threads run through most of the open-source side. Tooling
-              for AI coding agents that fixes the "forgets everything between
-              sessions" problem, and tooling for my own music. I produce
-              electronic music in Ableton, and started writing the plugins
-              and bridges I kept wishing existed.
+              Two threads run through most of the open-source work: tooling
+              for AI coding agents that keeps context across sessions, and
+              tooling for my own music. I produce electronic music in Ableton
+              and write the plugins and bridges I needed.
             </p>
           </div>
 
@@ -205,10 +204,10 @@ export function Home() {
           <div className={styles.contactPanel}>
             <div>
               <p className={styles.eyebrow}>Contact</p>
-              <h2>Say hi.</h2>
+              <h2>Get in touch</h2>
               <p className={styles.contactText}>
-                Product work, internal tooling, or selected consulting. Email
-                lands; LinkedIn works; the resume is a click away.
+                Open to product work, internal tooling, or selected
+                consulting. Email or LinkedIn is the fastest way to reach me.
               </p>
             </div>
             <ActionLinks links={contactLinks} className={styles.contactLinks} />

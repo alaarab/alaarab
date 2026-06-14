@@ -1,8 +1,8 @@
 # Ala Arab
 
-Full-stack developer in Los Angeles. I build web products and the unglamorous internal tools that keep them running after launch. I like software that is honest about what it does and stays that way once the demo is over.
+Full-stack developer in Los Angeles. I build web products and the internal tools that keep them running after launch, mostly in TypeScript and Python.
 
-You probably landed here because this repo shares my name. Convenient. So here is what I have actually been building.
+This repo shares my name and doubles as my portfolio site. Here's what I've been building.
 
 ## What I'm building
 
@@ -30,7 +30,7 @@ An MCP bridge for Ableton Live. Around 170 tools for driving sessions, clips, de
 
 [github.com/alaarab/livemcp](https://github.com/alaarab/livemcp)
 
-A pattern is showing up here: I make music in Ableton, I got annoyed at the tooling, and half of these projects are what came out the other side.
+A few of these come from the same place: I make music in Ableton, got annoyed at the tooling, and built what was missing.
 
 ### Atlas
 
@@ -42,7 +42,7 @@ Thirteen years at ADM Associates. I built Intranet, a project-based ERP that gre
 
 These days I'm rebuilding that ERP from scratch as Intrapath. React on Bun this time, with the workflow modeled right from the data layer up.
 
-## Say hi
+## Contact
 
 - Email: alaarab@gmail.com
 - LinkedIn: [ala-arab](https://www.linkedin.com/in/ala-arab-a995b155/)
