@@ -30,32 +30,6 @@ export const quickStats: QuickStat[] = [
 
 export const projects: Project[] = [
   {
-    slug: "intrapath",
-    accent: "#f43f5e",
-    title: "Intrapath",
-    category: "Current",
-    status: "In active development",
-    year: "2026",
-    summary:
-      "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. React on Bun this time, with the data model designed around project workflows from the start.",
-    outcome:
-      "A project-based ERP with the workflow modeled into the data layer from day one.",
-    problem:
-      "After ten-plus years running the original Intranet on Ruby on Rails, I learned a lot about what fit a project-based business and what was a compromise that calcified. Time to start fresh, with the workflow modeled right from the data layer up.",
-    build:
-      "React on Bun. Rebuilding the data model and workflow primitives from scratch, modeling project-based organizations directly in the schema rather than bending an existing CRM or PM tool to fit.",
-    impact:
-      "Active development. No public release yet.",
-    stack: ["React", "Bun", "TypeScript"],
-    metrics: [
-      "Successor to Intranet",
-      "React + Bun",
-      "Workflow-first data model",
-    ],
-    links: [{ label: "Project page", href: "/projects/intrapath" }],
-    featured: true,
-  },
-  {
     slug: "phren",
     accent: "#7c3aed",
     title: "Phren",
@@ -180,6 +154,32 @@ export const projects: Project[] = [
       { label: "Project page", href: "/projects/livemcp" },
       { label: "GitHub", href: "https://github.com/alaarab/livemcp" },
     ],
+    featured: true,
+  },
+  {
+    slug: "intrapath",
+    accent: "#f43f5e",
+    title: "Intrapath",
+    category: "Current",
+    status: "In active development",
+    year: "2026",
+    summary:
+      "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. React on Bun this time, with the data model designed around project workflows from the start.",
+    outcome:
+      "A project-based ERP with the workflow modeled into the data layer from day one.",
+    problem:
+      "After ten-plus years running the original Intranet on Ruby on Rails, I learned a lot about what fit a project-based business and what was a compromise that calcified. Time to start fresh, with the workflow modeled right from the data layer up.",
+    build:
+      "React on Bun. Rebuilding the data model and workflow primitives from scratch, modeling project-based organizations directly in the schema rather than bending an existing CRM or PM tool to fit.",
+    impact:
+      "Active development. No public release yet.",
+    stack: ["React", "Bun", "TypeScript"],
+    metrics: [
+      "Successor to Intranet",
+      "React + Bun",
+      "Workflow-first data model",
+    ],
+    links: [{ label: "Project page", href: "/projects/intrapath" }],
     featured: true,
   },
   {
