@@ -10,7 +10,7 @@ import type {
 export const siteMeta: SiteMeta = {
   name: "Ala Arab",
   title:
-    "Full-stack developer building web products and the unglamorous tools that keep them running.",
+    "Full-stack developer who owns the whole stack: data model, UI, and the servers under it.",
   intro:
     "Mostly TypeScript and Python these days, across web apps, developer tooling, and audio software.",
   summary:

@@ -49,9 +49,9 @@ function FeaturedCard({ project }: { project: Project }) {
   );
 }
 
-/** The tagline lives in siteMeta.title; we only emphasize one word here. */
+/** The tagline lives in siteMeta.title; we only emphasize one phrase here. */
 function HeroTagline() {
-  const accent = "unglamorous";
+  const accent = "the whole stack";
   if (!siteMeta.title.includes(accent)) {
     return <>{siteMeta.title}</>;
   }
