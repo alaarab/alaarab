@@ -14,7 +14,7 @@ export const siteMeta: SiteMeta = {
   intro:
     "Mostly TypeScript and Python these days, across web apps, developer tooling, and audio software.",
   summary:
-    "Most of what I ship now is open source: persistent memory for AI agents, headless spreadsheet hooks, a Python toolchain for Max for Live, an MCP bridge for Ableton, and a local-first ticket explorer. Before that, thirteen years at a consulting firm. I built Intranet there, an internal ERP that became the company's system of record (and a licensed product on the side), and grew the engineering team and infrastructure around it.",
+    "Most of what I ship now is open source: persistent memory for AI agents, a React spreadsheet grid, a Python toolchain for Max for Live, an MCP bridge for Ableton, a Mumble client, and a newborn log for iPhone. Alongside those, a crypto reconciliation SaaS and a multi-tenant ERP. Before that, thirteen years at a consulting firm. I built Intranet there, an internal ERP that became the company's system of record (and a licensed product on the side), and grew the engineering team and infrastructure around it.",
   location: "Los Angeles, California",
   email: "alaarab@gmail.com",
   emailHref: "mailto:alaarab@gmail.com",
@@ -37,19 +37,19 @@ export const projects: Project[] = [
     status: "Active",
     year: "2026",
     summary:
-      "Persistent memory for AI coding agents. Findings, tasks, and patterns stay as markdown in a git repo you own.",
+      "Persistent memory for AI coding agents. Findings, tasks, and patterns stay as markdown in a git repo you own, and you can browse the same store from a terminal shell, a 3D web graph, VS Code, or an iPhone.",
     outcome:
       "Findings, tasks, and context persist as markdown across sessions, projects, and machines, and reload automatically.",
     problem:
       "AI coding agents lose everything between sessions, so the same context has to be rebuilt over and over.",
     build:
-      "I built it as a TypeScript monorepo: an MCP server, a CLI, and hooks that capture findings and tasks into plain markdown. No database, no vendor lock-in.",
+      "I built it as a TypeScript monorepo: an MCP server that exposes ten tools by default (an admin tool reaches the other fifty by name, so the schema stays small), a CLI, and hooks that capture findings and tasks into plain markdown. No database, no vendor lock-in. Findings have a lifecycle (supersede, retract, contradict) and trust that decays over time, and a fragment graph links concepts across projects. The store has seven front ends on top of the same files: a full-screen terminal shell, a braille-canvas terminal graph that lights up as agents read and write, a 3D web viewer, a VS Code extension, a SwiftUI iOS app with widgets and Siri intents, and Herdr and Omarchy plugins.",
     impact:
-      "It works across Claude, Copilot, Cursor, and Codex, and reloads cleanly on a new machine with a single init command.",
-    stack: ["TypeScript", "MCP", "Turborepo", "Node.js"],
+      "It works across Claude, Copilot, Cursor, and Codex, installs as a Claude Code plugin, syncs shared stores over git, and reloads cleanly on a new machine with a single init command.",
+    stack: ["TypeScript", "MCP", "SwiftUI", "Node.js"],
     metrics: [
-      "54 MCP tools",
-      "FTS5 + semantic fallback",
+      "10 MCP tools by default, 61 in full",
+      "7 surfaces: shell, graph, web, VS Code, iOS",
       "Claude / Copilot / Cursor / Codex",
     ],
     thread: "Agent tooling",
@@ -69,20 +69,20 @@ export const projects: Project[] = [
     status: "Active",
     year: "2026",
     summary:
-      "Spreadsheet behavior for any table. Headless React hooks for inline edit, range select, the fill handle, and copy/paste.",
+      "A React data grid with spreadsheet features built in: sorting, filtering, pagination, cell editing, range selection, copy/paste, and the fill handle. Drop in the component, or compose the hooks onto your own table.",
     outcome:
-      "Teams get real spreadsheet interactions on the table chrome they already use, without adopting a heavy grid framework.",
+      "Teams get real spreadsheet interactions on the UI library they already use, without adopting a heavy grid framework.",
     problem:
       "Most data grids force you into their styling and component model just to get spreadsheet-style editing.",
     build:
-      "I built a headless, React-first library as a Turborepo monorepo, with hooks that drop onto shadcn, Material, Fluent, or a plain table, plus a built-in OGrid component.",
+      "A Turborepo monorepo with a shared core grid model, a React layer, and Radix and Fluent UI adapters, plus xlsx import/export packages and an MCP server that lets AI editors search the docs and drive live grid instances in a running app. The earlier vanilla JS, Material, Angular, and Vue variants are frozen on a legacy branch.",
     impact:
-      "It ships as MIT-licensed npm packages with documentation and an AG Grid migration guide.",
-    stack: ["React", "TypeScript", "Headless UI", "npm"],
+      "It ships as MIT-licensed npm packages with documentation, an AG Grid migration guide, and a Discord community.",
+    stack: ["React", "TypeScript", "Radix", "Fluent UI", "MCP"],
     metrics: [
-      "Headless hooks",
-      "Drops onto shadcn / Material / Fluent",
-      "MIT licensed",
+      "Component or hooks",
+      "Radix / Fluent adapters",
+      "MCP docs + testing bridge",
     ],
     links: [
       { label: "Project page", href: "/projects/ogrid" },
@@ -105,13 +105,13 @@ export const projects: Project[] = [
     problem:
       "Building Max for Live devices means clicking around a GUI, which makes the work hard to version, review, or reproduce.",
     build:
-      "Pure-stdlib Python library that emits valid .amxd files: 90+ DSP blocks, a theme system, jsui visual engines, a recipe layer for common combos, and a reverse-engineering pipeline that reads existing devices back into Python.",
+      "Pure-stdlib Python library that emits valid .amxd files: 100+ DSP blocks, a theme system, jsui visual engines, a recipe layer for common combos, and a reverse-engineering pipeline that reads existing devices back into Python.",
     impact:
       "Ships on PyPI with a test suite that asserts the produced .amxd files actually load in Ableton, and a corpus-mining toolchain that turns external devices into structured fixture data.",
     stack: ["Python", "Max for Live", "Audio DSP", "PyPI"],
     metrics: [
-      "90+ DSP blocks",
-      "880+ tests",
+      "100+ DSP blocks",
+      "Tests assert audio behavior",
       "Reverse-engineering pipeline",
     ],
     thread: "Music tooling",
@@ -119,7 +119,6 @@ export const projects: Project[] = [
       "Write scripts, emit .amxd files straight to your Ableton User Library. No Max GUI required.",
     links: [
       { label: "Project page", href: "/projects/m4l-builder" },
-      { label: "GitHub", href: "https://github.com/alaarab/m4l-builder" },
       { label: "PyPI", href: "https://pypi.org/project/m4l-builder/" },
     ],
     featured: true,
@@ -164,20 +163,20 @@ export const projects: Project[] = [
     status: "In active development",
     year: "2026",
     summary:
-      "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. React on Bun this time, with the data model designed around project workflows from the start.",
+      "Rewrite of the project-based ERP I built and ran at ADM for a decade, this time as a multi-tenant SaaS: projects, timesheets, invoicing, expenses, HR, and reporting on Bun and React.",
     outcome:
-      "A project-based ERP with the workflow modeled into the data layer from day one.",
+      "A project-based ERP with the workflow modeled into the data layer from day one, and self-service orgs with per-seat billing on top.",
     problem:
       "After ten-plus years running the original Intranet on Ruby on Rails, I learned a lot about what fit a project-based business and what was a compromise that calcified. Time to start fresh, with the workflow modeled right from the data layer up.",
     build:
-      "React on Bun. Rebuilding the data model and workflow primitives from scratch, modeling project-based organizations directly in the schema rather than bending an existing CRM or PM tool to fit.",
+      "Bun + Hono API over Drizzle and Postgres, React 19 with TanStack Query on the front. Every module is composed from a set of arc primitives: base models, fail-closed authorization policies, approval-workflow state machines, CRUD and workflow hooks, and shared UI components. Signup, org creation, member invitations, and Stripe per-seat billing are built in.",
     impact:
       "Active development. No public release yet.",
-    stack: ["React", "Bun", "TypeScript"],
+    stack: ["Bun", "Hono", "Drizzle", "Postgres", "React 19", "Stripe"],
     metrics: [
       "Successor to Intranet",
-      "React + Bun",
-      "Workflow-first data model",
+      "Multi-tenant, per-seat billing",
+      "Fail-closed authorization",
     ],
     links: [{ label: "Project page", href: "/projects/intrapath" }],
     featured: true,
@@ -190,26 +189,117 @@ export const projects: Project[] = [
     status: "Stable",
     year: "2026",
     summary:
-      "A full ITSM platform you run in the browser. On top of the ticket views, Atlas mirrors every ticket to disk as markdown and exposes them to any AI tool through MCP, so the same queue lives in your editor and your agents too.",
+      "Multi-tenant ticketing on Bun, Hono, and Postgres, with a local-first desktop frontend that mirrors every ticket to disk as markdown and an MCP server, so the same queue lives in the browser, your editor, and your agents.",
     outcome:
       "Service management runs in the browser, while the same tickets become a corpus your editor and your agents can both read.",
     problem:
       "Most ITSM tools lock everything behind a browser SPA: no local files, no way to grep a queue, and nothing an AI tool can investigate without a half-dozen round trips.",
     build:
-      "Bun + Hono server, no-bundler ES module frontend, force-directed D3 graph for ticket relationships, and an MCP server with one fan-out tool that returns a full investigation envelope. The markdown mirror is loopback-only with a read-only allowlist.",
+      "A monorepo in four pieces. A multi-tenant API on Bun + Hono + Postgres with auth, orgs, tickets, actions, tags, attachments, full-text search, and inbound email, scoped by org from the session rather than the URL. A web SPA with dashboard, list, tile, and D3 graph views. A local-first desktop daemon that mirrors tickets to ~/.atlas as markdown. And an MCP server that lets any AI coding tool investigate a ticket in one call.",
     impact:
-      "Stable since 1.0.0 with a sigstore-signed release pipeline, CycloneDX SBOM, CodeQL, a smell-check workflow that blocks writes outside the allowlist, and an operational /health endpoint.",
-    stack: ["Bun", "Hono", "D3", "MCP", "Biome"],
+      "Pluggable storage (filesystem or S3) and email (console, file, Postmark), hashed bearer tokens, and a CI pipeline with a sigstore-signed release flow, CycloneDX SBOM, and CodeQL.",
+    stack: ["Bun", "Hono", "Postgres", "D3", "MCP"],
     metrics: [
-      "14 typed MCP tools",
-      "Loopback-only, read-only allowlist",
-      "Sigstore + SBOM releases",
+      "26 MCP tools",
+      "Multi-tenant by org, never by URL",
+      "Markdown mirror on disk",
     ],
     thread: "Agent tooling",
     quote:
       "A full ITSM in the browser, with the same tickets as real Markdown on disk, so your editor gets a folder and your AI gets a corpus.",
     links: [{ label: "Project page", href: "/projects/atlas" }],
     featured: true,
+  },
+  {
+    slug: "basis",
+    accent: "#0f766e",
+    title: "Basis",
+    category: "Current",
+    status: "In active development",
+    year: "2026",
+    summary:
+      "Crypto reconciliation SaaS. Wallet history across fourteen chains, read-only exchange sync, statement imports, and traceable FIFO worksheets you can audit line by line.",
+    outcome:
+      "Every number on a draft tax worksheet traces back to a lot, a source row, and a reviewed decision. Nothing is silently zeroed.",
+    problem:
+      "Crypto tax tools guess. Missing cost basis becomes zero, transfers between your own wallets become sales, and there is no way to see why a figure is what it is.",
+    build:
+      "Hono on Node with a persistent SQLite database. Wallet readers for Bitcoin, XRP Ledger, Solana, and the EVM chains (Ethereum, Base, Arbitrum, Optimism, Polygon, BNB, Avalanche, HyperEVM, and more), read-only connectors for Kraken, Binance, Coinbase Exchange, and Gemini with server-encrypted keys, importers for the major exchange statement formats, and an exact-decimal, account-specific FIFO engine with missing-basis propagation and grouped undo. Solana memecoin routes, native staking, Aave and Uniswap v3 positions, and Hyperliquid perps each get their own reviewed accounting.",
+    impact:
+      "Private beta. Coverage is tracked as a 126-item parity backlog with acceptance criteria, worked example worksheets, and a documented limit for every connector.",
+    stack: ["TypeScript", "Hono", "SQLite", "Node.js"],
+    metrics: [
+      "14 chain readers",
+      "4 exchange connections + CSV/JSON imports",
+      "Traceable FIFO lots",
+    ],
+    thread: "Crypto",
+    quote:
+      "Blank USD values stay unresolved; they are never silently assigned a zero cost.",
+    links: [{ label: "Project page", href: "/projects/basis" }],
+    featured: true,
+  },
+  {
+    slug: "mina",
+    accent: "#ec4899",
+    title: "Mina",
+    category: "Open source",
+    status: "Shipped",
+    year: "2026",
+    summary:
+      "A newborn log for two phones. Feeds, diapers, and sleep logged by tap, widget, or Siri, shared through iCloud so both parents see the same log.",
+    outcome:
+      "Two tired parents get one shared log, a feed alarm, and a handoff for the nights, with nothing leaving their phones.",
+    problem:
+      "Baby-tracking apps want accounts, subscriptions, and a server holding your newborn's data. I wanted one that was free, private, and fast enough to use one-handed at 3 AM.",
+    build:
+      "SwiftUI on iPhone and iPad with CloudKit sharing, Home Screen and lock-screen widgets through an App Group, Siri intents, partner alerts that batch and rate-limit themselves, a calendar and searchable history, an age-based guide, and an on-device Ask that answers questions about the log without a network call.",
+    impact:
+      "Built for my own daughter. Free, open source, no accounts, no servers.",
+    stack: ["Swift", "SwiftUI", "CloudKit", "WidgetKit"],
+    metrics: [
+      "iPhone + iPad",
+      "iCloud sharing between phones",
+      "On-device Ask, no servers",
+    ],
+    thread: "iOS",
+    quote: "Free, open source, no accounts, no servers.",
+    links: [
+      { label: "Project page", href: "/projects/mina" },
+      { label: "GitHub", href: "https://github.com/alaarab/mina" },
+      { label: "Website", href: "https://alaarab.github.io/mina/" },
+    ],
+    featured: true,
+  },
+  {
+    slug: "mutter",
+    accent: "#6366f1",
+    title: "Mutter",
+    category: "Open source",
+    status: "Active",
+    year: "2026",
+    summary:
+      "A Mumble client for desktop, Mac, iOS, Android, and the web. Join a server, see who is around, and talk.",
+    outcome:
+      "One voice-chat client with a consistent design across every platform, connecting to the Mumble servers people already run.",
+    problem:
+      "Mumble is a great protocol with a dated, fragmented client story, especially on phones.",
+    build:
+      "A shared web client that runs in the browser (through a local Node bridge) and in Electron, plus native SwiftUI and Jetpack Compose apps with their own Mumble protocol implementations. Push-to-talk, voice activation, per-user volume, text and image messages, and a screen and camera sharing extension. Themes and fonts are generated from one shared design source.",
+    impact:
+      "Connects to regular Mumble servers on every platform; screen sharing is a Mutter extension so viewers need Mutter too.",
+    stack: ["TypeScript", "Electron", "SwiftUI", "Jetpack Compose"],
+    metrics: [
+      "5 platforms",
+      "Screen + camera sharing",
+      "One shared design source",
+    ],
+    links: [
+      { label: "Project page", href: "/projects/mutter" },
+      { label: "GitHub", href: "https://github.com/alaarab/mutter" },
+      { label: "Docs", href: "https://alaarab.github.io/mutter/" },
+    ],
+    featured: false,
   },
   {
     slug: "intranet-erp",
@@ -282,28 +372,27 @@ export const projects: Project[] = [
     slug: "alphalens",
     accent: "#f59e0b",
     title: "AlphaLens",
-    category: "Open source",
-    status: "Shipped",
-    year: "2025",
+    category: "Product",
+    status: "Active",
+    year: "2025 to present",
     summary:
-      "A Discord bot for real-time crypto charts, contract lookups, and trending-token alerts across nine networks.",
+      "Crypto and stock alpha in your Discord: real-time charts, contract lookups, and trending-token alerts, with a marketing site and a server-owner dashboard.",
     outcome:
-      "Trading servers get the chart and contract context they want inline, without leaving Discord.",
+      "Trading servers get chart and contract context inline, and server owners get a dashboard and a Pro tier without leaving the ecosystem.",
     problem:
       "Existing bots either lock features behind subscriptions or stop short of the cross-network coverage active trading rooms actually use.",
     build:
-      "Node.js bot with slash commands, encrypted per-server settings storage, rotating API keys for the upstream provider, and a monitoring loop that posts trending-token alerts to a watched channel.",
+      "Bun + TypeScript monorepo: a discord.js bot with slash commands, a token monitor, and a payment monitor, plus a Hono site with React SSR for the dashboard and a Pro-gated trenches view. Both share one SQLite file. Every asset class has a keyless default provider (CoinGecko, GeckoTerminal, Yahoo Finance) and an optional keyed one.",
     impact:
-      "Runs on PM2 in production, MIT licensed, and covers Solana, Ethereum, BSC, Avalanche, Fantom, Base, Berachain, Sui, and Monad.",
-    stack: ["Node.js", "Discord.js", "AES-256", "PM2"],
+      "Stocks work with no setup; keys only unlock premium sources. Runs in production alongside the dashboard.",
+    stack: ["Bun", "TypeScript", "discord.js", "Hono", "SQLite"],
     metrics: [
-      "9 networks",
-      "Encrypted per-server settings",
-      "PM2 in production",
+      "Crypto + stocks",
+      "Keyless defaults per asset class",
+      "Dashboard + Pro tier",
     ],
     links: [
       { label: "Project page", href: "/projects/alphalens" },
-      { label: "GitHub", href: "https://github.com/alaarab/AlphaLens" },
     ],
     featured: false,
   },
@@ -365,7 +454,7 @@ export type NowItem = {
  * nownownow.com. Refresh whenever the focus actually shifts.
  */
 export const nowMeta = {
-  asOf: "May 2026",
+  asOf: "September 2026",
   intro:
     "What I'm actively working on right now. Updated when the focus actually changes.",
 };
@@ -376,12 +465,20 @@ export const nowItems: NowItem[] = [
     body: "Day job. Database management systems for client portfolios, plus the internal tools that move data across the company: CRM through APIs into Power BI and Tableau. Lots of Node, React, and Angular.",
   },
   {
-    heading: "Rebuilding the ERP from scratch",
-    body: "Personal rewrite of the project-based ERP I built and ran at ADM for a decade. The original was Ruby on Rails over ten-plus years; this one's React on Bun, with the data model built around project workflows from the start.",
+    heading: "Basis, a crypto reconciliation SaaS",
+    body: "Wallet readers, exchange connectors, and a FIFO engine where every figure traces back to a source row. Working through a 126-item parity backlog, deepest on Hyperliquid, Solana, and the major exchanges.",
   },
   {
-    heading: "Shipping Phren past the prototype",
-    body: "Memory layer for coding agents. Getting the retrieval ranker to a place where I'd trust it on my own repos before pitching it to anyone else.",
+    heading: "Rebuilding the ERP as a SaaS",
+    body: "Intrapath is the rewrite of the project-based ERP I ran at ADM for a decade: Bun, Hono, Postgres, React 19, multi-tenant with per-seat billing, every module composed from the same authorization and workflow primitives.",
+  },
+  {
+    heading: "Phren, everywhere the store is",
+    body: "Memory layer for coding agents. The retrieval ranker is in a place I trust on my own repos; now it's the surfaces: the terminal graph, the iOS app, the VS Code extension, and shared stores syncing over git.",
+  },
+  {
+    heading: "Building for the phone",
+    body: "Mina (a newborn log for my daughter), Mutter (a Mumble client), and the Phren iOS app all shipped this year in SwiftUI. Turns out I like native iOS.",
   },
   {
     heading: "Music tooling for myself first",

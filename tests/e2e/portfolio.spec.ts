@@ -52,7 +52,7 @@ test.describe("projects", () => {
     ).toBeVisible();
 
     const viewLinks = page.getByRole("link", { name: "View project" });
-    await expect(viewLinks).toHaveCount(12);
+    await expect(viewLinks).toHaveCount(15);
 
     await viewLinks.first().click();
     await expect(page).toHaveURL(/\/projects\/phren$/);
@@ -121,7 +121,7 @@ test.describe("prerendered metadata", () => {
     const project = await request.get("/projects/phren");
     expect(project.status()).toBe(200);
     const html = await project.text();
-    expect(html).toContain("<title>Phren — Ala Arab</title>");
+    expect(html).toContain("<title>Phren | Ala Arab</title>");
     expect(html).toContain(
       'property="og:url" content="https://alaarab.com/projects/phren"',
     );
@@ -135,7 +135,7 @@ test.describe("prerendered metadata", () => {
 
     const home = await (await request.get("/")).text();
     expect(home).toContain(
-      "<title>Ala Arab — Full-stack developer, Los Angeles</title>",
+      "<title>Ala Arab | Full-stack developer, Los Angeles</title>",
     );
     expect(home).toContain(
       'property="og:image" content="https://alaarab.com/og.png"',
