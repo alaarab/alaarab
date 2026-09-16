@@ -7,6 +7,7 @@ import {
   contactLinks,
   experienceItems,
   featuredProjects,
+  nowMeta,
   siteMeta,
 } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
@@ -90,7 +91,7 @@ export function Home() {
           <span className={styles.marqueeSep}>/</span>
           <span>Systems Software Architect @ Qualus</span>
           <span className={styles.marqueeSep}>/</span>
-          <span>May 2026</span>
+          <span>{nowMeta.asOf}</span>
         </div>
         <div className={styles.navWrap}>
           <a href="#top" className={styles.wordmark}>
