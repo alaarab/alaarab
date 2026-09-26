@@ -1,45 +1,39 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("homepage", () => {
-  test("renders the hero and featured work", async ({ page }) => {
+  test("leads with who Ala is, then the work", async ({ page }) => {
     await page.goto("/");
 
     await expect(page).toHaveTitle(/Ala Arab \| Portfolio/);
-    // The hero <h1> is the name; the "Full-stack developer" role lives in the
-    // tagline paragraph below it, not in the heading.
     await expect(
       page.getByRole("heading", { level: 1, name: "Ala Arab" }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { level: 2, name: "Selected work" }),
-    ).toBeVisible();
 
-    for (const name of [
-      "Intrapath",
-      "Phren",
-      "OGrid",
-      "m4l-builder",
-      "LiveMCP",
-      "Atlas",
-      "Intranet ERP",
+    for (const section of [
+      "About",
+      "Experience",
+      "Education",
+      "Active projects",
+      "Things I've made",
     ]) {
       await expect(
-        page.getByRole("heading", { level: 3, name }),
+        page.getByRole("heading", { level: 2, name: section }),
       ).toBeVisible();
+    }
+
+    for (const name of ["Phren", "m4l-builder", "Mina", "Intranet ERP"]) {
+      await expect(page.getByRole("link", { name, exact: true }).first()).toBeVisible();
     }
   });
 
-  test("navigates to the resume and back", async ({ page }) => {
+  test("opens a project from the home page", async ({ page }) => {
     await page.goto("/");
 
-    await page.getByRole("link", { name: "Resume" }).first().click();
-    await expect(page).toHaveURL(/\/resume$/);
+    await page.getByRole("link", { name: "Phren", exact: true }).first().click();
+    await expect(page).toHaveURL(/\/projects\/phren$/);
     await expect(
-      page.getByRole("heading", { level: 1, name: "Ala Arab" }),
+      page.getByRole("heading", { level: 1, name: "Phren" }),
     ).toBeVisible();
-
-    await page.getByRole("link", { name: "Back to portfolio" }).click();
-    await expect(page).toHaveURL(/\/$/);
   });
 });
 
@@ -66,7 +60,7 @@ test.describe("projects", () => {
       page.getByRole("heading", { level: 1, name: "Phren" }),
     ).toBeVisible();
 
-    for (const section of ["Overview", "Work", "Result", "Stack"]) {
+    for (const section of ["The problem", "What I built", "Where it is now"]) {
       await expect(
         page.getByRole("heading", { level: 2, name: section }),
       ).toBeVisible();
@@ -76,33 +70,6 @@ test.describe("projects", () => {
       "href",
       "https://github.com/alaarab/phren",
     );
-  });
-});
-
-test.describe("project accents", () => {
-  test("featured cards carry each app's brand color", async ({ page }) => {
-    await page.goto("/");
-
-    const cardFor = (name: string) =>
-      page.locator("article", {
-        has: page.getByRole("heading", { level: 3, name }),
-      });
-
-    await expect(cardFor("Phren")).toHaveCSS("--project-accent", "#7c3aed");
-    await expect(cardFor("OGrid")).toHaveCSS("--project-accent", "#217346");
-    await expect(cardFor("m4l-builder")).toHaveCSS(
-      "--project-accent",
-      "#b45309",
-    );
-  });
-
-  test("the detail page tints with the project accent", async ({ page }) => {
-    await page.goto("/projects/ogrid");
-    // The detail shell exposes the project's brand color as --project-accent
-    // (driving accent borders/links); the eyebrow label itself stays --ink-dim.
-    await expect(
-      page.locator('[style*="--project-accent"]').first(),
-    ).toHaveCSS("--project-accent", "#217346");
   });
 });
 
@@ -148,7 +115,7 @@ test.describe("prerendered metadata", () => {
     const home = await (await request.get("/")).text();
     // The shell is no longer an empty #root — the body is prerendered.
     expect(home).not.toContain('<div id="root"></div>');
-    expect(home).toContain("Selected work");
+    expect(home).toContain("Active projects");
 
     const phren = await (await request.get("/projects/phren")).text();
     expect(phren).toContain("Persistent memory for AI coding agents");

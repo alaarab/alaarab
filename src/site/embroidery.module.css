@@ -1,0 +1,1003 @@
+/* Embroidery: undyed linen, four natural dyes; the stitching frames real work. */
+
+.root {
+  --ground: #e9e1cf;
+  --label: #f1ebdc;
+  --ink: #3b2b1f;
+  --muted: #5c4837;
+  --link: #8a3222;
+  --thread: #a3412d;
+  --focus: #8a3222;
+  --weft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.33  0 0 0 0 0.25  0 0 0 0 0.16  1.1 0 0 0 -0.46'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23f)'/%3E%3C/svg%3E");
+  --warp: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85 0.012' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.33  0 0 0 0 0.25  0 0 0 0 0.16  1.1 0 0 0 -0.46'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23f)'/%3E%3C/svg%3E");
+  --slub: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04 0.2' numOctaves='2' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.33  0 0 0 0 0.25  0 0 0 0 0.16  0.7 0 0 0 -0.29'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23f)'/%3E%3C/svg%3E");
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--ground);
+  color: var(--ink);
+  color-scheme: light;
+  font-family: "Alegreya", Georgia, serif;
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-nums;
+  padding: 0 16px 64px;
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--weft), var(--warp), var(--slub);
+  background-size: 260px 260px, 260px 260px, 520px 520px;
+  opacity: 0.3;
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: "Alegreya", Georgia, serif;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+
+.root a {
+  color: var(--link);
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.root a:hover {
+  text-decoration-style: solid;
+}
+
+.root a:focus-visible {
+  outline: 2px dashed var(--focus);
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Stitch reveal (the one motion) ---------- */
+
+.cloth {
+  display: block;
+  overflow: visible;
+}
+
+/* Transitions rather than @keyframes: Bun's CSS modules rename keyframes but not
+   the animation-name that refers to them. */
+.draw {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 2.4s cubic-bezier(0.45, 0.1, 0.4, 1);
+  transition-delay: calc(var(--i, 0) * 0.5s);
+}
+
+.cloth[data-sewn] .draw {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .draw {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+}
+
+/* ---------- Masthead ---------- */
+
+.masthead {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 104px) 0 0;
+  text-align: center;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(3rem, 7vw, 4.75rem);
+  line-height: 1;
+  font-weight: 500;
+}
+
+.nameRule {
+  width: 200px;
+  height: 8px;
+  margin: 18px auto 30px;
+}
+
+.title {
+  margin: 0 auto;
+  max-width: 34rem;
+  font-size: clamp(1.3rem, 2.2vw, 1.55rem);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.intro {
+  margin: 18px auto 0;
+  max-width: 32rem;
+  color: var(--muted);
+}
+
+.contactLine {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 22px;
+}
+
+.contactLine a,
+.signatureLinks a,
+.pageContact a,
+.outLinks a,
+.topNav a,
+.more a,
+.otherHead a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  max-width: 1120px;
+  margin: clamp(88px, 13vh, 150px) auto 0;
+}
+
+.masthead + .section {
+  margin-top: clamp(56px, 8vh, 88px);
+}
+
+.sectionHeading {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.sectionWords {
+  height: 42px;
+  width: auto;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.divider {
+  width: min(480px, 100%);
+  height: 22px;
+  margin: 10px auto clamp(36px, 6vh, 64px);
+}
+
+.subHeading {
+  margin: 56px 0 14px;
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 400 !important;
+  color: var(--muted) !important;
+  text-align: center;
+}
+
+/* ---------- Mounted screenshots ---------- */
+
+.mount {
+  margin: 0;
+}
+
+.mat {
+  position: relative;
+  padding: clamp(14px, 2vw, 24px);
+  background: #f4efe3;
+  box-shadow:
+    0 1px 0 rgba(59, 43, 31, 0.08),
+    0 14px 26px -16px rgba(59, 43, 31, 0.45),
+    0 3px 8px -4px rgba(59, 43, 31, 0.2);
+}
+
+.mat .labelStitch {
+  inset: 7px;
+  width: calc(100% - 14px);
+  height: calc(100% - 14px);
+}
+
+.tack {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+}
+
+.tack[data-at="tl"] {
+  top: 2px;
+  left: 2px;
+}
+
+.tack[data-at="tr"] {
+  top: 2px;
+  right: 2px;
+}
+
+.tack[data-at="bl"] {
+  bottom: 2px;
+  left: 2px;
+}
+
+.tack[data-at="br"] {
+  bottom: 2px;
+  right: 2px;
+}
+
+.shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--ratio);
+  background: #d9d2c2;
+}
+
+.mount[data-phone] .shot {
+  border-radius: 7% / 3.3%;
+}
+
+.caption {
+  margin: 12px auto 0;
+  max-width: 34rem;
+  text-align: center;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.phoneRow {
+  display: grid;
+  grid-template-columns: repeat(var(--count, 3), minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 24px);
+  align-items: start;
+}
+
+.phoneRow[data-count="2"] {
+  --count: 2;
+}
+
+.phoneRow[data-count="3"] {
+  --count: 3;
+}
+
+.phoneRow[data-count="1"] {
+  --count: 1;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.phoneRow .mat {
+  padding: clamp(8px, 1vw, 12px);
+}
+
+.shotStack {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* ---------- Experience and education ---------- */
+
+.expList,
+.eduList {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+.expRole {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+
+.expWhere {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+.expYears {
+  margin: 6px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* One stitch-length per year: a decade reads as a long rule. */
+.yearsRule {
+  flex: none;
+  width: min(calc(var(--n) * 16px + 10px), 60%);
+  height: 10px;
+  overflow: visible;
+}
+
+.expSummary {
+  margin: 10px 0 0;
+}
+
+.coursework {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 40rem;
+  columns: 2;
+  column-gap: 40px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.coursework li {
+  break-inside: avoid;
+  padding: 3px 0;
+}
+
+/* ---------- About ---------- */
+
+.about {
+  max-width: 38rem;
+  margin: 0 auto;
+}
+
+.about p {
+  margin: 0 0 1.1em;
+}
+
+.about p:first-child {
+  font-size: 1.2rem;
+}
+
+/* ---------- Projects: compact entries ---------- */
+
+.entries {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 48rem;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.entryThumb {
+  display: flex;
+  justify-content: center;
+}
+
+.entryKnot {
+  width: 12px;
+  height: 12px;
+  margin-top: 16px;
+}
+
+.thumb {
+  width: 150px;
+}
+
+.thumb[data-phone] {
+  width: 70px;
+}
+
+.thumbMat.thumbMat {
+  padding: 7px;
+}
+
+.thumbMat .labelStitch {
+  inset: 3px;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+}
+
+.thumbMat .tack {
+  display: none;
+}
+
+.thumb[data-phone] .shot {
+  border-radius: 7% / 3.3%;
+}
+
+.otherHead {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.entryMeta {
+  margin: -6px 0 2px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.otherLine {
+  margin: 0;
+}
+
+.keyKnot {
+  margin-top: 17px;
+}
+
+.otherHead {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 12px;
+  font-size: 1.15rem;
+}
+
+.otherYear {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.otherLine {
+  margin: 0;
+  color: var(--muted);
+}
+
+.keyKnot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+
+/* ---------- Interests ---------- */
+
+.interests {
+  margin: 0 auto;
+  max-width: 40rem;
+  text-align: center;
+  font-size: 1.3rem;
+  font-style: italic;
+  line-height: 2;
+}
+
+.interest {
+  white-space: nowrap;
+}
+
+.interestKnot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin: 0 14px;
+  vertical-align: 0.05em;
+}
+
+/* ---------- Signature ---------- */
+
+.signatureWrap {
+  display: flex;
+  justify-content: center;
+  margin: clamp(96px, 14vh, 150px) 0 24px;
+}
+
+.signature {
+  position: relative;
+  max-width: 26rem;
+  padding: 36px 36px 26px;
+  background: var(--label);
+  rotate: 0.6deg;
+  box-shadow: 0 8px 18px -12px rgba(59, 43, 31, 0.28);
+  text-align: center;
+}
+
+.labelStitch {
+  position: absolute;
+  inset: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.signatureWords {
+  display: block;
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.signatureNote {
+  margin: 10px 0 4px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.signatureLinks {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 20px;
+}
+
+/* ---------- Project pages ---------- */
+
+.topNav {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+}
+
+.root .topName {
+  font-family: "Alegreya SC", "Alegreya", Georgia, serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.projectMain {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(24px, 6vh, 56px) 0 0;
+}
+
+.projectHead {
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.headDivider {
+  width: min(320px, 100%);
+  height: 22px;
+  margin: 6px auto 22px;
+}
+
+.notesMeta {
+  margin: 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.pageTitle {
+  margin: 4px 0 10px;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.lead {
+  margin: 0 auto;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+.heroShots {
+  max-width: 1000px;
+  margin: clamp(40px, 7vh, 64px) auto 0;
+}
+
+.root[data-page="m4l-builder"] .heroShots {
+  max-width: 820px;
+}
+
+.root[data-page="mina"] .heroShots {
+  max-width: 760px;
+}
+
+.notes {
+  max-width: 38rem;
+  margin: clamp(48px, 8vh, 80px) auto 0;
+}
+
+/* ---------- Explanations, each with the real thing ---------- */
+
+.explanations {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 9vh, 96px);
+  margin-top: clamp(48px, 8vh, 88px);
+}
+
+.explain {
+  max-width: 38rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.explain[data-media] {
+  max-width: 1040px;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+.explain[data-media][data-phone] {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  max-width: 900px;
+}
+
+.explain[data-media][data-phone] .explainMedia {
+  max-width: 320px;
+  justify-self: center;
+  width: 100%;
+}
+
+.explainHeading {
+  margin: 0 0 8px;
+  font-size: 1.1rem !important;
+  font-style: italic;
+  font-weight: 400 !important;
+  color: var(--muted) !important;
+  text-decoration: underline dashed var(--thread) 1.5px;
+  text-underline-offset: 0.35em;
+}
+
+.explainText p {
+  margin: 0;
+}
+
+/* ---------- Explainer: a calm walk through real screenshots ---------- */
+
+.explainer {
+  margin: 0;
+  position: relative;
+}
+
+.stage {
+  position: relative;
+  aspect-ratio: var(--ratio);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation-duration: calc(var(--n) * 5s);
+  animation-delay: calc(var(--k) * 5s);
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: backwards;
+}
+
+.layer:first-child {
+  opacity: 1;
+}
+
+/* It starts once it has been seen, and the viewer can pause it. */
+.explainer[data-started] .layer {
+  animation-name: var(--anim);
+}
+
+.explainer[data-started] .steps li {
+  animation-name: var(--anim-cap);
+}
+
+.explainer[data-paused] .layer,
+.explainer[data-paused] .steps li {
+  animation-play-state: paused;
+}
+
+.layerPic {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.layerPic .shot {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  aspect-ratio: auto;
+  background: transparent;
+}
+
+.explainer[data-phone] .layerPic .shot {
+  border-radius: 7% / 3.3%;
+}
+
+/* A soft stitched ring around the part being described. */
+.ring {
+  position: absolute;
+  border: 2px dashed var(--thread);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--thread) 22%, transparent),
+    0 0 18px 2px color-mix(in srgb, var(--thread) 30%, transparent);
+  pointer-events: none;
+}
+
+.layerCaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  margin: 0;
+}
+
+.stepNo {
+  font-style: normal;
+  color: var(--thread);
+  font-weight: 600;
+}
+
+.steps {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.steps li {
+  opacity: 0.45;
+  animation-duration: calc(var(--n) * 5s);
+  animation-delay: calc(var(--k) * 5s);
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+.steps li:first-child {
+  opacity: 1;
+}
+
+.pause {
+  margin-top: 6px;
+  min-height: 44px;
+  padding: 0 2px;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--link);
+  text-decoration: underline dashed 1px;
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+}
+
+.pause:focus-visible {
+  outline: 2px dashed var(--focus);
+  outline-offset: 4px;
+}
+
+/* Reduced motion: the walkthrough becomes a plain numbered list of screenshots. */
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .layer {
+    position: static;
+    opacity: 1;
+    animation: none;
+  }
+
+  .layerPic {
+    aspect-ratio: var(--ratio);
+  }
+
+  .layerCaption {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    margin: 10px 0 0;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .steps,
+  .pause {
+    display: none;
+  }
+}
+
+.notes p {
+  margin: 0 0 1.1em;
+}
+
+.quote {
+  max-width: 36rem;
+  margin: clamp(44px, 7vh, 72px) auto 0;
+  padding: 0 0 0 22px;
+  border-left: 2px dashed var(--thread);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+
+.quote p {
+  margin: 0;
+}
+
+.notes .outcome {
+  font-style: italic;
+}
+
+.notes .stack {
+  color: var(--muted);
+}
+
+.counts {
+  list-style: none;
+  margin: 0 0 1.2em;
+  padding: 0;
+}
+
+.counts li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0.2em 0;
+}
+
+.outLinks,
+.pageContact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+}
+
+.along {
+  max-width: 1120px;
+  margin: clamp(72px, 10vh, 120px) auto 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.root .alongLink {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 1.15rem;
+}
+
+.alongLink[data-dir="next"] {
+  text-align: right;
+}
+
+.alongLink:hover .alongDir {
+  color: var(--link);
+}
+
+.alongDir {
+  display: block;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.pageFoot {
+  max-width: 1120px;
+  margin: 48px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Mina: dusk, quieter. */
+.root[data-page="mina"] {
+  --muted: #514a45;
+  --link: #2f4466;
+  --focus: #2f4466;
+}
+
+.missing {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding-top: 64px;
+  text-align: center;
+}
+
+/* ---------- Phone ---------- */
+
+@media (max-width: 760px) {
+  .root {
+    font-size: 1.0625rem;
+  }
+
+  .sectionWords {
+    height: 34px;
+  }
+
+  .explain[data-media],
+  .explain[data-media][data-phone] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .entry {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .thumb {
+    width: 96px;
+  }
+
+  .thumb[data-phone] {
+    width: 52px;
+  }
+
+  /* Phone screens go two across on a phone. */
+  .phoneRow,
+  .phoneRow[data-count="3"] {
+    --count: 2;
+  }
+
+  .phoneRow[data-count="1"] {
+    --count: 1;
+    max-width: 260px;
+  }
+
+  .phoneRow > :nth-child(3):last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 8px);
+  }
+
+  .coursework {
+    columns: 1;
+  }
+
+  .along {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .alongLink[data-dir="next"] {
+    align-self: flex-end;
+  }
+
+  .signature {
+    padding: 32px 22px 22px;
+  }
+}
