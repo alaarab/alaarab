@@ -21,3 +21,4 @@
 # local env files
 .env
 .env.*.local
+.lab-dist/

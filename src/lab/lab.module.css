@@ -1,0 +1,133 @@
+.lab {
+  min-height: 100vh;
+  background: #111;
+  color: #eee;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  padding: 16px;
+  position: relative;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.bar h1 {
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.kicker {
+  font: 500 0.75rem ui-monospace, monospace;
+  color: #999;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.controls fieldset {
+  display: flex;
+  gap: 10px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 4px 10px 6px;
+}
+
+.controls legend {
+  font-size: 0.7rem;
+  color: #999;
+  padding: 0 4px;
+}
+
+.controls label {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.controls a {
+  text-decoration: underline;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.colHead h2 {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.colHead p {
+  color: #bbb;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  min-height: 2.8em;
+}
+
+.colHead a {
+  font-size: 0.8rem;
+  text-decoration: underline;
+  color: #ccc;
+}
+
+/* The iframe renders at a real device width and is scaled down to fit. */
+.viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1440 / 900;
+  overflow: hidden;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #000;
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  width: 1440px;
+  height: 900px;
+  transform-origin: 0 0;
+  transform: scale(var(--s, 0.3));
+}
+
+.grid[data-frame="phone"] .viewport {
+  aspect-ratio: 390 / 844;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.grid[data-frame="phone"] .frame {
+  width: 390px;
+  height: 844px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

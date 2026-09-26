@@ -10,7 +10,8 @@
     "prerender": "bun scripts/prerender.ts",
     "og": "bun scripts/generate-og.ts",
     "typecheck": "tsc --noEmit",
-    "test": "playwright test"
+    "test": "playwright test",
+    "lab": "bun scripts/lab.ts"
   },
   "dependencies": {
     "react": "^19.2.7",
