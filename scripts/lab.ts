@@ -11,6 +11,7 @@
  */
 import { rmSync } from "node:fs";
 import { join } from "node:path";
+import { directions } from "../src/lab/directions";
 
 const root = join(import.meta.dir, "..");
 const port = Number(process.env.PORT ?? 3300);
@@ -46,6 +47,6 @@ const server = Bun.serve({
 });
 
 console.log(`Design lab: ${server.url}lab`);
-for (const key of ["rack", "ledger", "transit"]) {
+for (const { key } of directions) {
   console.log(`  ${server.url}lab/${key}`);
 }

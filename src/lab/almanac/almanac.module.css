@@ -1,0 +1,897 @@
+/* Almanac: an engraved star atlas in cream-gold on soft indigo. */
+
+.root {
+  --ground: #26304d;
+  --plane: #2e3a5c;
+  --edge: #1f2842;
+  --haze: #56628c;
+  --line: #e6d6ad;
+  --text: #efe6d0;
+  --quiet: #c9bfa4;
+  --accent: #e3a98f;
+  --display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --engraved: "Cormorant SC", "Cormorant Garamond", Georgia, serif;
+  --body: "EB Garamond", Georgia, serif;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--ground);
+  color: var(--text);
+  color-scheme: dark;
+  font-family: var(--body);
+  font-size: 19px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Paper grain: a few percent of feTurbulence noise, rasterised once as a tile. */
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .9 0 0 0 0 .78 0 0 0 1.6 -.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  color: var(--text);
+  margin: 0;
+}
+
+.root a {
+  color: var(--text);
+  text-decoration-color: color-mix(in srgb, var(--line) 55%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.root a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+.root a:focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- top line ---------- */
+
+.topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 10px 28px 0;
+  font-family: var(--engraved);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: var(--quiet);
+}
+
+.topnav {
+  display: flex;
+  gap: 4px;
+}
+
+.topline a,
+.topnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  color: var(--quiet);
+  text-decoration: none;
+}
+
+.back {
+  gap: 10px;
+  margin-left: -10px;
+}
+
+.back svg {
+  color: var(--accent);
+}
+
+.plateMark {
+  color: var(--quiet);
+}
+
+/* ---------- the chart ---------- */
+
+.sky {
+  --size: min(94vw, calc(100vh - 70px), 920px);
+  --turn: 1800s;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 36px;
+}
+
+.chartWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.chartWrap > * {
+  grid-area: 1 / 1;
+}
+
+.chart {
+  position: relative;
+  width: var(--size);
+  aspect-ratio: 1;
+  container-type: inline-size;
+}
+
+.disc,
+.hourRing,
+.stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.disc {
+  /* A soft darkening at the rim of the sky, painted, not a hard vignette. */
+  filter: drop-shadow(0 0 28px color-mix(in srgb, var(--edge) 70%, transparent));
+}
+
+.ringText {
+  font-family: var(--engraved);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+}
+
+.disc .ringText {
+  font-size: 15px;
+  letter-spacing: 0.14em;
+}
+
+.stars {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The signature motion: disc and stars turn together, names stay level. */
+.disc,
+.stars {
+  animation: alm-turn var(--turn) linear infinite;
+  will-change: transform;
+}
+
+.upright {
+  width: 0;
+  height: 0;
+  animation: alm-unturn var(--turn) linear infinite;
+}
+
+.chartWrap:hover .disc,
+.chartWrap:hover .stars,
+.chartWrap:hover .upright,
+.chartWrap:focus-within .disc,
+.chartWrap:focus-within .stars,
+.chartWrap:focus-within .upright {
+  animation-play-state: paused;
+}
+
+.starSpot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--a)) translateX(calc(var(--r) * 50cqw)) rotate(calc(-1 * var(--a)));
+}
+
+.star {
+  position: absolute;
+  left: 0;
+  top: -22px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  max-width: 160px;
+  color: var(--line);
+  text-decoration: none;
+  border-radius: 22px;
+}
+
+.root .star:focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 0;
+  border-radius: 22px;
+}
+
+.glyphBox {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+
+.starName {
+  margin-top: -9px;
+  padding: 0 6px 4px;
+  font-family: var(--engraved);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.15;
+  letter-spacing: 0.07em;
+  text-align: center;
+  color: var(--quiet);
+}
+
+.bright .starName {
+  font-size: 17px;
+  color: var(--text);
+}
+
+.root .star:hover,
+.root .star:focus-visible,
+.root .star:hover .starName,
+.root .star:focus-visible .starName {
+  color: var(--accent);
+}
+
+/* The engraved annotation beside a hovered or focused star. */
+.note {
+  position: absolute;
+  z-index: 5;
+  width: 270px;
+  pointer-events: none;
+}
+
+.noteLeft {
+  transform: translateX(-100%);
+}
+
+.leader {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+
+.noteLeft .leader {
+  left: auto;
+  right: 8px;
+}
+
+.note p {
+  margin: 42px 0 0 38px;
+  padding: 8px 14px 9px;
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--text);
+  background: color-mix(in srgb, var(--ground) 92%, transparent);
+  border-top: 1px solid var(--accent);
+  border-radius: 0 0 3px 3px;
+}
+
+.noteLeft p {
+  margin: 42px 38px 0 0;
+  text-align: right;
+}
+
+/* ---------- title cartouche ---------- */
+
+.cartouche {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: calc(var(--size) * 0.33);
+  aspect-ratio: 1;
+  padding: 0 calc(var(--size) * 0.035);
+  text-align: center;
+  background: var(--plane);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  outline: 0.5px solid color-mix(in srgb, var(--line) 55%, transparent);
+  outline-offset: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cartouche h1 {
+  font-size: clamp(34px, calc(var(--size) * 0.058), 54px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.cartoucheTitle {
+  margin: 12px 0 10px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.3;
+  color: var(--quiet);
+}
+
+.cartoucheWhere {
+  margin: 0;
+  font-family: var(--engraved);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--line);
+}
+
+/* ---------- below the chart ---------- */
+
+.column {
+  max-width: 36em;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+}
+
+.preface p {
+  margin: 0 0 1em;
+}
+
+.lede {
+  font-family: var(--display);
+  font-size: 27px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.quiet,
+.caption {
+  color: var(--quiet);
+}
+
+.caption {
+  margin: 4px 0 28px;
+  font-style: italic;
+  font-size: 17px;
+}
+
+.h2 {
+  font-size: 36px;
+  line-height: 1.15;
+  font-style: italic;
+}
+
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 56px auto;
+  max-width: 220px;
+  color: var(--line);
+}
+
+.rule span {
+  flex: 1;
+  height: 0;
+  border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+
+.observations {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.observations li {
+  margin: 0 0 28px;
+}
+
+.observations h3 {
+  font-size: 23px;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.observations p {
+  margin: 0;
+}
+
+.register {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.register li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: start;
+  margin: 0 0 18px;
+}
+
+.registerGlyph {
+  justify-self: center;
+  margin-top: 9px;
+  color: var(--line);
+}
+
+.registerHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 12px;
+  margin: 0;
+}
+
+.registerHead a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -8px 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 23px;
+  text-decoration: none;
+}
+
+.year {
+  font-style: italic;
+  color: var(--quiet);
+  font-size: 17px;
+}
+
+.registerLine {
+  margin: 0;
+  color: var(--quiet);
+}
+
+.contactList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 26px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--display);
+  font-size: 23px;
+}
+
+.contactList a,
+.lost a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.colophon {
+  padding: 0 24px 48px;
+  text-align: center;
+  color: var(--quiet);
+}
+
+.colophon .rule {
+  margin-top: 0;
+}
+
+.colophon p {
+  margin: 0 0 6px;
+}
+
+.colophon a {
+  display: inline-block;
+  padding: 10px 4px;
+}
+
+.small {
+  font-size: 16px;
+  font-style: italic;
+}
+
+/* ---------- phone ---------- */
+
+@media (max-width: 720px) {
+  .root {
+    font-size: 18px;
+  }
+
+  .sky {
+    --size: calc(100vw - 20px);
+  }
+
+  .chartWrap > * {
+    grid-area: auto;
+  }
+
+  .chartWrap {
+    grid-template-rows: auto auto;
+    gap: 18px;
+  }
+
+  .cartouche {
+    width: auto;
+    aspect-ratio: auto;
+    border-radius: 0;
+    max-width: 340px;
+    margin: 14px 16px 0;
+    outline: none;
+    border: none;
+    background: none;
+    padding: 8px 0 0;
+  }
+
+  .cartouche h1 {
+    font-size: 46px;
+  }
+
+  .star:not(.phoneLabel) .starName {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .starName,
+  .bright .starName {
+    font-size: 14px;
+  }
+
+  .note {
+    display: none;
+  }
+
+  .topline {
+    padding: 4px 12px 0;
+    font-size: 15px;
+  }
+
+  .topline a,
+  .topnav a {
+    padding: 0 7px;
+  }
+
+  .lede {
+    font-size: 23px;
+  }
+
+  .h2 {
+    font-size: 30px;
+  }
+}
+
+/* ---------- project plates ---------- */
+
+.page {
+  padding: 20px 20px 0;
+}
+
+.plate {
+  max-width: 960px;
+  margin: 12px auto 0;
+  padding: 26px 32px 22px;
+  background: var(--plane);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius: 2px;
+}
+
+/* The graduated border of an atlas plate: alternating filled and open bars. */
+.plate {
+  position: relative;
+}
+
+.plate::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  border: 5px solid transparent;
+  outline: 0.5px solid color-mix(in srgb, var(--line) 60%, transparent);
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--line) 60%, transparent);
+  --bar: repeating-linear-gradient(90deg, color-mix(in srgb, var(--line) 42%, transparent) 0 26px, transparent 26px 52px);
+  --bar-v: repeating-linear-gradient(180deg, color-mix(in srgb, var(--line) 42%, transparent) 0 26px, transparent 26px 52px);
+  background:
+    var(--bar) top / 100% 5px no-repeat border-box,
+    var(--bar) bottom / 100% 5px no-repeat border-box,
+    var(--bar-v) left / 5px 100% no-repeat border-box,
+    var(--bar-v) right / 5px 100% no-repeat border-box;
+}
+
+.mina .plate {
+  max-width: 720px;
+}
+
+.m4l .plate {
+  max-width: 720px;
+}
+
+.plateNo {
+  margin: 0 0 6px;
+  text-align: center;
+  font-family: var(--engraved);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.14em;
+  color: var(--line);
+}
+
+.art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.plate figcaption {
+  margin-top: 8px;
+  text-align: center;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--quiet);
+}
+
+.artLabel {
+  font-family: var(--engraved);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  fill: var(--quiet);
+}
+
+.drawIn {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: alm-draw 1.8s ease-out forwards;
+}
+
+.mina {
+  --moon: #f1e4cf;
+  --line: #e8dcc2;
+}
+
+.titleBlock {
+  margin: 48px 0 20px;
+  text-align: center;
+}
+
+.titleBlock h1 {
+  font-size: clamp(46px, 7vw, 72px);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.meta {
+  margin: 12px 0 0;
+  font-style: italic;
+  color: var(--quiet);
+}
+
+.inscription {
+  margin: 36px 0;
+  padding: 16px 0;
+  border-top: 1px solid color-mix(in srgb, var(--line) 45%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 45%, transparent);
+  text-align: center;
+}
+
+.inscription p {
+  margin: 0;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--line);
+}
+
+.prose p {
+  margin: 0 0 1.1em;
+}
+
+.prose .outcome {
+  font-style: italic;
+  color: var(--text);
+}
+
+.key {
+  margin: 32px 0 0;
+  padding: 0 0 0 1.6em;
+  list-style: lower-roman;
+  color: var(--quiet);
+  font-style: italic;
+}
+
+.key li {
+  padding-left: 0.4em;
+}
+
+.key li::marker {
+  font-family: var(--display);
+  color: var(--line);
+}
+
+.stack {
+  margin: 20px 0 0;
+  color: var(--quiet);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  margin: 14px 0 0;
+}
+
+.links a,
+.onward a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+
+.onward {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  font-family: var(--display);
+  font-size: 21px;
+}
+
+.onward svg {
+  color: var(--accent);
+}
+
+.instrument {
+  display: grid;
+  justify-items: center;
+}
+
+.instrument .art {
+  max-width: 560px;
+}
+
+.rete {
+  transition: transform 0.12s ease-out;
+}
+
+.knobRow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 10px;
+  max-width: 520px;
+}
+
+.knobRow p {
+  margin: 0;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--quiet);
+}
+
+.knobValue {
+  font-style: normal;
+  color: var(--line);
+}
+
+.knob {
+  flex: none;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.knob:active {
+  cursor: grabbing;
+}
+
+.knob svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.knob:focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.lost {
+  max-width: 34em;
+  margin: 0 auto;
+  padding: 12vh 24px;
+  text-align: center;
+}
+
+.lost h1 {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.lostRing {
+  width: 120px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 8px 12px 0;
+  }
+
+  .plate {
+    padding: 14px 10px 12px;
+    outline-offset: 4px;
+  }
+
+  .titleBlock {
+    margin-top: 36px;
+  }
+
+  .inscription p {
+    font-size: 21px;
+  }
+
+  .knobRow {
+    padding: 0 6px;
+  }
+
+  .plate::before {
+    inset: 5px;
+    border-width: 3px;
+    background-size: 100% 3px, 100% 3px, 3px 100%, 3px 100%;
+  }
+
+  .topnav a[href="/resume"] {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc,
+  .stars,
+  .upright {
+    animation: none;
+  }
+
+  .drawIn {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .rete {
+    transition: none;
+  }
+}
