@@ -555,3 +555,42 @@ export const contactLinks: ActionLink[] = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/ala-arab-a995b155/" },
   { label: "Resume", href: "/resume" },
 ];
+
+/** Relevant coursework, from the 2023 resume page (UCSD and UC Santa Cruz). */
+export const coursework: string[] = [
+  "Object-Oriented Programming",
+  "Data Structures and Object-Oriented Design",
+  "Computer Systems and Assembly Language",
+  "Algorithms and Abstract Data Types",
+  "Discrete Mathematics",
+  "Systems Programming",
+  "Advanced Data Structures",
+  "Design and Analysis of Algorithms",
+  "Software Engineering",
+  "Theory of Computability",
+  "Programming Languages: Principles and Paradigms",
+  "Database System Principles",
+  "Online Database Analytics Applications",
+  "Computer Architecture",
+];
+
+/** From the 2023 site. */
+export const interests: string[] = [
+  "code",
+  "music",
+  "synthesizers",
+  "coffee",
+  "climbing",
+  "traveling",
+  "fans",
+];
+
+/**
+ * Short "about me" for the portfolio's opening. DRAFT (2026-09-26): the energy
+ * framing was inferred from the employers below and needs Ala's confirmation.
+ */
+export const about: string[] = [
+  "Most of my career has been spent building software for companies that serve the energy industry: thirteen years at ADM Associates, an energy consulting firm, a retrofit program in Maryland with Matrix Energy Services, and now systems architecture at Qualus.",
+  "Along the way I built the internal ERP that ran ADM for a decade, the data tools engineers and analysts depended on, and the servers, databases, and SOC 2 environment underneath them.",
+  "I studied computer science at UC Santa Cruz and finished my B.S. at UC San Diego in 2011. These days I also build open-source tools for AI agents and for my own music.",
+];

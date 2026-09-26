@@ -1,19 +1,10 @@
 /**
- * Stitch primitives for the Embroidery direction. Everything is drawn as SVG
- * inside a <Cloth>, which owns the "sew in" state: until the cloth scrolls into
- * view every stitch is masked out, then each one is revealed along its own path
- * in order (the `i` prop), slowly. CSS turns the animation off for reduced motion.
+ * The embroidery is the frame, never the picture: stitched rules, dividers,
+ * the mats that real screenshots are sewn onto, knots, and a few stitched words.
+ * The one motion: a mat's border and a divider sew themselves in when they
+ * scroll into view. CSS turns that off for reduced motion.
  */
-import {
-  type CSSProperties,
-  type ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from "react";
+import { type CSSProperties, type ReactNode, useEffect, useId, useRef, useState } from "react";
 import styles from "./embroidery.module.css";
 
 export const thread = {
@@ -27,20 +18,21 @@ export const thread = {
   night: "#2c3f5f",
 } as const;
 
-const SHADOW = "rgba(59, 43, 31, 0.34)";
-const SHEEN = "rgba(255, 249, 234, 0.42)";
+const SHADOW = "rgba(59, 43, 31, 0.3)";
+
+function mix(a: string, b: string, t: number): string {
+  const p = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [x, y] = [p(a), p(b)];
+  return `#${x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, "0")).join("")}`;
+}
 
 /** A DOM-safe id from useId (React's ids contain characters url(#…) dislikes). */
 export function useSvgId(prefix: string) {
   return prefix + useId().replace(/[^a-zA-Z0-9_-]/g, "");
 }
 
-const Sewn = createContext(true);
-/** True once the surrounding cloth has been sewn in. */
-export const useIsSewn = () => useContext(Sewn);
-
-/** Observe an element and flip to true the first time it is mostly visible. */
-function useSewIn<T extends Element>() {
+/** Flip to true the first time the element is mostly in view. */
+export function useSewIn<T extends Element>() {
   const ref = useRef<T>(null);
   const [sewn, setSewn] = useState(false);
   useEffect(() => {
@@ -57,7 +49,7 @@ function useSewIn<T extends Element>() {
           io.disconnect();
         }
       },
-      { threshold: 0.35 },
+      { threshold: 0.2 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -65,208 +57,61 @@ function useSewIn<T extends Element>() {
   return [ref, sewn] as const;
 }
 
-interface ClothProps {
-  viewBox: string;
-  className?: string;
-  children: ReactNode;
-  /** Accessible description; omit for decorative pieces. */
-  label?: string;
-  /** Hand wobble on the thread edges. Off for tiny marks. */
-  wobble?: boolean;
-  style?: CSSProperties;
-  /** Drawn beneath the stitches without wobble: a hoop, a panel, the cloth. */
-  under?: ReactNode;
-}
-
-/** An SVG surface that sews its stitches in when it scrolls into view. */
-export function Cloth({ viewBox, className, children, label, wobble = true, style, under }: ClothProps) {
+/** A small fixed SVG surface that sews in (the name rule under the h1). */
+export function Cloth({ viewBox, className, children }: { viewBox: string; className?: string; children: ReactNode }) {
   const [ref, sewn] = useSewIn<SVGSVGElement>();
-  const wob = useSvgId("wob");
   return (
-    <svg
-      ref={ref}
-      viewBox={viewBox}
-      className={[styles.cloth, className].filter(Boolean).join(" ")}
-      data-sewn={sewn ? "" : undefined}
-      role={label ? "img" : undefined}
-      aria-label={label}
-      aria-hidden={label ? undefined : true}
-      style={style}
-    >
-      {wobble && (
-        <defs>
-          <filter id={wob} x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="7" />
-            <feDisplacementMap in="SourceGraphic" scale="1.4" />
-          </filter>
-        </defs>
-      )}
-      {under}
-      <Sewn.Provider value={sewn}>
-        <g filter={wobble ? `url(#${wob})` : undefined}>{children}</g>
-      </Sewn.Provider>
+    <svg ref={ref} viewBox={viewBox} className={[styles.cloth, className].filter(Boolean).join(" ")} data-sewn={sewn ? "" : undefined} aria-hidden="true" focusable="false">
+      {children}
     </svg>
   );
 }
 
-/** Reveal mask: a wide stroke drawn along `d` from start to end. */
-function RevealMask({ id, d, width, i }: { id: string; d: string; width: number; i: number }) {
-  return (
-    <mask id={id} maskUnits="userSpaceOnUse" x="-2000" y="-2000" width="4000" height="4000">
-      <path
-        d={d}
-        pathLength={1}
-        className={styles.draw}
-        style={{ "--i": i } as CSSProperties}
-        fill="none"
-        stroke="#fff"
-        strokeWidth={width}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </mask>
-  );
-}
-
-interface LineProps {
-  d: string;
-  c: string;
-  /** Order in which this stitch is sewn within its cloth. */
-  i?: number;
-  w?: number;
-  opacity?: number;
-}
-
-/** Running stitch: evenly spaced stitches with a little linen between. */
-export function Run({ d, c, i = 0, w = 1.8, opacity = 1, dash = [3.2, 3.4] }: LineProps & { dash?: [number, number] }) {
+/** Running stitch along a path, revealed stitch by stitch. */
+export function Run({ d, c, i = 0, w = 1.8, dash = [3.2, 3.4] }: { d: string; c: string; i?: number; w?: number; dash?: [number, number] }) {
   const id = useSvgId("run");
-  const da = dash.join(" ");
-  return (
-    <g opacity={opacity}>
-      <RevealMask id={id} d={d} width={w + 8} i={i} />
-      <g mask={`url(#${id})`} fill="none" strokeLinecap="round" strokeLinejoin="round" strokeDasharray={da}>
-        <path d={d} stroke={SHADOW} strokeWidth={w} transform="translate(0.45 0.65)" />
-        <path d={d} stroke={c} strokeWidth={w} />
-        <path d={d} stroke={SHEEN} strokeWidth={w * 0.34} transform="translate(-0.25 -0.3)" />
-      </g>
-    </g>
-  );
-}
-
-/** Stem stitch: a continuous twisted line, the sheen broken into short slants. */
-export function Stem({ d, c, i = 0, w = 2, opacity = 1 }: LineProps) {
-  const id = useSvgId("stem");
-  return (
-    <g opacity={opacity}>
-      <RevealMask id={id} d={d} width={w + 8} i={i} />
-      <g mask={`url(#${id})`} fill="none" strokeLinecap="round" strokeLinejoin="round">
-        <path d={d} stroke={SHADOW} strokeWidth={w} transform="translate(0.45 0.65)" />
-        <path d={d} stroke={c} strokeWidth={w} />
-        <path
-          d={d}
-          stroke={SHEEN}
-          strokeWidth={w * 0.36}
-          strokeDasharray={`${w * 1.3} ${w * 0.8}`}
-          transform="translate(-0.25 -0.3)"
-        />
-      </g>
-    </g>
-  );
-}
-
-interface SatinProps {
-  /** Shape to fill. */
-  d: string;
-  /** Bounding box of the shape: x, y, width, height. */
-  box: [number, number, number, number];
-  c: string;
-  i?: number;
-  /** Stitch direction in degrees (0 = horizontal stitches). */
-  angle?: number;
-  /** Distance between stitches. */
-  gap?: number;
-  /** Stem outline colour; omit for none. */
-  outline?: string;
-  outlineW?: number;
-}
-
-/** Satin stitch: closely laid parallel stitches clipped to a shape. */
-export function Satin({ d, box, c, i = 0, angle = 60, gap = 1.5, outline, outlineW = 1.4 }: SatinProps) {
-  const clip = useSvgId("sat");
-  const [x, y, w, h] = box;
-  const cx = x + w / 2;
-  const cy = y + h / 2;
-  const r = Math.hypot(w, h) / 2 + 2;
-  const lines: number[] = [];
-  for (let o = -r; o <= r; o += gap) lines.push(o);
-  const ld = lines.map((o) => `M${cx - r} ${cy + o}H${cx + r}`).join("");
-  const mask = useSvgId("satm");
-  // Reveal across the stitches, perpendicular to their direction.
-  const sweep = `M${cx} ${cy - r}V${cy + r}`;
   return (
     <g>
-      <clipPath id={clip}>
-        <path d={d} />
-      </clipPath>
-      <RevealMask id={mask} d={sweep} width={r * 2 + 4} i={i} />
-      <g mask={`url(#${mask})`}>
-        <g clipPath={`url(#${clip})`}>
-          <path d={d} fill={c} opacity={0.35} />
-          <g transform={`rotate(${angle} ${cx} ${cy})`} fill="none" strokeLinecap="round">
-            <path d={ld} stroke={SHADOW} strokeWidth={gap * 0.9} transform="translate(0.3 0.5)" />
-            <path d={ld} stroke={c} strokeWidth={gap * 0.82} />
-            <path d={ld} stroke={SHEEN} strokeWidth={gap * 0.22} transform="translate(0 -0.25)" />
-          </g>
-        </g>
-        {outline && (
-          <g fill="none" strokeLinejoin="round">
-            <path d={d} stroke={SHADOW} strokeWidth={outlineW} transform="translate(0.4 0.6)" />
-            <path d={d} stroke={outline} strokeWidth={outlineW} />
-          </g>
-        )}
+      <mask id={id} maskUnits="userSpaceOnUse" x="-2000" y="-2000" width="4000" height="4000">
+        <path d={d} pathLength={1} className={styles.draw} style={{ "--i": i } as CSSProperties} fill="none" stroke="#fff" strokeWidth={w + 8} strokeLinecap="round" />
+      </mask>
+      <g mask={`url(#${id})`} fill="none" strokeLinecap="round" strokeDasharray={dash.join(" ")}>
+        <path d={d} stroke={SHADOW} strokeWidth={w} transform="translate(0.45 0.65)" />
+        <path d={d} stroke={c} strokeWidth={w} />
+        <path d={d} stroke="rgba(255,249,234,.4)" strokeWidth={w * 0.34} transform="translate(-0.25 -0.3)" />
       </g>
     </g>
   );
 }
 
-/** French knots: small raised dots that land last. */
-export function Knots({ pts, c, i = 0, r = 2 }: { pts: [number, number][]; c: string; i?: number; r?: number }) {
+/** French knots: small raised bumps with a radial sheen and a cast shadow. */
+export function Knots({ pts, c, r = 2 }: { pts: [number, number][]; c: string; r?: number }) {
+  const g = useSvgId("knot");
   return (
-    <g className={styles.knots} style={{ "--i": i } as CSSProperties}>
+    <g>
+      <defs>
+        <radialGradient id={g} cx="0.36" cy="0.32" r="0.75">
+          <stop offset="0" stopColor={mix(c, "#fff8e6", 0.55)} />
+          <stop offset="0.45" stopColor={c} />
+          <stop offset="1" stopColor={mix(c, "#1c140d", 0.4)} />
+        </radialGradient>
+      </defs>
       {pts.map(([x, y], n) => (
-        <g key={n} className={styles.knot} style={{ "--n": n } as CSSProperties}>
-          <circle cx={x + 0.5} cy={y + 0.7} r={r} fill={SHADOW} />
-          <circle cx={x} cy={y} r={r} fill={c} />
-          {r >= 2.6 && (
-            // The wraps of the knot: a broken ring of darker thread.
-            <circle cx={x} cy={y} r={r * 0.58} fill="none" stroke="rgba(40,28,20,.35)" strokeWidth={r * 0.28} strokeDasharray={`${r * 0.7} ${r * 0.45}`} />
-          )}
-          <circle cx={x - r * 0.3} cy={y - r * 0.35} r={r * 0.34} fill={SHEEN} />
+        <g key={n}>
+          <ellipse cx={x + r * 0.28} cy={y + r * 0.42} rx={r * 1.05} ry={r * 0.95} fill="rgba(50,35,22,.3)" />
+          <circle cx={x} cy={y} r={r} fill={`url(#${g})`} />
         </g>
       ))}
     </g>
   );
 }
 
-/** A line of short parallel straight stitches (each given as x1 y1 x2 y2). */
-export function Strokes({ lines, c, i = 0, w = 1.8 }: { lines: [number, number, number, number][]; c: string; i?: number; w?: number }) {
-  const d = lines.map(([a, b, x, y]) => `M${a} ${b}L${x} ${y}`).join("");
-  const xs = lines.flatMap(([a, , x]) => [a, x]);
-  const ys = lines.flatMap(([, b, , y]) => [b, y]);
-  const x0 = Math.min(...xs);
-  const x1 = Math.max(...xs);
-  const y0 = Math.min(...ys);
-  const y1 = Math.max(...ys);
-  const id = useSvgId("str");
+/** A single knot as an inline bullet. */
+export function Knot({ c, className }: { c: string; className?: string }) {
   return (
-    <g>
-      <RevealMask id={id} d={`M${x0 - 2} ${(y0 + y1) / 2}H${x1 + 2}`} width={y1 - y0 + 12} i={i} />
-      <g mask={`url(#${id})`} fill="none" strokeLinecap="round">
-        <path d={d} stroke={SHADOW} strokeWidth={w} transform="translate(0.45 0.65)" />
-        <path d={d} stroke={c} strokeWidth={w} />
-        <path d={d} stroke={SHEEN} strokeWidth={w * 0.34} transform="translate(-0.25 -0.3)" />
-      </g>
-    </g>
+    <svg viewBox="0 0 12 12" className={className} aria-hidden="true" focusable="false">
+      <Knots c={c} r={3.4} pts={[[6, 6]]} />
+    </svg>
   );
 }
 
@@ -278,7 +123,9 @@ export function StitchedWords({
   width,
   className,
   italic = false,
+  center = false,
 }: {
+  center?: boolean;
   text: string;
   c: string;
   size?: number;
@@ -297,16 +144,11 @@ export function StitchedWords({
           <rect width="0.4" height="2.2" fill="rgba(255,249,234,.35)" />
         </pattern>
       </defs>
-      <g
-        fontFamily="Alegreya, Georgia, serif"
-        fontSize={size}
-        fontStyle={italic ? "italic" : undefined}
-        fontWeight={600}
-      >
-        <text x="2.6" y={size + 1} fill={SHADOW} stroke={SHADOW} strokeWidth="0.5">
+      <g fontFamily="Alegreya, Georgia, serif" fontSize={size} fontStyle={italic ? "italic" : undefined} fontWeight={600} textAnchor={center ? "middle" : undefined}>
+        <text x={center ? width / 2 + 0.6 : 2.6} y={size + 1} fill={SHADOW} stroke={SHADOW} strokeWidth="0.5">
           {text}
         </text>
-        <text x="2" y={size} fill={`url(#${pat})`} stroke={c} strokeWidth="0.55" strokeLinejoin="round">
+        <text x={center ? width / 2 : 2} y={size} fill={`url(#${pat})`} stroke={c} strokeWidth="0.55" strokeLinejoin="round">
           {text}
         </text>
       </g>
@@ -314,21 +156,63 @@ export function StitchedWords({
   );
 }
 
-/** Linen weave for use inside an SVG frame (the page itself gets it from CSS). */
-export function LinenFill({ d, ground, id }: { d: string; ground: string; id: string }) {
+/** A running-stitch border that sews a label or mat onto the cloth, sewn in on view. */
+export function LabelStitch({ c = thread.madder }: { c?: string }) {
+  const [ref, sewn] = useSewIn<SVGSVGElement>();
+  const m = useSvgId("mat");
+  const r = { x: 0, y: 0, width: "100%", height: "100%" };
   return (
-    <g>
+    <svg ref={ref} className={`${styles.labelStitch} ${styles.cloth}`} data-sewn={sewn ? "" : undefined} aria-hidden="true" focusable="false">
+      <mask id={m}>
+        <rect {...r} rx="3" pathLength={1} className={styles.draw} fill="none" stroke="#fff" strokeWidth="8" />
+      </mask>
+      <g mask={`url(#${m})`} fill="none">
+        <rect {...r} rx="3" stroke="rgba(59,43,31,.3)" strokeWidth="1.6" strokeDasharray="5 4" transform="translate(0.6 0.8)" />
+        <rect {...r} rx="3" stroke={c} strokeWidth="1.6" strokeDasharray="5 4" strokeLinecap="round" />
+      </g>
+    </svg>
+  );
+}
+
+export type DividerPattern = "running" | "chain" | "cross" | "satin" | "knots" | "long";
+
+/** A stitched divider between sections; each section gets its own pattern. */
+export function Divider({ pattern, c = thread.madder, className }: { pattern: DividerPattern; c?: string; className?: string }) {
+  const [ref, sewn] = useSewIn<SVGSVGElement>();
+  const p = useSvgId("div");
+  const m = useSvgId("divm");
+  const motif = (col: string): Record<DividerPattern, ReactNode> => ({
+    running: <line x1="2" y1="11" x2="12" y2="11" stroke={col} strokeWidth="1.7" strokeLinecap="round" />,
+    chain: <path d="M2 11c0-4 10-4 10 0s-10 4-10 0" fill="none" stroke={col} strokeWidth="1.4" />,
+    cross: (
+      <g stroke={col} strokeWidth="1.5" strokeLinecap="round">
+        <line x1="4" y1="7" x2="10" y2="15" />
+        <line x1="10" y1="7" x2="4" y2="15" />
+      </g>
+    ),
+    satin: (
+      <g stroke={col} strokeWidth="1.3" strokeLinecap="round">
+        <line x1="3" y1="15" x2="6" y2="7" />
+        <line x1="5.4" y1="15" x2="8.4" y2="7" />
+        <line x1="7.8" y1="15" x2="10.8" y2="7" />
+      </g>
+    ),
+    knots: <circle cx="7" cy="11" r="2" fill={col} />,
+    long: <line x1="1" y1="11" x2="13" y2="11" stroke={col} strokeWidth="1.7" strokeLinecap="round" />,
+  });
+  const tile = pattern === "knots" ? 22 : pattern === "long" ? 15 : 14;
+  return (
+    <svg ref={ref} className={[styles.divider, styles.cloth, className].filter(Boolean).join(" ")} data-sewn={sewn ? "" : undefined} aria-hidden="true" focusable="false">
       <defs>
-        <filter id={`${id}-w`} x="0" y="0" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9 0.05" numOctaves="2" seed="3" result="a" />
-          <feTurbulence type="fractalNoise" baseFrequency="0.05 0.9" numOctaves="2" seed="9" result="b" />
-          <feBlend in="a" in2="b" mode="multiply" />
-          <feColorMatrix values="0 0 0 0 0.33  0 0 0 0 0.25  0 0 0 0 0.16  1.1 0 0 0 -0.46" />
-          <feComposite in2="SourceGraphic" operator="in" />
-        </filter>
+        <pattern id={p} width={tile} height="22" patternUnits="userSpaceOnUse">
+          <g transform="translate(0.5 0.7)">{motif("rgba(59,43,31,.3)")[pattern]}</g>
+          {motif(c)[pattern]}
+        </pattern>
       </defs>
-      <path d={d} fill={ground} />
-      <path d={d} fill={ground} filter={`url(#${id}-w)`} opacity="0.5" />
-    </g>
+      <mask id={m}>
+        <line x1="0" y1="11" x2="100%" y2="11" pathLength={1} className={styles.draw} stroke="#fff" strokeWidth="30" />
+      </mask>
+      <rect x="0" y="0" width="100%" height="22" fill={`url(#${p})`} mask={`url(#${m})`} />
+    </svg>
   );
 }

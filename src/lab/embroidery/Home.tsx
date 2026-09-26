@@ -1,61 +1,63 @@
-import { type CSSProperties, useEffect } from "react";
+import { type CSSProperties, type ReactNode, useEffect } from "react";
 import { Link, useLocation } from "react-router";
-import { siteMeta } from "../../data/siteContent";
+import { about, coursework, educationItems, experienceItems, interests, siteMeta } from "../../data/siteContent";
 import { useDocumentTitle } from "../../lib/useDocumentTitle";
-import { EmblemArt } from "./emblems";
-import { Cloth, Knots, Run, StitchedWords, thread, useSvgId } from "./stitch";
-import { FONT_HREF, band, everyProject, projectPath, themeFor } from "./themes";
+import type { Project } from "../../types";
+import { Thumb } from "./mount";
+import { activeProjects, admEra, clientAndSchool, madeProjects } from "./status";
+import { Cloth, type DividerPattern, Divider, Knot, LabelStitch, Run, StitchedWords, thread } from "./stitch";
+import { FONT_HREF, projectPath, themeFor } from "./themes";
+import { visuals } from "./visuals";
 import styles from "./embroidery.module.css";
 
-/** The narrow stitched border above and below each length of the band. */
-export function BandEdge({ side }: { side: "top" | "bottom" | "left" | "right" }) {
-  const vertical = side === "left" || side === "right";
-  const pat = useSvgId(`edge${side}`);
-  const line = (o: number, key: string, dash: string, w: number) =>
-    vertical ? (
-      <g key={key}>
-        <line x1={o + 0.5} y1="0" x2={o + 0.5} y2="100%" stroke="rgba(59,43,31,.3)" strokeWidth={w} strokeDasharray={dash} transform="translate(0 0.6)" />
-        <line x1={o} y1="0" x2={o} y2="100%" stroke={o > 10 ? thread.madder : thread.walnut} strokeWidth={w} strokeDasharray={dash} strokeLinecap="round" />
-      </g>
-    ) : (
-      <g key={key}>
-        <line x1="0" y1={o + 0.6} x2="100%" y2={o + 0.6} stroke="rgba(59,43,31,.3)" strokeWidth={w} strokeDasharray={dash} transform="translate(0.5 0)" />
-        <line x1="0" y1={o} x2="100%" y2={o} stroke={o > 10 ? thread.madder : thread.walnut} strokeWidth={w} strokeDasharray={dash} strokeLinecap="round" />
-      </g>
-    );
+/** The first sentence of a summary. */
+export const oneLine = (p: Project) => p.summary.split(/(?<=\.)\s/)[0];
+
+/** Years covered by strings like "2012 to 2025", "2025 to present", "2019". */
+function span(years: string) {
+  const [a, , b] = years.split(" ");
+  const from = Number(a.slice(0, 4));
+  const to = b === "present" ? 2026 : b ? Number(b.slice(0, 4)) : from;
+  return Math.max(1, to - from);
+}
+
+/** A section: a stitched heading, its own divider pattern, then the content. */
+function Section({ id, title, pattern, c, children }: { id: string; title: string; pattern: DividerPattern; c?: string; children: ReactNode }) {
   return (
-    <svg className={styles.edge} data-side={side} aria-hidden="true" focusable="false">
-      <defs>
-        <pattern id={pat} width="44" height="44" patternUnits="userSpaceOnUse" patternTransform={vertical ? "rotate(90)" : undefined}>
-          <circle cx="22.5" cy="9.7" r="1.9" fill="rgba(59,43,31,.3)" />
-          <circle cx="22" cy="9" r="1.9" fill={thread.weld} />
-        </pattern>
-      </defs>
-      {line(2, "a", "5 4", 1.6)}
-      {vertical ? <rect x="0" y="0" width="18" height="100%" fill={`url(#${pat})`} /> : <rect x="0" y="0" width="100%" height="18" fill={`url(#${pat})`} />}
-      {line(16, "b", "3 4", 1.2)}
-    </svg>
+    <section id={id} className={styles.section} aria-labelledby={`${id}-h`}>
+      <h2 id={`${id}-h`} className={styles.sectionHeading}>
+        <span className={styles.srOnly}>{title}</span>
+        <StitchedWords text={title} c={thread.walnut} size={30} width={Math.ceil(title.length * 15.5) + 8} className={styles.sectionWords} center />
+      </h2>
+      <Divider pattern={pattern} c={c ?? thread.madder} className={styles.sectionDivider} />
+      {children}
+    </section>
   );
 }
 
-function Sprig() {
+/** A compact entry: a small mounted thumbnail of the real product if there is one. */
+function Entries({ list }: { list: Project[] }) {
   return (
-    <svg viewBox="0 0 22 56" className={styles.sprig} aria-hidden="true" focusable="false">
-      <path d="M11.5 54.6 C11 40 12 22 11 6" stroke="rgba(59,43,31,.3)" strokeWidth="1.6" fill="none" />
-      <path d="M11 54 C10.5 40 11.5 22 10.5 5" stroke={thread.green} strokeWidth="1.6" fill="none" strokeLinecap="round" />
-      <path d="M11 30 C6 28 4 22 4 18 M11 38 C16 36 18 30 18 26" stroke={thread.green} strokeWidth="1.4" fill="none" strokeLinecap="round" />
-      <Knots c={thread.weld} r={2.2} pts={[[10.5, 5], [4, 17], [18, 25]]} />
-    </svg>
-  );
-}
-
-/** A running-stitch border that sews a label onto the cloth. */
-export function LabelStitch({ c = thread.madder }: { c?: string }) {
-  return (
-    <svg className={styles.labelStitch} aria-hidden="true" focusable="false">
-      <rect x="0" y="0" width="100%" height="100%" rx="3" fill="none" stroke="rgba(59,43,31,.3)" strokeWidth="1.6" strokeDasharray="5 4" transform="translate(0.6 0.8)" />
-      <rect x="0" y="0" width="100%" height="100%" rx="3" fill="none" stroke={c} strokeWidth="1.6" strokeDasharray="5 4" strokeLinecap="round" />
-    </svg>
+    <ul className={styles.entries}>
+      {list.map((p) => {
+        const hero = visuals[p.slug]?.hero[0];
+        const c = themeFor(p.slug).thread;
+        return (
+          <li key={p.slug} className={styles.entry}>
+            <div className={styles.entryThumb}>{hero ? <Thumb shot={hero} c={c} /> : <Knot c={c} className={styles.entryKnot} />}</div>
+            <div className={styles.entryText}>
+              <p className={styles.otherHead}>
+                <Link to={projectPath(p.slug)}>{p.title}</Link>
+              </p>
+              <p className={styles.entryMeta}>
+                {p.year}, {p.status.charAt(0).toLowerCase() + p.status.slice(1)}
+              </p>
+              <p className={styles.otherLine}>{oneLine(p)}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -66,21 +68,17 @@ export function EmbroideryHome() {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView();
   }, [hash]);
 
-  let lastYear = "";
-
   return (
     <div className={styles.root}>
       <link rel="stylesheet" href={FONT_HREF} precedence="default" />
 
       <header className={styles.masthead}>
         <h1 className={styles.name}>Ala Arab</h1>
-        <Cloth viewBox="0 0 200 8" className={styles.nameRule} wobble={false}>
+        <Cloth viewBox="0 0 200 8" className={styles.nameRule}>
           <Run c={thread.madder} w={1.6} dash={[4, 3.4]} d="M3 4 H197" />
         </Cloth>
         <p className={styles.title}>{siteMeta.title}</p>
-        <p className={styles.intro}>
-          {siteMeta.intro} Based in Los Angeles.
-        </p>
+        <p className={styles.intro}>{siteMeta.intro} Based in Los Angeles.</p>
         <nav className={styles.contactLine} aria-label="Contact">
           <a href={siteMeta.emailHref}>{siteMeta.email}</a>
           <a href={siteMeta.linkedinHref}>LinkedIn</a>
@@ -89,66 +87,85 @@ export function EmbroideryHome() {
         </nav>
       </header>
 
-      <section id="band" className={styles.bandSection} aria-labelledby="band-heading">
-        <h2 id="band-heading" className={styles.bandHeading}>
-          The work, in the order it was made
-        </h2>
-        <ol className={styles.band}>
-          {band.map((p) => {
-            const year = p.year.slice(0, 4);
-            const mark = year !== lastYear ? year : "";
-            lastYear = year;
+      <Section id="about" title="About" pattern="long" c={thread.walnut}>
+        <div className={styles.about}>
+          {about.map((para) => (
+            <p key={para.slice(0, 24)}>{para}</p>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="experience" title="Experience" pattern="chain" c={thread.woad}>
+        <ol className={styles.expList}>
+          {experienceItems.map((e) => {
+            const n = span(e.years);
             return (
-              <li key={p.slug} className={styles.length} style={{ "--thread": themeFor(p.slug).thread } as CSSProperties}>
-                <BandEdge side="top" />
-                <BandEdge side="bottom" />
-                <BandEdge side="left" />
-                <BandEdge side="right" />
-                <Sprig />
-                <Link to={projectPath(p.slug)} className={styles.emblemLink}>
-                  <Cloth viewBox="0 0 120 120" className={styles.emblem}>
-                    <EmblemArt slug={p.slug} />
-                  </Cloth>
-                  <span className={styles.emblemName}>{p.title}</span>
-                  <span className={styles.srOnly}>, {p.year}</span>
-                </Link>
-                {mark && (
-                  <span className={styles.yearMark} aria-hidden="true">
-                    <StitchedWords text={mark} c={thread.madder} size={18} width={48} italic />
-                  </span>
-                )}
+              <li key={e.company} className={styles.expItem}>
+                <h3 className={styles.expRole}>{e.role}</h3>
+                <p className={styles.expWhere}>
+                  {e.company}, {e.location}
+                </p>
+                <p className={styles.expYears}>
+                  <svg className={styles.yearsRule} style={{ "--n": n } as CSSProperties} aria-hidden="true" focusable="false">
+                    <line x1="3" y1="5" x2="100%" y2="5" stroke="rgba(59,43,31,.3)" strokeWidth="1.6" strokeDasharray="5 4" transform="translate(0.5 0.7)" />
+                    <line x1="3" y1="5" x2="100%" y2="5" stroke={thread.madder} strokeWidth="1.6" strokeDasharray="5 4" strokeLinecap="round" />
+                  </svg>
+                  <span>{e.years}</span>
+                </p>
+                <p className={styles.expSummary}>{e.summary}</p>
               </li>
             );
           })}
         </ol>
-      </section>
+      </Section>
 
-      <section className={styles.keySection} aria-labelledby="key-heading">
-        <div className={styles.label}>
-          <LabelStitch c={thread.walnut} />
-          <h2 id="key-heading" className={styles.labelHeading}>
-            The key
-          </h2>
-          <p className={styles.labelNote}>Every project, oldest first.</p>
-          <ol className={styles.keyList}>
-            {everyProject.map((p) => (
-              <li key={p.slug}>
-                <svg viewBox="0 0 12 12" className={styles.keyKnot} aria-hidden="true" focusable="false">
-                  <Knots c={themeFor(p.slug).thread} r={3.4} pts={[[6, 6]]} />
-                </svg>
-                <Link to={projectPath(p.slug)}>{p.title}</Link>
-                <span className={styles.keyYear}>{p.year}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      <Section id="education" title="Education" pattern="cross" c={thread.green}>
+        <ul className={styles.eduList}>
+          {educationItems.map((e) => (
+            <li key={e.school}>
+              <h3 className={styles.expRole}>{e.school}</h3>
+              <p className={styles.expWhere}>
+                {e.detail}, {e.years}
+              </p>
+            </li>
+          ))}
+        </ul>
+        <h3 className={styles.subHeading}>Relevant coursework</h3>
+        <ul className={styles.coursework}>
+          {coursework.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section id="work" title="Active projects" pattern="running">
+        <Entries list={activeProjects} />
+      </Section>
+
+      <Section id="made" title="Things I've made" pattern="satin" c={thread.weld}>
+        <Entries list={madeProjects} />
+        <h3 className={styles.subHeading}>At ADM Associates</h3>
+        <Entries list={admEra} />
+        <h3 className={styles.subHeading}>Client and school work</h3>
+        <Entries list={clientAndSchool} />
+      </Section>
+
+      <Section id="interests" title="Interests" pattern="knots" c={thread.plum}>
+        <p className={styles.interests}>
+          {interests.map((it, k) => (
+            <span key={it} className={styles.interest}>
+              {k > 0 && <Knot c={[thread.madder, thread.woad, thread.weld, thread.green][k % 4]} className={styles.interestKnot} />}
+              {it}
+            </span>
+          ))}
+        </p>
+      </Section>
 
       <footer className={styles.signatureWrap}>
         <div className={styles.signature}>
           <LabelStitch />
           <h2 className={styles.srOnly}>Contact</h2>
-          <StitchedWords text="Ala Arab, Los Angeles" c={thread.madder} size={30} width={320} className={styles.signatureWords} />
+          <StitchedWords text="Ala Arab, Los Angeles" c={thread.madder} size={30} width={320} className={styles.signatureWords} center />
           <p className={styles.srOnly}>Ala Arab, Los Angeles</p>
           <p className={styles.signatureNote}>{siteMeta.availability}</p>
           <p className={styles.signatureLinks}>
