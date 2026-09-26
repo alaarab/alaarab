@@ -1,0 +1,718 @@
+/* Workshop: a painted workroom in afternoon light. */
+
+.root {
+  --paper: #f5ead8;
+  --paper-deep: #efe0c8;
+  --ink: #3a3140;
+  --ink-soft: #5f5467;
+  --link: #94474a;
+  --honey: #f4c77e;
+  --serif: "Lora", Georgia, serif;
+  --sans: "Figtree", system-ui, sans-serif;
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+  font-family: var(--sans);
+  font-size: 18px;
+  line-height: 1.62;
+  overflow-x: clip;
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  color: inherit;
+  letter-spacing: 0;
+}
+
+.root :focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Home: the desk ---------- */
+
+.top {
+  position: relative;
+}
+
+.scene {
+  position: relative;
+  height: clamp(540px, 88vh, 60vw);
+  overflow: hidden;
+  background: #cbb293;
+}
+
+.deskSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.titleCard::before {
+  content: "";
+  position: absolute;
+  inset: -40px -60px -40px -50px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(244, 232, 212, 0.5), rgba(244, 232, 212, 0.22) 72%, transparent);
+  pointer-events: none;
+}
+
+.titleCard {
+  z-index: 0;
+  position: absolute;
+  left: max(28px, 4.5vw);
+  top: 11%;
+  max-width: min(30vw, 400px);
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(40px, 4.2vw, 62px);
+  line-height: 1.05;
+}
+
+.role {
+  margin: 14px 0 0;
+  font-size: 19px;
+  color: var(--ink);
+}
+
+.hint {
+  margin: 22px 0 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  max-width: 17em;
+}
+
+@media (min-width: 701px) {
+  .topNight .titleCard {
+  --ink: #f1e6d4;
+  --ink-soft: #ddd2c4;
+  color: var(--ink);
+}
+
+  .topNight .titleCard::before {
+    background: radial-gradient(closest-side, rgba(26, 31, 58, 0.6), rgba(26, 31, 58, 0.3) 70%, transparent);
+  }
+}
+
+.clock {
+  position: absolute;
+  right: max(24px, 3vw);
+  bottom: 18px;
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: #efe4d2;
+}
+
+/* Desk objects */
+.obj {
+  cursor: pointer;
+  outline: none;
+}
+
+.hit {
+  fill: transparent;
+  stroke: transparent;
+}
+
+.objArt {
+  transition: filter 0.35s ease;
+}
+
+.obj:hover .objArt,
+.obj:focus-visible .objArt {
+  filter: drop-shadow(0 0 6px rgba(255, 222, 160, 0.95)) drop-shadow(0 0 22px rgba(244, 190, 110, 0.7));
+}
+
+.root .obj:focus-visible,
+.root .knob:focus-visible {
+  outline: none;
+}
+
+.obj:focus-visible .hit {
+  stroke: #3a3140;
+  stroke-width: 2.5;
+  stroke-dasharray: 6 6;
+}
+
+.caption {
+  font-family: "Lora", Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  fill: #3a3140;
+  paint-order: stroke;
+  stroke: #f5ead8;
+  stroke-width: 6px;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.obj:hover .caption,
+.obj:focus-visible .caption {
+  opacity: 1;
+}
+
+/* The one ambient motion: dust drifting in the beam */
+.dust circle {
+  animation: ws-drift 26s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dust circle,
+  .cable {
+    animation: none !important;
+  }
+  .objArt,
+  .caption {
+    transition: none;
+  }
+}
+
+/* ---------- Home: the text under the picture ---------- */
+
+.page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 72px 24px 56px;
+}
+
+.intro p {
+  margin: 0 0 18px;
+}
+
+.lead {
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.4vw, 30px);
+  line-height: 1.35;
+  margin-bottom: 26px !important;
+}
+
+.h2 {
+  font-size: 26px;
+  margin: 72px 0 18px;
+}
+
+.lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.line + .line {
+  border-top: 1px solid rgba(58, 49, 64, 0.12);
+}
+
+.lineLink {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 16px;
+  padding: 14px 0 16px;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.lineTitle {
+  font-family: var(--serif);
+  font-size: 21px;
+  color: var(--link);
+}
+
+.lineYear {
+  font-size: 15px;
+  color: var(--ink-soft);
+  align-self: baseline;
+}
+
+.lineText {
+  grid-column: 1 / -1;
+  color: var(--ink-soft);
+  font-size: 17px;
+  margin-top: 2px;
+}
+
+.lineLink:hover .lineTitle {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.quiet {
+  color: var(--ink-soft);
+  margin: -8px 0 12px;
+  font-size: 16px;
+}
+
+.nowList {
+  margin: 0 0 16px;
+  padding-left: 1.1em;
+}
+
+.nowList li {
+  margin: 6px 0;
+}
+
+.nowList li::marker {
+  color: #c9906a;
+}
+
+.link {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  padding: 12px 6px;
+  margin: 0 -6px;
+}
+
+.contact p {
+  margin: 0;
+}
+
+.footer {
+  margin-top: 80px;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 700px) {
+  .root {
+    font-size: 17px;
+  }
+  .scene {
+    height: auto;
+    aspect-ratio: 1000 / 700;
+  }
+  .titleCard::before {
+    display: none;
+  }
+  .titleCard {
+    position: static;
+    max-width: none;
+    padding: 28px 20px 0;
+  }
+  .clock {
+    right: 14px;
+    bottom: 10px;
+    font-size: 13px;
+  }
+  .page {
+    padding: 40px 20px 48px;
+  }
+  .h2 {
+    margin-top: 56px;
+  }
+}
+
+/* ---------- Project pages: walking up to one object ---------- */
+
+.close {
+  position: relative;
+  height: clamp(420px, 72vh, 50vw);
+  overflow: hidden;
+  background: #cbb293;
+}
+
+.closeSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.backOver {
+  position: absolute;
+  top: 20px;
+  left: max(20px, 3vw);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 22px;
+  background: rgba(245, 234, 216, 0.82);
+  color: var(--ink);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.backOver::before {
+  content: "\2190";
+  margin-right: 8px;
+}
+
+.backOver:hover {
+  background: rgba(245, 234, 216, 0.96);
+}
+
+.fig {
+  position: absolute;
+  right: max(20px, 3vw);
+  bottom: 16px;
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: #3a3140;
+  background: rgba(245, 234, 216, 0.7);
+  padding: 4px 12px;
+  border-radius: 14px;
+}
+
+.title {
+  font-size: clamp(40px, 5vw, 58px);
+  line-height: 1.08;
+  margin: 0;
+}
+
+.meta {
+  margin: 10px 0 28px;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+
+.quote {
+  margin: 40px 0;
+  padding: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(22px, 2.2vw, 26px);
+  line-height: 1.45;
+  color: var(--ink);
+  max-width: 30em;
+}
+
+.quote::before {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: var(--link);
+  opacity: 0.5;
+  margin-bottom: 20px;
+}
+
+.prose {
+  margin-top: 36px;
+}
+
+.para {
+  position: relative;
+}
+
+.para p,
+.particulars p {
+  margin: 0 0 22px;
+}
+
+.margin {
+  position: absolute;
+  left: -150px;
+  width: 130px;
+  text-align: right;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+}
+
+.particulars {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(58, 49, 64, 0.14);
+}
+
+.particulars p {
+  position: relative;
+  color: var(--ink-soft);
+}
+
+.walkOn {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 56px;
+  font-size: 17px;
+}
+
+.walkOn .link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (max-width: 1060px) {
+  .margin {
+    position: static;
+    display: block;
+    width: auto;
+    text-align: left;
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+}
+
+/* Phren: an open notebook on the desk */
+.phrenDesk {
+  position: relative;
+  padding: 96px 24px 88px;
+  background:
+    radial-gradient(ellipse 70% 60% at 40% 18%, rgba(255, 214, 150, 0.45), transparent 70%),
+    linear-gradient(180deg, #b7865d 0%, #9c6c49 55%, #7f5439 100%);
+  overflow: hidden;
+}
+
+.phrenLight {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.notebook {
+  position: relative;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 14px;
+  z-index: 0;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #a9b894, #879a78);
+}
+
+.notebook::before {
+  content: "";
+  position: absolute;
+  inset: 24px -10px -22px 30px;
+  background: #3f3a55;
+  opacity: 0.45;
+  filter: blur(22px);
+  border-radius: 20px;
+  z-index: -1;
+}
+
+.spread {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.leaf {
+  padding: 48px 52px 40px;
+  background-color: #f8f0df;
+  background-image: repeating-linear-gradient(180deg, transparent 0 31px, rgba(110, 130, 165, 0.16) 31px 32px);
+  background-position: 0 9px;
+  font-size: 17px;
+  line-height: 32px;
+  min-width: 0;
+}
+
+.leaf:first-child {
+  border-radius: 6px 0 0 6px;
+  box-shadow: inset -26px 0 30px -18px rgba(90, 80, 70, 0.28);
+}
+
+.leaf:last-child {
+  border-radius: 0 6px 6px 0;
+  box-shadow: inset 26px 0 30px -18px rgba(90, 80, 70, 0.28);
+}
+
+.leaf p {
+  margin: 0 0 32px;
+}
+
+.sketch {
+  display: block;
+  width: 180px;
+  height: 128px;
+  margin: 0 0 32px;
+}
+
+.leaf .title {
+  line-height: 64px;
+}
+
+.leaf .meta {
+  margin: 0 0 32px;
+  line-height: 32px;
+}
+
+.leaf .lead {
+  font-size: 21px;
+  line-height: 32px;
+  font-family: var(--serif);
+}
+
+.ribbon {
+  position: absolute;
+  left: calc(50% + 14px);
+  top: -4px;
+  width: 8px;
+  height: calc(100% + 64px);
+  background: linear-gradient(180deg, #b4a6cf, #9587bb);
+  border-radius: 0 0 2px 2px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 96%, 0 100%);
+  opacity: 0.9;
+  z-index: 1;
+}
+
+.tabs {
+  position: absolute;
+  right: -118px;
+  top: 64px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 150px;
+  z-index: -1;
+}
+
+.tabs li {
+  margin: 0 0 22px;
+  padding: 10px 12px 10px 30px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--ink);
+  border-radius: 0 6px 6px 0;
+}
+
+@media (max-width: 1320px) {
+  .tabs {
+    position: static;
+    width: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 4px 2px;
+  }
+  .tabs li {
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 820px) {
+  .phrenDesk {
+    padding: 84px 10px 56px;
+  }
+  .spread {
+    grid-template-columns: 1fr;
+  }
+  .leaf {
+    padding: 32px 22px 8px;
+  }
+  .leaf:first-child,
+  .leaf:last-child {
+    border-radius: 6px;
+    box-shadow: none;
+  }
+  .leaf:last-child {
+    border-radius: 0 0 6px 6px;
+    padding-top: 8px;
+  }
+  .ribbon {
+    left: auto;
+    right: 36px;
+    height: 180px;
+  }
+}
+
+/* m4l-builder: the box up close */
+.m4l {
+  --paper: #f4e6d2;
+  --link: #87461c;
+}
+
+.silk {
+  font-family: "Lora", Georgia, serif;
+  font-style: italic;
+  font-size: 30px;
+  fill: #5a3620;
+  opacity: 0.8;
+}
+
+.silkSmall {
+  font-family: "Lora", Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  fill: #5a3620;
+}
+
+.knob {
+  cursor: grab;
+  outline: none;
+  touch-action: none;
+}
+
+.knob:active {
+  cursor: grabbing;
+}
+
+.knobRing {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 4;
+}
+
+.knob:focus-visible .knobRing {
+  stroke: #3a3140;
+  stroke-dasharray: 8 8;
+}
+
+.cable {
+  transform-origin: 840px 548px;
+  animation: ws-sway 7s ease-in-out infinite alternate;
+}
+
+/* Mina: night, one lamp */
+.mina {
+  --paper: #1d2336;
+  --ink: #ebe3d5;
+  --ink-soft: #c3bcc4;
+  --link: #f1c58c;
+  color-scheme: dark;
+}
+
+.mina .close {
+  background: #1d2336;
+}
+
+.mina .backOver {
+  background: rgba(29, 35, 54, 0.75);
+  color: var(--ink);
+}
+
+.mina .particulars {
+  border-top-color: rgba(235, 227, 213, 0.16);
+}
+
+@media (max-width: 700px) {
+  .close {
+    height: auto;
+    aspect-ratio: 1000 / 720;
+  }
+  .fig {
+    display: none;
+  }
+  .backOver {
+    top: 12px;
+    left: 12px;
+    font-size: 15px;
+  }
+}

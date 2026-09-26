@@ -1,0 +1,904 @@
+/* Folio: the site as a cloth-bound book. */
+
+.root {
+  --cloth: #2f3d51;
+  --cloth-dark: #243044;
+  --gold: #b8955a;
+  --gold-pale: #dcc493;
+  --paper: #f3ecdc;
+  --text: #2b2621;
+  --soft: #5b5046;
+  --rubric: #8a3b2e;
+  --ink: var(--rubric);
+  --display: "Cormorant Garamond", "EB Garamond", Garamond, Georgia, serif;
+  --book: "EB Garamond", Garamond, Georgia, serif;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  color-scheme: light;
+  color: var(--text);
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.29 0 0 0 0 0.2 0.16 0 0 0 -0.04'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  font-family: var(--book);
+  font-size: 19px;
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: var(--display);
+  font-weight: 500;
+}
+
+.root a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.root a:hover {
+  color: var(--ink);
+}
+
+.root :focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.smallcaps {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- Stage: cover over the endpaper and title page ---------- */
+
+.stage {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  perspective: 2400px;
+}
+
+.spread {
+  display: grid;
+  grid-template-columns: minmax(0, 36fr) minmax(0, 64fr);
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.endpaperPage {
+  position: relative;
+  border-right: 1px solid rgba(43, 38, 33, 0.16);
+}
+
+.endpaper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.titlePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12vh 2rem 7vh;
+}
+
+.titleEmblem {
+  width: 64px;
+  height: auto;
+  margin-bottom: 2.4rem;
+}
+
+.titleName {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin: 0;
+  padding-left: 0.2em;
+}
+
+.titleRule {
+  width: 64px;
+  height: 1px;
+  background: var(--gold);
+  margin: 1.8rem auto;
+}
+
+.titleSub {
+  font-style: italic;
+  font-size: 1.2rem;
+  max-width: 24em;
+  color: var(--soft);
+  margin: 0;
+}
+
+.catchword {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 1.4rem;
+  font-style: italic;
+  color: var(--soft);
+}
+
+.root .catchword {
+  text-decoration: none;
+}
+
+.bookPlate {
+  max-width: 50rem;
+  margin: 14vh auto 0;
+  padding: 0;
+}
+
+.landscape {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bookPlate figcaption {
+  margin-top: 1rem;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--soft);
+}
+
+.imprint {
+  margin-top: auto;
+  padding-top: 3rem;
+  color: var(--soft);
+}
+
+.imprint p {
+  margin: 0;
+}
+
+.imprintDate {
+  font-size: 0.95rem;
+}
+
+.imprintMail {
+  margin-top: 0.8rem !important;
+  font-size: 0.95rem;
+}
+
+.imprintMail a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* The cover */
+
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cloth);
+  color: var(--gold-pale);
+  cursor: pointer;
+  transform-origin: left center;
+  backface-visibility: hidden;
+}
+
+.coverCloth {
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='h'><feTurbulence type='fractalNoise' baseFrequency='0.02 0.9' numOctaves='2' seed='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.13 0 0 0 -0.03'/></filter><filter id='v'><feTurbulence type='fractalNoise' baseFrequency='0.9 0.02' numOctaves='2' seed='5' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0 0 0 -0.08'/></filter><rect width='100%' height='100%' filter='url(%23h)'/><rect width='100%' height='100%' filter='url(%23v)'/></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='3' seed='9' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.1 0 0 0 0 0.16 0.5 0 0 0 -0.15'/></filter><rect width='100%' height='100%' filter='url(%23m)'/></svg>");
+}
+
+/* The groove where the board meets the spine. */
+.coverCloth::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 44px;
+  width: 3px;
+  background: var(--cloth-dark);
+  box-shadow: 2px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+.coverBorder {
+  position: absolute;
+  inset: clamp(20px, 4vw, 44px);
+  left: clamp(68px, 7vw, 96px);
+  border: 1.5px solid var(--gold);
+  opacity: 0.85;
+}
+
+.coverBorder::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 0.75px solid var(--gold);
+}
+
+.coverInner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-left: 40px;
+}
+
+.root .coverName {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0;
+  color: var(--gold-pale);
+}
+
+.coverEmblem {
+  width: clamp(120px, 15vw, 190px);
+  height: auto;
+  margin: clamp(2rem, 6vh, 3.6rem) 0;
+}
+
+.coverTitle {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  margin: 0;
+}
+
+.coverPlace {
+  margin: 0.4rem 0 0;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.2em;
+  font-size: 1.05rem;
+}
+
+.openButton {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(36px, 7vh, 72px);
+  transform: translateX(-50%);
+  margin-left: 20px;
+  min-height: 44px;
+  padding: 0 1.2rem;
+  background: none;
+  border: 0;
+  color: var(--gold-pale);
+  font: inherit;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.18em;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.root .openButton:focus-visible,
+.root .cover :focus-visible {
+  outline-color: var(--gold-pale);
+}
+
+.coverOpening {
+  animation: folio-hinge 1.5s cubic-bezier(0.5, 0.05, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+
+
+
+/* ---------- The book's pages ---------- */
+
+.book {
+  padding: 0 16px 6rem;
+}
+
+.page {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 16vh 0 4rem;
+}
+
+.book .page:first-of-type {
+  padding-top: 12vh;
+}
+
+.pageHeading {
+  text-align: center;
+  font-size: 1.7rem;
+  letter-spacing: 0.16em;
+  font-variant-caps: all-small-caps;
+  margin: 0 0 2.6rem;
+  color: var(--text);
+}
+
+.prose {
+  margin: 0;
+  hyphens: auto;
+}
+
+.prose + .prose {
+  text-indent: 1.4em;
+}
+
+.dropcap {
+  margin: 0;
+  hyphens: auto;
+}
+
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 4.4em;
+  line-height: 0.82;
+  margin: 0.06em 0.1em 0 0;
+  color: var(--ink);
+}
+
+.dropcap::first-line {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.03em;
+}
+
+.dropcap + .prose {
+  text-indent: 1.4em;
+}
+
+.signoff {
+  text-align: right;
+  font-style: italic;
+  color: var(--soft);
+  margin: 1.6rem 0 0;
+}
+
+.folio {
+  text-align: center;
+  color: var(--soft);
+  font-size: 0.95rem;
+  margin: 4rem 0 0;
+  grid-column: 1 / -1;
+}
+
+.ornament {
+  width: 120px;
+  margin: 2.4rem auto;
+}
+
+.ornament svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Contents */
+
+.toc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.root .tocLink {
+  display: flex;
+  align-items: baseline;
+  padding: 0.28rem 0;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.tocNum {
+  flex: none;
+  width: 3.4em;
+  padding-right: 1.1em;
+  text-align: right;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.06em;
+  color: var(--rubric);
+}
+
+.tocTitle {
+  flex: none;
+  font-size: 1.12rem;
+}
+
+.leader {
+  flex: 1;
+  min-width: 1.5em;
+  height: 0.5em;
+  margin: 0 0.5em;
+  background-image: radial-gradient(circle, rgba(43, 38, 33, 0.55) 0.9px, transparent 1.3px);
+  background-size: 7px 4px;
+  background-repeat: repeat-x;
+  background-position: left bottom;
+}
+
+.tocPage {
+  flex: none;
+  min-width: 1.6em;
+  text-align: right;
+  color: var(--soft);
+}
+
+.root .tocLink:hover .tocTitle {
+  color: var(--rubric);
+}
+
+.tocPart {
+  margin: 2.4rem 0 0.6rem;
+  text-align: center;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.16em;
+  color: var(--soft);
+}
+
+/* Colophon */
+
+.colophon {
+  text-align: center;
+}
+
+.colophon .prose + .prose {
+  text-indent: 0;
+  margin-top: 1rem;
+}
+
+.colophonEmblem {
+  display: block;
+  width: 52px;
+  height: auto;
+  margin: 3rem auto 0;
+}
+
+/* ---------- Chapters ---------- */
+
+.chapterRoot {
+  --text: #2b2621;
+}
+
+.runningHead {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.4rem 16px 0.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+  font-size: 1rem;
+  color: var(--soft);
+}
+
+.root .headLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.headRight {
+  text-align: right;
+}
+
+.chapter {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 16px 3rem;
+}
+
+.chapter > * {
+  max-width: 34rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.chapterNum {
+  text-align: center;
+  margin-top: 10vh;
+  margin-bottom: 0;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.24em;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.root .chapterTitle {
+  text-align: center;
+  font-size: clamp(2.6rem, 6vw, 4rem);
+  line-height: 1.05;
+  margin-top: 0.2em;
+  margin-bottom: 0;
+  color: var(--text);
+}
+
+.epigraph {
+  margin: 1.6rem auto 0;
+  max-width: 26em;
+  text-align: center;
+  font-style: italic;
+  color: var(--soft);
+  font-size: 1.02rem;
+}
+
+.epigraph p {
+  margin: 0;
+}
+
+.plate {
+  margin: 3rem auto 3.4rem;
+  padding: 0;
+  text-align: center;
+}
+
+.plateArt {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--ink);
+}
+
+.plate figcaption,
+.spreadFig figcaption {
+  margin-top: 1rem;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--soft);
+  text-align: center;
+}
+
+.notes {
+  margin-top: 3.2rem;
+  color: var(--soft);
+  font-size: 0.95em;
+}
+
+.notes p {
+  margin: 0;
+}
+
+.noteLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.6rem;
+  margin-top: 0.4rem !important;
+}
+
+.noteLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  font-size: 1.05rem;
+}
+
+.chapterFoot {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.4rem 16px 3rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  border-top: 1px solid rgba(184, 149, 90, 0.5);
+  font-size: 1rem;
+}
+
+.chapterFoot a {
+  display: inline-flex;
+  gap: 0.3em;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.footContents {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+}
+
+.footNext {
+  text-align: right;
+}
+
+/* Phren: slips rise out of the book once. */
+.slip {
+  animation: folio-rise 2.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+
+/* m4l-builder: facing pages */
+
+.root .spreadFig {
+  max-width: 56rem;
+  margin: 3rem auto 3.4rem;
+}
+
+.facing {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  color: var(--ink);
+}
+
+.panel {
+  position: relative;
+  padding: 1.4rem 2rem 1.4rem 0;
+  border-right: 1px solid rgba(43, 38, 33, 0.14);
+}
+
+.panelBox {
+  position: relative;
+}
+
+.panelArt {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.knob {
+  position: absolute;
+  left: 50%;
+  top: 46.67%;
+  width: 40%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.root .knob:focus-visible {
+  border-radius: 50%;
+  outline-offset: 2px;
+}
+
+.knob:active {
+  cursor: grabbing;
+}
+
+.knob svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.knobLabel,
+.jackIn,
+.jackOut {
+  position: absolute;
+  transform: translateX(-50%);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+  font-size: 0.95rem;
+  color: var(--soft);
+  line-height: 1;
+}
+
+.knobLabel {
+  left: 50%;
+  top: 73%;
+}
+
+.jackIn,
+.jackOut {
+  top: 83%;
+}
+
+.jackIn {
+  left: 26.7%;
+}
+
+.jackOut {
+  left: 73.3%;
+}
+
+.wavePage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.4rem 0 1.4rem 2rem;
+}
+
+.waveArt {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.waveCaption {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--soft);
+}
+
+/* Mina: a bedtime book. Smaller, narrower, softer. */
+
+.bedtime {
+  --text: #3b3034;
+  --soft: #6a5a5e;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.bedtime .chapter > * {
+  max-width: 30rem;
+}
+
+.bedtime .chapterTitle {
+  font-size: clamp(2.3rem, 5vw, 3.2rem);
+  font-style: italic;
+}
+
+.root.bedtime .plate {
+  max-width: 32rem;
+}
+
+.cradle {
+  transform-origin: 200px 268px;
+  animation: folio-rock 7s ease-in-out 3;
+}
+
+
+/* Not in this edition */
+
+.missing {
+  text-align: center;
+  padding-top: 14vh;
+}
+
+.missingEmblem {
+  display: block;
+  width: 56px;
+  height: auto;
+  margin: 0 auto 1.6rem;
+}
+
+.missing .noteLinks {
+  justify-content: center;
+}
+
+/* ---------- Wider screens: justified text ---------- */
+
+@media (min-width: 760px) {
+  .prose,
+  .dropcap {
+    text-align: justify;
+  }
+  .colophon .prose {
+    text-align: center;
+  }
+}
+
+/* ---------- Phone ---------- */
+
+@media (max-width: 760px) {
+  .root {
+    font-size: 18px;
+  }
+  .bedtime {
+    font-size: 17px;
+  }
+  .spread {
+    grid-template-columns: 1fr;
+    grid-template-rows: 18svh auto;
+  }
+  .endpaperPage {
+    border-right: 0;
+    border-bottom: 1px solid rgba(43, 38, 33, 0.16);
+  }
+  .titlePage {
+    padding: 2.6rem 1.25rem 2rem;
+  }
+  .titleEmblem {
+    margin-bottom: 1.6rem;
+  }
+  .coverCloth::after {
+    left: 22px;
+  }
+  .coverBorder {
+    inset: 20px;
+    left: 40px;
+  }
+  .coverInner {
+    padding: 0 2.2rem 0 3.2rem;
+  }
+  .root .coverName {
+    font-size: 2.3rem;
+    letter-spacing: 0.16em;
+  }
+  .openButton {
+    margin-left: 10px;
+  }
+  .coverOpening {
+    animation: folio-lift 0.8s ease-out forwards;
+  }
+  .runningHead {
+    font-size: 0.95rem;
+  }
+  .headRight {
+    max-width: 55%;
+  }
+  .facing {
+    grid-template-columns: 1fr;
+  }
+  .panel {
+    border-right: 0;
+    border-bottom: 1px solid rgba(43, 38, 33, 0.14);
+    padding: 0.4rem 0 1.4rem;
+  }
+  .wavePage {
+    padding: 1.4rem 0 0;
+  }
+  .chapterFoot {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footContents {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+  .tocNum {
+    width: 2.8em;
+    padding-right: 0.8em;
+  }
+  .root .tocLink {
+    min-height: 44px;
+    align-items: center;
+    padding: 0;
+  }
+  .leader {
+    align-self: center;
+    margin-top: 0.5em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coverOpening,
+  .coverOpening[class] {
+    animation: folio-fade 0.5s ease forwards;
+  }
+  .slip,
+  .cradle {
+    animation: none;
+  }
+}
+
+.root .missing .prose {
+  text-align: center;
+  margin-top: 1.2rem;
+}

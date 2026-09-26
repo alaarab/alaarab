@@ -1,0 +1,1032 @@
+/* Letter: the site is a letter from Ala on laid paper, resting on a sage desk cloth. */
+
+/* Keyframes live in FontLink.tsx: Bun renames module @keyframes but not the names inside `animation`. */
+
+.root {
+  --paper: #f5efe2;
+  --ink: #26303f;
+  --ink-soft: #4f5869;
+  --link: #2b4670;
+  --desk: #b3b8a0;
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.36  0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0.2 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --mottle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' stitchTiles='stitch' seed='8'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0.16 0'/></filter><rect width='100%25' height='100%25' filter='url(%23m)'/></svg>");
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  color-scheme: light;
+  color: var(--ink);
+  background-color: var(--desk);
+  background-image: var(--grain), var(--mottle);
+  font-family: "Newsreader", "Iowan Old Style", Georgia, serif;
+  font-optical-sizing: auto;
+  font-size: clamp(17.5px, 0.55vw + 12.5px, 20px);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: inherit;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: inherit;
+}
+
+.root p,
+.root blockquote,
+.root ul {
+  margin: 0;
+}
+
+.root a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.root a:hover {
+  text-decoration-color: currentColor;
+}
+
+.root :focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.desk {
+  background-color: var(--desk);
+}
+
+/* Warm afternoon light pooled on the cloth, under the sheet. */
+.desk::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0 0 auto 0;
+  height: 1400px;
+  background: radial-gradient(60% 50% at 70% 18%, rgba(255, 236, 196, 0.55), rgba(255, 236, 196, 0) 70%);
+  pointer-events: none;
+}
+
+/* ---------- Home: the letter ---------- */
+
+.light {
+  position: absolute;
+  inset: 0 0 auto 0;
+  width: 100%;
+  height: 1200px;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: clamp(28px, 7vw, 96px) 16px clamp(48px, 8vw, 120px);
+}
+
+.sheet {
+  position: relative;
+  width: min(100%, 780px);
+  padding: clamp(36px, 7vw, 80px) clamp(24px, 8.5vw, 100px) clamp(40px, 7vw, 84px);
+  background-color: var(--paper);
+  background-image:
+    var(--grain),
+    radial-gradient(75% 45% at 88% 6%, rgba(255, 246, 222, 0.75), rgba(255, 246, 222, 0) 70%),
+    repeating-linear-gradient(90deg, transparent 0 27px, rgba(128, 104, 70, 0.07) 27px 28px),
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(128, 104, 70, 0.028) 2px 3px);
+  box-shadow:
+    0 1px 1px rgba(62, 58, 40, 0.16),
+    0 2px 6px -2px rgba(62, 58, 40, 0.18),
+    0 26px 50px -30px rgba(52, 50, 34, 0.55);
+}
+
+.sprig {
+  position: absolute;
+  top: -40px;
+  right: -34px;
+  width: 210px;
+  transform: rotate(10deg);
+  pointer-events: none;
+}
+
+.letterhead {
+  padding-bottom: 1.1em;
+  margin-bottom: 1.6em;
+  border-bottom: 1px solid rgba(38, 48, 63, 0.16);
+  max-width: 30em;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.9em;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.headline {
+  margin-top: 0.45em !important;
+  font-style: italic;
+  font-size: 0.9em;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  max-width: 34ch;
+}
+
+.headContact {
+  margin-top: 0.5em !important;
+  font-size: 0.86em;
+}
+
+.dateline {
+  text-align: right;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin-bottom: 1.8em !important;
+}
+
+.body > p + p,
+.body > p + div,
+.body > div + p {
+  margin-top: 1em;
+}
+
+.greeting {
+  margin-bottom: 0.2em !important;
+}
+
+.mention {
+  position: relative;
+  /* Taller hit area on an inline phrase, without changing the line box. */
+  padding-block: 0.6em;
+  color: var(--link);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.26em;
+  text-decoration-color: color-mix(in srgb, var(--link) 38%, transparent);
+  border-radius: 2px;
+  transition: text-decoration-color 0.2s;
+}
+
+.mention:hover {
+  text-decoration-color: var(--link);
+}
+
+.mention[aria-expanded="true"] {
+  text-decoration-thickness: 2px;
+  text-decoration-color: #b5737a;
+}
+
+/* The folded note: an insert that swings open along its crease. */
+.noteWrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin: 0.9em 0 1.3em;
+  perspective: 1100px;
+  animation: letter-noteRoom 0.55s cubic-bezier(0.25, 0.7, 0.2, 1) both;
+}
+
+.note {
+  position: relative;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 18px;
+  max-width: 33em;
+  margin-left: clamp(0px, 2vw, 22px);
+  padding: 20px 26px 16px 20px;
+  font-size: 0.93em;
+  line-height: 1.55;
+  background-color: #fbf7ee;
+  background-image:
+    var(--grain),
+    linear-gradient(to bottom, rgba(90, 80, 56, 0.05), transparent 48%, rgba(90, 80, 56, 0.06) 50%, transparent 56%);
+  box-shadow:
+    0 1px 2px rgba(62, 58, 40, 0.2),
+    0 14px 24px -18px rgba(52, 50, 34, 0.6);
+  transform-origin: 50% 0;
+  rotate: -0.5deg;
+  animation: letter-unfold 0.75s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.crease {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(90, 80, 56, 0.16);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+
+.noteMark {
+  width: 42px;
+  height: 42px;
+  color: var(--ink);
+}
+
+.noteTitle {
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.08em;
+}
+
+.noteYear {
+  font-weight: 400;
+  font-size: 0.85em;
+  color: var(--ink-soft);
+  margin-left: 0.3em;
+}
+
+.noteText {
+  margin-top: 0.3em !important;
+}
+
+.noteLink {
+  display: inline-block;
+  padding: 10px 0 6px;
+  font-style: italic;
+}
+
+.closing {
+  position: relative;
+  margin-top: 2.2em;
+  padding-left: 48%;
+  min-height: 150px;
+}
+
+.signoff {
+  font-style: italic;
+}
+
+.signature {
+  position: relative;
+  display: inline-block;
+  margin-top: 0.1em !important;
+  font-style: italic;
+  font-size: 2.3em;
+  line-height: 1.2;
+  font-weight: 350;
+  letter-spacing: -0.01em;
+  font-variation-settings: "opsz" 72;
+  color: #1f2a3c;
+}
+
+.flourish {
+  display: block;
+  width: 108%;
+  height: 22px;
+  margin-top: -6px;
+  margin-left: -4%;
+  color: #2c3a52;
+  opacity: 0.75;
+}
+
+.seal {
+  position: absolute;
+  left: 8%;
+  top: 10px;
+  width: 104px;
+  transform: rotate(-10deg);
+  filter: drop-shadow(0 2px 2px rgba(60, 20, 18, 0.25));
+}
+
+.after {
+  margin-top: 2.6em;
+  font-size: 0.94em;
+}
+
+.ps {
+  max-width: 34em;
+}
+
+.enc {
+  margin-top: 1em !important;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* ---------- Project pages: shared ---------- */
+
+.back {
+  position: relative;
+  z-index: 3;
+  padding: 14px clamp(16px, 4vw, 40px) 0;
+}
+
+.back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  font-style: italic;
+  color: inherit;
+}
+
+.pageStage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 40px) 16px clamp(56px, 8vw, 120px);
+}
+
+.meta {
+  font-style: italic;
+  font-size: 0.9em;
+  opacity: 0.85;
+}
+
+.madeWith,
+.elsewhere {
+  font-size: 0.95em;
+}
+
+.elsewhere a {
+  display: inline-block;
+  padding-block: 10px;
+  color: inherit;
+}
+
+/* ---------- Phren: index cards held with a clip ---------- */
+
+.phrenDesk {
+  --desk: #b4b1bd;
+  --ink: #2e2a3f;
+  --link: #3f3766;
+}
+
+.cards {
+  width: min(100%, 640px);
+  padding-top: 64px;
+  font-size: clamp(17px, 0.4vw + 14px, 18.5px);
+  line-height: 30px;
+}
+
+.card {
+  --band: 50px;
+  position: relative;
+  isolation: isolate;
+  padding: 0 clamp(20px, 5vw, 38px) 30px;
+  background-color: #fbf8f1;
+  background-image: var(--grain);
+  box-shadow:
+    0 1px 2px rgba(40, 35, 55, 0.22),
+    0 16px 28px -22px rgba(40, 35, 55, 0.6);
+}
+
+.card + .card {
+  margin-top: -6px;
+}
+
+/* Blue ruled lines under the header band, and the red rule on top of them. */
+.card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: var(--band) 0 0 0;
+  background: repeating-linear-gradient(to bottom, transparent 0 23px, rgba(96, 124, 176, 0.3) 23px 24px, transparent 24px 30px);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: calc(var(--band) - 2px);
+  height: 1.5px;
+  background: rgba(196, 86, 92, 0.55);
+}
+
+.card p + p,
+.card p + blockquote,
+.card ul + p,
+.card p + ul {
+  margin-top: 30px;
+}
+
+.band {
+  position: relative;
+  height: var(--band);
+}
+
+.cardTop {
+  --band: 150px;
+  box-shadow:
+    5px -6px 0 -1px #efeadf,
+    5px -6px 2px -1px rgba(40, 35, 55, 0.12),
+    10px -12px 0 -2px #e6e0d3,
+    10px -12px 2px -2px rgba(40, 35, 55, 0.12),
+    0 1px 2px rgba(40, 35, 55, 0.22),
+    0 16px 28px -22px rgba(40, 35, 55, 0.6);
+}
+
+.cardTop .band {
+  padding-top: 46px;
+}
+
+.cardTiltA {
+  transform: rotate(0.6deg) translateX(5px);
+}
+
+.cardTiltB {
+  transform: rotate(-0.5deg) translateX(-6px);
+}
+
+.cardNo {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  font-style: italic;
+  font-size: 0.85em;
+  color: #6a6480;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 2.6em;
+  line-height: 1.05;
+  font-variation-settings: "opsz" 72;
+}
+
+.cardTop .meta {
+  margin-top: 8px !important;
+}
+
+.cardQuote {
+  font-style: italic;
+  color: #3f3766;
+  padding-left: 1em;
+}
+
+.cardList {
+  list-style: none;
+  padding: 0;
+}
+
+.clip {
+  position: absolute;
+  z-index: 3;
+  top: -52px;
+  left: 50%;
+  width: 140px;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 3px 3px rgba(30, 25, 45, 0.3));
+}
+
+.rosemary {
+  position: absolute;
+  z-index: 2;
+  top: -120px;
+  left: calc(50% + 10px);
+  width: 92px;
+  transform: rotate(28deg);
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+/* ---------- m4l-builder: manuscript paper ---------- */
+
+.m4lDesk {
+  --desk: #bfb49f;
+  --ink: #3a2a1c;
+  --link: #6a3d15;
+}
+
+.manuscript {
+  width: min(100%, 780px);
+  padding: clamp(32px, 6vw, 60px) clamp(22px, 7vw, 80px) clamp(40px, 6vw, 64px);
+  background-color: #f4eddb;
+  background-image: var(--grain);
+  box-shadow:
+    0 1px 2px rgba(60, 45, 25, 0.2),
+    0 26px 50px -30px rgba(60, 45, 25, 0.6);
+}
+
+.manuscript > p + p {
+  margin-top: 1em;
+}
+
+.msTitle {
+  margin: 0;
+  font-size: 2.6em;
+  line-height: 1.05;
+  font-variation-settings: "opsz" 72;
+}
+
+.msLede {
+  margin-top: 1em !important;
+  font-size: 1.08em;
+}
+
+.instrument {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 14px;
+  margin: 2em 0 0.5em;
+  color: #3a2a1c;
+}
+
+.knobCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.knob {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  cursor: ns-resize;
+  touch-action: none;
+  color: #3a2a1c;
+}
+
+.knob svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.knobLabel {
+  font-style: italic;
+  font-size: 0.85em;
+  margin-top: -4px;
+}
+
+.wave {
+  width: 100%;
+  height: 150px;
+  color: #6b4a2a;
+}
+
+.waveCaption {
+  grid-column: 1 / -1;
+  font-style: italic;
+  font-size: 0.88em;
+  color: #6b4a2a;
+}
+
+.staff {
+  position: relative;
+  height: 33px;
+  margin: 2.6em 0 1.1em;
+  background: repeating-linear-gradient(to bottom, rgba(107, 74, 42, 0.42) 0 1px, transparent 1px 8px) top / 100% 33px no-repeat;
+}
+
+.direction {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  font-style: italic;
+  font-size: 0.85em;
+  line-height: 1.3;
+  color: #6b4a2a;
+}
+
+.msQuote {
+  margin: 1.4em 0 0 !important;
+  font-style: italic;
+  font-size: 1.1em;
+  color: #5a3a1c;
+}
+
+.manuscript .madeWith {
+  margin-top: 0 !important;
+}
+
+.manuscript .elsewhere {
+  margin-top: 0.4em !important;
+}
+
+/* ---------- Mina: a note on the nightstand at 3 AM ---------- */
+
+.night {
+  --desk: #221e1f;
+  --link: #6b3342;
+  color: #e7ddcc;
+  background-color: #221e1f;
+  background-image: var(--grain);
+}
+
+.night .back a {
+  color: #e7ddcc;
+}
+
+.lamp {
+  position: absolute;
+  z-index: 0;
+  top: -30vh;
+  left: -30vw;
+  width: 110vw;
+  height: 110vh;
+  min-width: 700px;
+  min-height: 700px;
+  background: radial-gradient(closest-side, rgba(240, 196, 120, 0.34), rgba(240, 196, 120, 0.12) 50%, transparent 78%);
+  pointer-events: none;
+  animation: letter-lampBreath 9s ease-in-out infinite alternate;
+}
+
+.night .pageStage {
+  justify-content: flex-start;
+  padding-left: clamp(16px, 16vw, 280px);
+}
+
+.nightNote {
+  position: relative;
+  width: min(100%, 470px);
+  margin-top: clamp(8px, 4vw, 48px);
+  padding: 40px clamp(22px, 5vw, 40px) 40px;
+  font-size: 17px;
+  line-height: 1.62;
+  color: #2b2630;
+  background-color: #e6dac4;
+  background-image:
+    var(--grain),
+    radial-gradient(130% 90% at 0% 0%, rgba(255, 228, 174, 0.7), rgba(255, 228, 174, 0) 62%);
+  box-shadow:
+    inset -40px -60px 90px -40px rgba(40, 28, 36, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 22px 40px -24px rgba(0, 0, 0, 0.7);
+  transform: rotate(-1.4deg);
+}
+
+.nightNote > p + p,
+.nightNote > p + blockquote,
+.nightNote > blockquote + p {
+  margin-top: 0.9em;
+}
+
+.blossom {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  color: #6b3342;
+  transform: rotate(-12deg);
+}
+
+.nightTitle {
+  margin: 0;
+  font-size: 2.1em;
+  font-style: italic;
+  line-height: 1.1;
+  font-variation-settings: "opsz" 60;
+}
+
+.nightNote .meta {
+  margin-top: 4px !important;
+}
+
+.nightLede {
+  margin-top: 1.1em !important;
+}
+
+.nightSmall {
+  font-style: italic;
+  font-size: 0.94em;
+}
+
+/* ---------- Every other project: its own paper ---------- */
+
+.paperDesk {
+  background-color: var(--desk);
+}
+
+.paper {
+  --pad-x: clamp(22px, 7vw, 84px);
+  position: relative;
+  width: min(100%, 900px);
+  padding: clamp(30px, 6vw, 64px) var(--pad-x) clamp(36px, 6vw, 64px);
+  color: var(--ink);
+  background-color: #f3eee2;
+  background-image: var(--grain);
+  box-shadow:
+    0 1px 2px rgba(50, 45, 30, 0.2),
+    0 26px 50px -30px rgba(50, 45, 30, 0.55);
+}
+
+.paper a {
+  color: inherit;
+}
+
+.paperHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.2em;
+}
+
+.paperMark {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  color: var(--ink);
+}
+
+.caption {
+  font-style: italic;
+  font-size: 0.88em;
+}
+
+.paperTitle {
+  margin: 0;
+  font-size: 2.6em;
+  line-height: 1.05;
+  font-variation-settings: "opsz" 72;
+}
+
+.paperLede {
+  margin: 0.9em 0 1.6em !important;
+  font-size: 1.1em;
+  max-width: 34em;
+}
+
+.paperGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 34em) 180px;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.paperProse > * + * {
+  margin-top: 1em !important;
+}
+
+.paperQuote {
+  font-style: italic;
+  font-size: 1.05em;
+  padding-left: 1.2em;
+  border-left: 2px solid color-mix(in srgb, var(--wash) 60%, transparent);
+}
+
+.marginNotes {
+  list-style: none;
+  padding: 0.3em 0 0 !important;
+  font-style: italic;
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+
+.marginNotes li + li {
+  margin-top: 1.1em;
+}
+
+.paper .madeWith {
+  margin-top: 2em !important;
+}
+
+.paper .elsewhere {
+  margin-top: 0.4em !important;
+}
+
+.missing {
+  width: min(100%, 620px);
+  background-color: var(--paper);
+}
+
+.missing p {
+  margin-top: 1em !important;
+}
+
+/* Paper kinds */
+
+.paper_graph {
+  background-color: #f1f3ea;
+  background-image:
+    var(--grain),
+    linear-gradient(rgba(33, 115, 70, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(33, 115, 70, 0.15) 1px, transparent 1px),
+    linear-gradient(rgba(33, 115, 70, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(33, 115, 70, 0.07) 1px, transparent 1px);
+  background-size: auto, 60px 60px, 60px 60px, 12px 12px, 12px 12px;
+}
+
+.paper_studio {
+  background-color: #f2f1eb;
+  background-image: var(--grain), radial-gradient(circle, rgba(31, 58, 79, 0.28) 1px, transparent 1.4px);
+  background-size: auto, 22px 22px;
+}
+
+.paper_vellum {
+  background-color: #eceee8;
+  background-image:
+    var(--grain),
+    repeating-linear-gradient(to bottom, transparent 0 33px, rgba(120, 100, 70, 0.07) 33px 35px);
+  box-shadow: 0 1px 1px rgba(50, 45, 30, 0.14), 0 16px 34px -26px rgba(50, 45, 30, 0.4);
+}
+
+.paper_carbon {
+  background-color: #e8efec;
+  background-image:
+    radial-gradient(circle at 16px 50%, var(--desk) 5px, transparent 5.6px),
+    var(--grain);
+  background-size: 32px 26px, auto;
+  background-repeat: repeat-y, repeat;
+  padding-left: max(var(--pad-x), 46px);
+}
+
+.paper_ledger {
+  --margin-at: 44px;
+  background-color: #eef0e1;
+  background-image:
+    var(--grain),
+    linear-gradient(90deg, transparent var(--margin-at), rgba(176, 64, 58, 0.45) var(--margin-at) calc(var(--margin-at) + 1px), transparent calc(var(--margin-at) + 1px) calc(var(--margin-at) + 4px), rgba(176, 64, 58, 0.45) calc(var(--margin-at) + 4px) calc(var(--margin-at) + 5px), transparent calc(var(--margin-at) + 5px)),
+    linear-gradient(90deg, transparent calc(100% - 150px), rgba(40, 110, 90, 0.18) calc(100% - 150px) calc(100% - 149px), transparent calc(100% - 149px) calc(100% - 90px), rgba(40, 110, 90, 0.18) calc(100% - 90px) calc(100% - 89px), transparent calc(100% - 89px)),
+    repeating-linear-gradient(to bottom, transparent 0 31px, rgba(40, 110, 90, 0.17) 31px 32px);
+  padding-left: max(var(--pad-x), 72px);
+}
+
+.paper_airmail {
+  border: 11px solid transparent;
+  background:
+    var(--grain) padding-box,
+    linear-gradient(#f5f2ea, #f5f2ea) padding-box,
+    repeating-linear-gradient(45deg, #b0554f 0 12px, #f5f2ea 12px 19px, #4a5f96 19px 31px, #f5f2ea 31px 38px) border-box;
+}
+
+.paper_memo {
+  background-color: #f1e8d0;
+  background-image:
+    var(--grain),
+    var(--mottle),
+    repeating-linear-gradient(to bottom, transparent 0 33px, rgba(120, 96, 60, 0.12) 33px 34px);
+  border-top: 14px solid #9a8a6e;
+  box-shadow:
+    inset 0 0 70px rgba(150, 118, 64, 0.2),
+    0 1px 2px rgba(50, 45, 30, 0.2),
+    0 26px 50px -30px rgba(50, 45, 30, 0.55);
+}
+
+.paper_memo .paperMark {
+  position: absolute;
+  top: 26px;
+  right: 30px;
+  width: 150px;
+  height: 150px;
+  opacity: 0.85;
+}
+
+.paper_catalog {
+  background-color: #f2e9d4;
+  background-image:
+    radial-gradient(circle at 50% calc(100% - 26px), var(--desk) 9px, transparent 9.6px),
+    var(--grain),
+    linear-gradient(to bottom, transparent 118px, rgba(180, 60, 60, 0.42) 118px 119.5px, transparent 119.5px),
+    repeating-linear-gradient(to bottom, transparent 0 31px, rgba(90, 120, 170, 0.18) 31px 32px);
+  padding-bottom: 72px;
+}
+
+.paper_tag {
+  background-color: #e6d4a8;
+  background-image: var(--grain), var(--mottle);
+  clip-path: polygon(44px 0, 100% 0, 100% 100%, 44px 100%, 0 calc(100% - 44px), 0 44px);
+  box-shadow: none;
+  padding-left: max(var(--pad-x), 64px);
+}
+
+.paper_tag::before {
+  content: "";
+  position: absolute;
+  top: 34px;
+  left: 22px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--desk);
+  box-shadow: 0 0 0 5px #c9b27a, 0 0 0 6px rgba(80, 60, 20, 0.4);
+}
+
+.paper_legal {
+  --margin-at: 44px;
+  background-color: #f6eeb2;
+  background-image:
+    var(--grain),
+    linear-gradient(90deg, transparent var(--margin-at), rgba(190, 70, 70, 0.4) var(--margin-at) calc(var(--margin-at) + 1px), transparent calc(var(--margin-at) + 1px) calc(var(--margin-at) + 4px), rgba(190, 70, 70, 0.4) calc(var(--margin-at) + 4px) calc(var(--margin-at) + 5px), transparent calc(var(--margin-at) + 5px)),
+    repeating-linear-gradient(to bottom, transparent 0 31px, rgba(70, 110, 170, 0.22) 31px 32px);
+  padding-left: max(var(--pad-x), 72px);
+}
+
+.paper_packet {
+  background-color: #d8c298;
+  background-image:
+    var(--grain),
+    var(--mottle),
+    linear-gradient(to bottom, transparent 64px, rgba(90, 64, 30, 0.18) 64px 66px, rgba(255, 240, 210, 0.25) 66px 68px, transparent 68px);
+}
+
+.paper_packet .paperMark {
+  width: 72px;
+  height: 72px;
+}
+
+.paper_form {
+  background-color: #e4ecdf;
+  outline: 1px solid rgba(60, 100, 60, 0.35);
+  outline-offset: -14px;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 720px) {
+  .sprig {
+    width: 92px;
+    top: -22px;
+    right: -10px;
+  }
+
+  .letterhead {
+    padding-right: 48px;
+  }
+
+  .closing {
+    padding-left: 0;
+    min-height: 0;
+  }
+
+  .seal {
+    position: static;
+    display: block;
+    width: 72px;
+    margin: 1.2em 0 0 auto;
+  }
+
+  .note {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 16px 18px 12px;
+    margin-left: 0;
+  }
+
+  .noteMark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .paperGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.6em;
+  }
+
+  .paper_ledger,
+  .paper_legal {
+    --margin-at: 12px;
+    padding-left: max(var(--pad-x), 30px);
+  }
+
+  .paper_ledger {
+    background-image:
+      var(--grain),
+      linear-gradient(90deg, transparent var(--margin-at), rgba(176, 64, 58, 0.45) var(--margin-at) calc(var(--margin-at) + 1px), transparent calc(var(--margin-at) + 1px) calc(var(--margin-at) + 4px), rgba(176, 64, 58, 0.45) calc(var(--margin-at) + 4px) calc(var(--margin-at) + 5px), transparent calc(var(--margin-at) + 5px)),
+      repeating-linear-gradient(to bottom, transparent 0 31px, rgba(40, 110, 90, 0.17) 31px 32px);
+  }
+
+  .paper_memo .paperMark {
+    width: 96px;
+    height: 96px;
+    top: 16px;
+    right: 14px;
+  }
+
+  .instrument {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .night .pageStage {
+    padding-left: 16px;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noteWrap,
+  .note,
+  .lamp {
+    animation: none;
+  }
+
+  .mention {
+    transition: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .nightNote {
+    transform: rotate(-0.6deg);
+  }
+}

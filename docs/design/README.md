@@ -2,12 +2,9 @@
 
 Branch `design/creative-directions`. Nothing here is on main or deployed.
 
-- [analysis.md](analysis.md): what the current site does, what reads as template, and the bugs found along the way. Screenshots of every live page are in `screenshots/current/`.
-- [A · Device Rack](direction-a-rack.md): every project is a hardware device in a rack, with a thread-selector knob that powers one line of work.
-- [B · Ledger](direction-b-ledger.md): the portfolio is one reconciled, sortable index on paper, and each project page is a numbered spec sheet.
-- [C · Transit Map](direction-c-transit.md): lines of work run through time as a subway map and projects are the stations.
-
-All three render the real content from `src/data/siteContent.ts` and nothing is duplicated. Each builds the home page and every `/projects/<slug>` page.
+- [analysis.md](analysis.md): what the current site does, what reads as template, and the bugs found along the way.
+- **Round 2 (current):** ten soft, painted, bookish directions, listed below.
+- [Round 1](round-1/): Device Rack, Ledger, Transit Map. Rejected as busy, blocky, and "newspaper".
 
 ## Run the prototypes
 
@@ -16,36 +13,47 @@ bun install
 bun run lab
 ```
 
-- http://localhost:3300/lab shows all three side by side, with toggles for home or project page and desktop or phone width.
-- http://localhost:3300/lab/rack and http://localhost:3300/lab/rack/projects/m4l-builder
-- http://localhost:3300/lab/ledger and http://localhost:3300/lab/ledger/projects/basis
-- http://localhost:3300/lab/transit and http://localhost:3300/lab/transit/projects/phren
+Open http://localhost:3300/lab to see all ten side by side. Use the toggles to switch between the home page and the Phren, m4l-builder and Mina pages, at desktop or phone width. Each direction also runs full screen at `/lab/<key>`, and every project at `/lab/<key>/projects/<slug>`. There's no hot reload, so restart after edits. `bun run dev` is broken under Bun 1.3.14 (see analysis.md).
 
-`bun run lab` builds once and has no hot reload, so restart it after edits. `PORT=4000 bun run lab` changes the port. `bun run dev` is broken under Bun 1.3.14 on main as well (see analysis.md), which is why the lab uses its own script.
+![All ten, home page](screenshots/round-2-overview.jpg)
 
-![All three, home](screenshots/lab-home.jpg)
-![All three, project page at phone width](screenshots/lab-project-phone.jpg)
+## Round 2
 
-## Recommendation: C · Transit Map, with the Ledger's index as /projects
+Brief: soft, artistic, subtle. Take the qualities of Ghibli background painting and classic book covers (Tolkien's own jackets, Pauline Baynes' maps) without their subject matter. There are no category controls. Each project page is themed to the project itself: Phren as kept memory, m4l-builder as an instrument (the only page with a knob), Mina as a 3 a.m. feed. All ten render the real content from `src/data/siteContent.ts`.
 
-**Take the Transit Map.** It is the only one of the three that says something true about Ala that a template can't: the work is several threads that keep crossing over fifteen years. Agent tooling meets music at LiveMCP, the ERP line runs from Intranet at ADM to Intrapath today, and iOS runs through Mina, Mutter, and Phren's app. The first screen shows that breadth in one picture instead of nine identical cards. It is also the most readable of the three: light, high contrast, signage type, and a plain text timetable underneath that doubles as the accessible version.
+| # | Direction | Idea | Write-up |
+|---|---|---|---|
+| 1 | Hillside | A painted hillside whose sky follows your local time | [hillside](hillside/README.md) |
+| 2 | Folio | A cloth-bound book: cover, title page, a chapter per project | [folio](folio/README.md) |
+| 3 | Embroidery | A stitched linen band, one embroidered emblem per project | [embroidery](embroidery/README.md) |
+| 4 | Specimens | Botanical plates, each plant grown from the project's own data | [specimens](specimens/README.md) |
+| 5 | Letter | A letter from Ala; each project unfolds from the sentence that mentions it | [letter](letter/README.md) |
+| 6 | Map | A sparse hand-inked map, washed in watercolor | [map](map/README.md) |
+| 7 | Ink Wash | Rice paper, one ink mountain, a red seal, a lot of quiet | [inkwash](inkwash/README.md) |
+| 8 | Woodcut | Soft color woodcut prints, one carved block per project | [woodcut](woodcut/README.md) |
+| 9 | Workshop | A desk in afternoon light; the objects are the projects | [workshop](workshop/README.md) |
+| 10 | Almanac | Engraved gold on soft indigo, each project a star | [almanac](almanac/README.md) |
 
-**Borrow from the Ledger** for the parts a map is bad at. Use its sortable index as the `/projects` page and its numbered spec-sheet structure (§1 Problem, §2 Build, §3 Result) inside station pages. The Ledger is the safest direction overall: it scales to any number of projects and suits the dry, exact copy. As a whole site, though, it reads as a very good Swiss-style index more than as *Ala*.
+## Ranking
 
-**Why not the Rack as the main site:** it has the most personality and the best interaction (the knob), but it's a costume. Every page has to keep up the hardware metaphor, the home page runs about 6,700 px, the phone first screen is all intro text, and it only really fits the music work. It would make a great `/music` page or a microsite for m4l-builder and LiveMCP.
+**1. Specimens.** This is the only one where the art comes out of the work itself. Each project's plant grows from its own data (leaves from its stack, flowers from its metrics, height from its age), so a new project gets its own drawing without anyone hand-drawing it. It's soft and quiet, and the Phren plate (roots below the soil, larger than the plant, standing for the memory it keeps) is the best single idea across all ten. Risks: at a glance it can read as whimsy before work, and the watercolor filters need profiling on mid-range phones.
 
-**Costs and risks of C to plan for:**
-- The map is hand-placed. Each new project needs a position and a label spot. Move the line assignments into `siteContent.ts` (a `lines` field per project) so the data drives the lines, but station and label positions still need placing by hand.
-- Below 960 px the map is replaced by the vertical timetable. A real vertical map for phones is extra work, and the most likely next step if this direction is chosen.
-- Some line assignments are editorial and need your call: Garden Sensor Network on the Music line (through the Processing music game), Retrofit on the Native line (its iPad apps), and OGrid on Agent tooling only through its MCP server.
-- The estimate is about 3 to 4 days to production, plus the phone map if you want it.
+**2. Ink Wash.** The most beautiful and the most subtle. The first screen is almost all paper and mist. The Phren page (stepping stones into mist) is lovely. Risks: it says the least about the work at first glance, it could drift toward "spa website", and every new project needs a hand-painted motif.
 
-## Fix regardless of direction
+**3. Folio or Map**, for the Lord of the Rings book-cover feel. Folio's cover is the strongest first screen of the ten, but past the cover it's mostly fine typography. Map's island is the most Tolkien-like of the ten and stays calm, but it stops working past about ten places.
 
-These are in the live site today, and each is small:
-1. Production ships React's development build (493 KB, 336 `jsxDEV` calls), and nginx serves it with no gzip.
-2. Horizontal scroll on the phone home page (the nav overflows at 390 px), and 26 px tap targets.
-3. `--ink-dim` text fails AA contrast (3.98:1).
-4. Every project page links to itself as "Project page".
-5. `bun run dev` fails under Bun 1.3.14.
-6. The repo's CLAUDE.md/AGENTS.md still describes a Next.js site.
+**Also strong:** Letter is the most personal and the softest, but it's text-led and the least visual.
+
+**Weaker:**
+- Almanac is elegant, but the home chart carries all 15 labels plus rings, which is the busyness you rejected in round 1. Its Mina plate also shows the moon changing phase within one night, which doesn't happen.
+- Workshop is warm, but flat vector drawing reads as clip-art up close.
+- Woodcut has the most character but is the loudest of the ten, not subtle.
+- Hillside is the most directly Ghibli in concept, but blobby clouds and a clip-art tree at midday miss the painterly bar. Its dusk Phren page is much better.
+- Embroidery is sweet, but its emblems are simple and the linen texture is heavy.
+
+A good path would be Specimens as the site, with Ink Wash's restraint in the typography and spacing.
+
+## Notes from the build
+
+- Bun 1.3.14 CSS modules rename `@keyframes` but not the names that reference them, so module-defined animations silently never run. Every direction now defines its keyframes in a hoisted `<style>`. Map's place names and Woodcut's print-in were affected before the fix.
+- Verified on 2026-09-26 with motion on (not reduced): all ten home pages, plus the Phren, m4l-builder, Mina and Basis pages, show one h1 each, no console errors, and no horizontal overflow at 390 px (90 page loads).

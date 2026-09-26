@@ -1,0 +1,628 @@
+/* Hillside: a painted landscape above, warm paper below. */
+
+.root {
+  --paper: #f3ead6;
+  --ink: #3b3a24;
+  --ink-soft: #5f5b3f;
+  --moss: #4a6329;
+  --sage: #a9b98f;
+  --focus: #3f5f9e;
+  --accent: var(--moss);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.26  0 0 0 0 0.16  0.2 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  color-scheme: light;
+  background-color: var(--paper);
+  background-image: var(--grain);
+  color: var(--ink);
+  font-family: "Literata", Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+  font-optical-sizing: auto;
+  overflow-x: clip;
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: "Cormorant Garamond", Garamond, Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.root a:focus-visible,
+.root [role="slider"]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+/* ---------------------------------------------------------------- sky */
+
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  color: var(--sky-text);
+  transition: color 3.6s ease;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.hero a:focus-visible {
+  outline-color: currentColor;
+}
+
+.scene {
+  display: block;
+}
+
+.heroScene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The one motion: colours ease from the first-paint afternoon to the visitor's hour. */
+.heroScene :is(stop, path, rect, circle, ellipse, g) {
+  transition:
+    fill 3.6s ease,
+    stop-color 3.6s ease,
+    stop-opacity 3.6s ease,
+    stroke 3.6s ease,
+    opacity 3.6s ease;
+}
+
+.skyNav {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: max(16px, 4vw);
+  display: flex;
+  gap: 4px;
+  font-size: 0.95rem;
+}
+
+.skyNav a {
+  display: inline-block;
+  padding: 11px 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.skyNav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+}
+
+.skyText {
+  position: relative;
+  z-index: 1;
+  padding: 15vh max(20px, 8vw) 0;
+  max-width: 44rem;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(2.7rem, 4.8vw, 4.1rem);
+  line-height: 1;
+}
+
+.title {
+  margin: 1rem 0 0;
+  max-width: 31ch;
+  font-size: clamp(1.08rem, 1.45vw, 1.28rem);
+  line-height: 1.5;
+}
+
+.caption {
+  margin: 1.3rem 0 0;
+  max-width: 38ch;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--sky-soft);
+  transition: color 3.6s ease;
+}
+
+.homeLink,
+.skyLink {
+  display: inline-block;
+  padding: 10px 0;
+  color: inherit;
+  font-family: "Cormorant Garamond", Garamond, serif;
+  font-size: 1.3rem;
+  font-style: italic;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skyLink {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.homeLink:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------------------------------------------------------------- paper */
+
+.paper {
+  padding: 3.2rem 20px 1rem;
+}
+
+.column {
+  max-width: 37rem;
+  margin: 0 auto;
+}
+
+.column p {
+  margin: 0 0 1.15em;
+}
+
+.lead {
+  font-size: 1.24rem;
+  line-height: 1.55;
+}
+
+.soft {
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.h2 {
+  margin: 0 0 1.1rem;
+  font-size: 2.3rem;
+  font-style: italic;
+  line-height: 1.1;
+}
+
+.sprig {
+  display: block;
+  width: 120px;
+  height: 28px;
+  margin: 3.4rem auto;
+  fill: none;
+  stroke: #6f8a4a;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.sprigGround {
+  stroke-opacity: 0.45;
+}
+
+.inlineLink {
+  color: var(--accent, var(--moss));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  padding-block: 0.68rem;
+}
+
+.inlineLink:hover {
+  text-decoration-thickness: 2px;
+}
+
+.runIn {
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------- the work */
+
+.works {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.work,
+.workPlated {
+  margin: 0;
+}
+
+.workLink {
+  display: block;
+  padding: 0.7rem 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.workPlated .workLink {
+  display: grid;
+  grid-template-columns: 9.5rem 1fr;
+  gap: 1.4rem;
+  align-items: center;
+  padding: 1.1rem 0;
+}
+
+.workTitle {
+  font-family: "Cormorant Garamond", Garamond, serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.workLink:hover .workTitle {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.workYear {
+  margin-left: 0.6rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.workLine {
+  display: block;
+  color: #4a4730;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.vignette {
+  display: block;
+  aspect-ratio: 3 / 2;
+  -webkit-mask-image: radial-gradient(ellipse closest-side, #000 70%, transparent 100%);
+  mask-image: radial-gradient(ellipse closest-side, #000 70%, transparent 100%);
+}
+
+.vignette svg {
+  width: 100%;
+  height: 100%;
+}
+
+.footer {
+  padding: 4rem 0 2.5rem;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.footer p {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------- project pages */
+
+.projectHero {
+  height: 80svh;
+  min-height: 520px;
+}
+
+.projectHero .skyText {
+  padding-top: 2.2vh;
+}
+
+.projectTitle {
+  margin: 8vh 0 0;
+  font-size: clamp(3rem, 6.4vw, 5.4rem);
+  line-height: 1;
+}
+
+.projectMeta {
+  margin: 0.8rem 0 0;
+  color: var(--sky-soft);
+  font-style: italic;
+}
+
+.figCaption {
+  max-width: 36rem;
+  margin: 1.1rem auto 0;
+  padding: 0 20px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  font-style: italic;
+}
+
+.figCaption::before {
+  content: "fig. ";
+}
+
+.quote {
+  position: relative;
+  margin: 2rem 0 2.2rem;
+  padding: 0 0 0 1.6rem;
+  font-family: "Cormorant Garamond", Garamond, serif;
+  font-size: 1.6rem;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.quote::before {
+  content: "\201C";
+  position: absolute;
+  left: -0.1rem;
+  top: -0.35rem;
+  color: var(--accent, var(--moss));
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.particulars {
+  list-style: none;
+  margin: 0 0 1.4rem;
+  padding: 0;
+  font-style: italic;
+}
+
+.particulars li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.particulars li::before {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  top: 0.7em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent, var(--moss));
+  opacity: 0.7;
+}
+
+.onward {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  font-style: italic;
+}
+
+/* phren: title and quote centred in the dusk sky */
+
+.phrenHero {
+  height: 100svh;
+}
+
+.centered {
+  max-width: 48rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.skyQuote {
+  max-width: 30ch;
+  margin: 1.6rem auto 0;
+  font-family: "Cormorant Garamond", Garamond, serif;
+  font-size: clamp(1.35rem, 2.3vw, 1.85rem);
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.litWindow {
+  width: 1.05em;
+  height: 1.05em;
+  margin-right: 0.45em;
+  vertical-align: -0.14em;
+}
+
+.litGlow {
+  fill: #f6c46c;
+  opacity: 0.32;
+}
+
+.litPane {
+  fill: #eeb24c;
+}
+
+.litBar {
+  stroke: #7a5a2e;
+  stroke-width: 1;
+}
+
+/* m4l-builder: the knob sits on the paper under the waveform hills */
+
+.m4lHero {
+  height: 74svh;
+}
+
+.instrument {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  margin-bottom: 2.6rem;
+}
+
+.instrumentNote {
+  margin: 0 !important;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.knobUnit {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.knob {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.root .knob:focus-visible {
+  border-radius: 50%;
+}
+
+.knob svg {
+  width: 100%;
+  height: 100%;
+}
+
+.knobTick {
+  stroke: #6b5a3e;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.knobRim {
+  fill: none;
+  stroke: #5b4631;
+  stroke-opacity: 0.55;
+  stroke-width: 1.5;
+}
+
+.knobPointer {
+  stroke: #3b2e20;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+}
+
+.knobNames {
+  display: flex;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.knobNameOn {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* mina: the whole page stays at night */
+
+.night {
+  --paper: #272d44;
+  --ink: #ece3cf;
+  --ink-soft: #c9c1ad;
+  --accent: #efcf92 !important;
+  --focus: #efcf92;
+  background-color: var(--paper);
+}
+
+.night .column p {
+  line-height: 1.8;
+}
+
+.minaHero {
+  height: 86svh;
+}
+
+.minaOpening {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2.4rem;
+}
+
+.clock {
+  width: 92px;
+  height: 92px;
+}
+
+.clockFace {
+  fill: #f3ead6;
+  opacity: 0.07;
+}
+
+.clockRim {
+  fill: none;
+  stroke: #ece3cf;
+  stroke-opacity: 0.55;
+  stroke-width: 1.5;
+}
+
+.clockTick {
+  stroke: #ece3cf;
+  stroke-opacity: 0.6;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.clockHand {
+  stroke: #ffd488;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+
+.clockHandThin {
+  stroke: #ece3cf;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.clockPin {
+  fill: #ffd488;
+}
+
+/* ---------------------------------------------------------------- small screens */
+
+@media (max-width: 640px) {
+  .root {
+    font-size: 17px;
+  }
+
+  .skyText {
+    padding-top: 13vh;
+  }
+
+  .projectHero .skyText {
+    padding-top: 1vh;
+  }
+
+  .projectTitle {
+    margin-top: 4vh;
+  }
+
+  .skyNav {
+    right: 8px;
+    gap: 0;
+  }
+
+  .workPlated .workLink {
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+  }
+
+  .instrument {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero,
+  .caption,
+  .heroScene :is(stop, path, rect, circle, ellipse, g) {
+    transition: none;
+  }
+}

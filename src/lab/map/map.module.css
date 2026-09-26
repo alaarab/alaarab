@@ -1,0 +1,815 @@
+/* Map direction: parchment, iron-gall ink, four muted washes. */
+
+.root {
+  --paper: #efe4cc;
+  --paper-lift: #f4ebd7;
+  --ink: #3b3226;
+  --ink2: #5e5040;
+  --sea: #8fa3a8;
+  --meadow: #a9b58a;
+  --sand: #d9c08e;
+  --rose: #c99a8e;
+  --lit: #e9b75a;
+  --link: #6a3f2a;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+  font-family: "EB Garamond", Garamond, Georgia, serif;
+  font-size: 19px;
+  line-height: 1.6;
+  overflow-x: clip;
+}
+
+/* Paper grain over everything, including the map. */
+.root::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.29  0 0 0 0 0.2  0 0 0 0.28 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='900'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.004' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.42  0 0 0 0 0.25  0 0 0 0.16 0'/></filter><rect width='100%' height='100%' filter='url(%23m)'/></svg>");
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: "IM Fell English SC", "IM Fell English", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.root a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.root a:hover {
+  color: var(--ink);
+}
+
+.root a:focus-visible {
+  outline: 2px dashed var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.root p {
+  margin: 0 0 1em;
+}
+
+/* ---------- Home: the sheet ---------- */
+
+.sheet {
+  position: relative;
+  padding-top: 0;
+  width: min(100%, calc(100svh * 1.6));
+  margin: 0 auto;
+}
+
+.map {
+  position: relative;
+  width: 100%;
+  container-type: inline-size;
+  --u: calc(100cqw / var(--vbw));
+  --m: max(44px, calc(var(--u) * 50));
+}
+
+/* A printed neat-line just inside the sheet. */
+.map::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid color-mix(in srgb, var(--ink2) 55%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--ink2) 35%, transparent);
+  outline-offset: 4px;
+  pointer-events: none;
+}
+
+.mapSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  stroke: var(--ink);
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mapSvg :global(.crown),
+.inset :global(.crown) {
+  fill: var(--meadow);
+  fill-opacity: 0.55;
+}
+
+.mapSvg :global(.roof),
+.inset :global(.roof) {
+  fill: var(--paper-lift);
+}
+
+.mapSvg :global(.lit),
+.inset :global(.lit) {
+  fill: var(--lit);
+}
+
+.mapSvg :global(.solid),
+.inset :global(.solid) {
+  fill: var(--ink);
+}
+
+.mapSvg :global(.compassN),
+.inset :global(.compassN) {
+  font-family: "IM Fell English SC", Georgia, serif;
+  font-size: 20px;
+  fill: var(--ink);
+  stroke: none;
+}
+
+.ink path {
+  stroke-width: 1.7;
+}
+
+.detail {
+  stroke: var(--ink2);
+  stroke-width: 1.15;
+}
+
+.marks {
+  stroke-width: 1.3;
+}
+
+.road {
+  stroke-dasharray: 1 7;
+  stroke-width: 1.6;
+  opacity: 0.55;
+}
+
+.ripple {
+  stroke-width: 1;
+  opacity: 0.45;
+}
+
+/* Signature moment: the coast inks in, then the washes, then the names. */
+.inking .coastLine {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: map-draw 1.3s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+
+.inking .washes {
+  opacity: 0;
+  animation: map-bloom 1s ease-out 0.9s forwards;
+}
+
+.inking .detail,
+.inking .marks,
+.inking .placeLayer {
+  opacity: 0;
+  animation: map-bloom 0.8s ease-out 1.3s forwards;
+}
+
+/* Keyframes live in a plain <style> in Home.tsx (map-draw, map-bloom): Bun CSS modules rename
+   module keyframes without rewriting the animation shorthand. */
+
+@media (prefers-reduced-motion: reduce) {
+  .inking .coastLine,
+  .inking .washes,
+  .inking .detail,
+  .inking .marks,
+  .inking .placeLayer {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Place names over the drawing. */
+.placeLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.root .place {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.placeHit {
+  flex: none;
+  width: var(--m);
+  height: var(--m);
+}
+
+.placeName {
+  font-family: "IM Fell English", Georgia, serif;
+  font-size: max(15px, calc(var(--u) * 23));
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  text-shadow:
+    0 0 2px var(--paper),
+    0 0 6px var(--paper),
+    0 0 10px var(--paper);
+}
+
+.root .place:hover .placeName {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.side_r {
+  transform: translate(calc(var(--m) / -2), -50%);
+}
+
+.side_l {
+  flex-direction: row-reverse;
+  transform: translate(calc(-100% + var(--m) / 2), -50%);
+}
+
+.side_b {
+  flex-direction: column;
+  transform: translate(-50%, calc(var(--m) / -2));
+}
+
+.side_a {
+  flex-direction: column-reverse;
+  transform: translate(-50%, calc(-100% + var(--m) / 2));
+}
+
+.side_b .placeHit,
+.side_a .placeHit {
+  height: calc(var(--m) * 0.8);
+}
+
+/* The one-line annotation for the place under the pointer or focus. */
+.note {
+  --tx: -50%;
+  --ty: calc(var(--m) * 0.55 + 22px);
+  position: absolute;
+  z-index: 2;
+  width: max-content;
+  max-width: min(30ch, 80vw);
+  margin: 0 !important;
+  padding: 0.35em 0.2em;
+  transform: translate(var(--tx), var(--ty));
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--paper-lift);
+  border-top: 1px solid var(--ink2);
+  border-bottom: 1px solid var(--ink2);
+  pointer-events: none;
+}
+
+.noteAbove {
+  --ty: calc(-100% - var(--m) * 0.55 - 22px);
+}
+
+.noteLeft {
+  --tx: calc(-100% + 30px);
+}
+
+/* The cartouche in the north-west sea. */
+.cartouche {
+  position: absolute;
+  z-index: 3;
+  top: 6.5%;
+  left: 3.6%;
+  width: 21%;
+  min-width: 250px;
+  padding: 1.1rem 1.2rem 1rem;
+  text-align: center;
+  background: color-mix(in srgb, var(--paper-lift) 85%, transparent);
+  border: 1px solid var(--ink2);
+  box-shadow:
+    inset 0 0 0 4px var(--paper-lift),
+    inset 0 0 0 5px color-mix(in srgb, var(--ink2) 60%, transparent);
+}
+
+.name {
+  font-size: 2.3rem;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.cartoucheTitle {
+  margin: 0.35rem 0 0 !important;
+  font-style: italic;
+  font-size: 1.05rem;
+}
+
+.cartoucheCity {
+  margin: 0 !important;
+  font-family: "IM Fell English SC", Georgia, serif;
+  letter-spacing: 0.12em;
+  font-size: 0.95rem;
+  color: var(--ink2);
+}
+
+.cartoucheLinks {
+  display: flex;
+  flex-direction: column;
+  margin: 0.7rem 0 0 !important;
+  padding-top: 0.6rem;
+  border-top: 1px solid color-mix(in srgb, var(--ink2) 40%, transparent);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.cartoucheLinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+
+/* ---------- Home: below the map ---------- */
+
+.page {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 5rem 16px 2rem;
+}
+
+.section {
+  margin-bottom: 4.5rem;
+}
+
+.h2 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin-bottom: 1rem !important;
+  color: var(--ink);
+}
+
+.h2::after {
+  content: "";
+  display: block;
+  width: 3.2rem;
+  height: 6px;
+  margin-top: 0.4rem;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='6'><path d='M1 3 q6 -3 12 0 t12 0 t12 0 t12 0' fill='none' stroke='%235e5040' stroke-width='1'/></svg>") no-repeat;
+}
+
+.lede {
+  font-size: 1.3rem;
+  line-height: 1.45;
+}
+
+.aside {
+  font-style: italic;
+  color: var(--ink2);
+}
+
+.gazetteer {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.gazetteer li {
+  margin: 0 0 0.9rem;
+}
+
+.gazLine {
+  display: flex;
+  align-items: baseline;
+  margin: 0 !important;
+}
+
+.root .gazName {
+  font-family: "IM Fell English", Georgia, serif;
+  font-size: 1.22rem;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.root .gazName:hover {
+  text-decoration: underline;
+}
+
+.leader {
+  flex: 1;
+  min-width: 1.5rem;
+  margin: 0 0.6rem;
+  border-bottom: 1px dotted color-mix(in srgb, var(--ink2) 70%, transparent);
+  transform: translateY(-0.3em);
+}
+
+.gazYear {
+  font-style: italic;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+
+.gazSummary {
+  margin: 0 !important;
+  color: var(--ink2);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.nowList {
+  margin: 0 0 1.2rem;
+  padding-left: 1.1rem;
+}
+
+.nowList li {
+  margin-bottom: 0.3rem;
+}
+
+.nowList li::marker {
+  content: "~  ";
+  color: var(--ink2);
+}
+
+.footer {
+  text-align: center;
+  padding: 1rem 16px 3rem;
+  font-family: "IM Fell English SC", Georgia, serif;
+  letter-spacing: 0.08em;
+  color: var(--ink2);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+  .root {
+    font-size: 18px;
+  }
+
+  .cartouche {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    min-width: 0;
+    margin: 0 16px;
+  }
+
+  .map::after {
+    inset: 8px;
+  }
+
+  .sheet {
+    padding-top: 16px;
+  }
+
+  .page {
+    padding-top: 3rem;
+  }
+}
+
+/* ---------- Project pages: an inset map and the traveler's notes ---------- */
+
+.night {
+  --ink: #e8e2f3;
+  --ink2: #c3bcdc;
+  --link: #f2cf86;
+  --paper-lift: #2c3160;
+  --lit: #f2c56b;
+  color-scheme: dark;
+}
+
+.night::after {
+  mix-blend-mode: soft-light;
+  opacity: 0.35;
+}
+
+.projectTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 12px 32px 0;
+}
+
+.projectOwner {
+  font-family: "IM Fell English SC", Georgia, serif;
+  letter-spacing: 0.1em;
+  color: var(--ink2);
+}
+
+.root .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  font-family: "IM Fell English", Georgia, serif;
+  font-size: 1.08rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.root .back:hover {
+  text-decoration: underline;
+}
+
+.backRose {
+  width: 18px;
+  height: 18px;
+  fill: var(--ink2);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 35rem);
+  gap: 4.5rem;
+  align-items: start;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 2rem 32px 4rem;
+}
+
+.vPlace .split {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 35rem);
+}
+
+.vMina .split {
+  grid-template-columns: minmax(0, 33rem) minmax(0, 0.8fr);
+  gap: 6rem;
+  padding-top: 4rem;
+}
+
+.vMina .inset {
+  order: 2;
+}
+
+.inset {
+  margin: 0;
+  position: sticky;
+  top: 24px;
+}
+
+.insetWide {
+  position: static;
+}
+
+.inset :global(.insetSvg) {
+  display: block;
+  width: 100%;
+  height: auto;
+  stroke: var(--ink);
+  fill: none;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.inset :global(.neat) {
+  stroke: var(--ink2);
+  stroke-width: 1;
+  fill: none;
+}
+
+.inset :global(.thin) {
+  stroke-width: 0.6;
+}
+
+.inset :global(.insetCaption) {
+  font-family: "IM Fell English", Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  fill: var(--ink2);
+  stroke: var(--paper);
+  stroke-width: 6px;
+  paint-order: stroke;
+}
+
+.inset :global(.road),
+.inset :global(.roadLine) {
+  stroke: var(--ink2);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 7;
+}
+
+.inset :global(.win) {
+  fill: var(--paper);
+}
+
+.inset :global(.door) {
+  fill: var(--ink);
+  fill-opacity: 0.7;
+}
+
+.inset :global(.beam) {
+  stroke: #c89a3c;
+  stroke-width: 1;
+  stroke-dasharray: 10 6;
+}
+
+.inset :global(.water) {
+  stroke: var(--washC);
+  stroke-width: 40;
+  opacity: 0.6;
+}
+
+.inset :global(.ripples) {
+  stroke: var(--ink2);
+}
+
+.inset :global(.wheel) {
+  transition: transform 0.35s ease-out;
+}
+
+.inset :global(.moon) {
+  fill: #f3e6c0;
+  stroke: none;
+}
+
+.inset :global(.star) {
+  fill: #ebe4cb;
+  stroke: none;
+}
+
+.inset :global(.glow) {
+  stroke: #f2c56b;
+  stroke-width: 0.8;
+  opacity: 0.35;
+}
+
+.inset :global(.moonPath) {
+  stroke: #f0dfae;
+  opacity: 0.75;
+}
+
+.night .inset :global(.crown) {
+  fill: #151833;
+  fill-opacity: 0.9;
+}
+
+.night .inset :global(.roof) {
+  fill: #2a2f58;
+}
+
+.notes {
+  max-width: 35rem;
+}
+
+.notesPlace {
+  font-style: italic;
+  color: var(--ink2);
+  margin-bottom: 0.2rem !important;
+}
+
+.projectTitle {
+  font-size: 3.3rem;
+  line-height: 1.05;
+  margin-bottom: 1.4rem !important;
+}
+
+.runIn {
+  font-family: "IM Fell English SC", Georgia, serif;
+  letter-spacing: 0.03em;
+}
+
+.quote {
+  margin: 2.2rem 0;
+  padding: 0 0 0 1.4rem;
+  border-left: 1px solid var(--ink2);
+  font-style: italic;
+  font-size: 1.28rem;
+  line-height: 1.5;
+}
+
+.margin {
+  font-style: italic;
+  color: var(--ink2);
+}
+
+.onward {
+  font-family: "IM Fell English", Georgia, serif;
+  font-size: 1.1rem;
+}
+
+.onward a {
+  display: inline-block;
+  padding: 0.5rem 0;
+}
+
+.neighbours {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 0.6rem;
+  border-top: 1px dotted var(--ink2);
+  font-family: "IM Fell English", Georgia, serif;
+}
+
+.neighbours a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.millLayout {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 1.5rem 32px 4rem;
+}
+
+.millLayout .notes {
+  margin: 3.5rem auto 0;
+}
+
+.millControl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem 1.2rem;
+  margin-top: 1rem;
+}
+
+.millControl label {
+  font-family: "IM Fell English SC", Georgia, serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+.slider {
+  width: min(320px, 70vw);
+  height: 44px;
+  accent-color: #8a5a22;
+  cursor: pointer;
+}
+
+.slider:focus-visible {
+  outline: 2px dashed var(--ink);
+  outline-offset: 2px;
+}
+
+.millHint {
+  font-style: italic;
+  color: var(--ink2);
+}
+
+.lost {
+  max-width: 32rem;
+  margin: 14vh auto;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.lostArt {
+  width: 100%;
+  max-width: 360px;
+  stroke: var(--ink);
+  fill: none;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+@media (max-width: 900px) {
+  .split,
+  .vPlace .split,
+  .vMina .split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding: 1rem 16px 3rem;
+  }
+
+  .vMina .inset {
+    order: 0;
+  }
+
+  .inset {
+    position: static;
+  }
+
+  .projectTop,
+  .millLayout {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .projectTitle {
+    font-size: 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inset :global(.wheel) {
+    transition: none;
+  }
+}

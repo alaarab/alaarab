@@ -1,0 +1,871 @@
+/* Specimens: a naturalist's sketchbook. */
+
+.root {
+  --ground: #e7dfcb;
+  --paper: #f1ead9;
+  --ink: #4a3b2c;
+  --ink-soft: #6a5843;
+  --rule: rgba(74, 59, 44, 0.16);
+  --rose: #b56a6a;
+  --wash: #b56a6a;
+  --serif: "Spectral", "Iowan Old Style", Georgia, serif;
+  --display: "Cormorant Garamond", "Cormorant", Garamond, Georgia, serif;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  color-scheme: light;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 1.62;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* Paper grain, laid over everything at low strength. */
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.29 0 0 0 0 0.23 0 0 0 0 0.17 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: var(--display);
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.root a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in srgb, var(--wash) 70%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.root a:hover {
+  text-decoration-color: var(--ink);
+}
+
+.root :focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.root p {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------- running head */
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 26px 40px 22px;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+
+.head a {
+  text-decoration: none;
+}
+
+.head a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--wash);
+}
+
+.headName {
+  font-family: var(--display);
+  font-style: normal;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  font-variant: small-caps;
+  color: var(--ink);
+}
+
+.headPlate {
+  font-family: var(--display);
+  font-size: 18px;
+}
+
+.headNav {
+  margin-left: auto;
+  display: flex;
+  gap: 26px;
+}
+
+/* ---------------------------------------------------------------- the book */
+
+.book {
+  padding: 8px 40px 96px;
+}
+
+.spread {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto 88px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 1px rgba(74, 59, 44, 0.1),
+    0 1px 0 1px rgba(74, 59, 44, 0.05),
+    0 3px 0 1px rgba(74, 59, 44, 0.035);
+}
+
+/* The gutter, where the two pages meet. */
+.spread::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 64px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(74, 59, 44, 0.05) 40%,
+    rgba(74, 59, 44, 0.12) 50%,
+    rgba(74, 59, 44, 0.05) 60%,
+    transparent
+  );
+}
+
+.page {
+  margin: 0;
+  padding: 72px 84px 64px;
+  min-width: 0;
+}
+
+.flip .notesPage {
+  order: 2;
+}
+
+.opening {
+  display: flex;
+  flex-direction: column;
+}
+
+.kicker {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 17px;
+  margin-bottom: 88px !important;
+}
+
+.name {
+  font-size: clamp(52px, 5.4vw, 76px);
+  line-height: 1;
+  font-weight: 400;
+  margin-bottom: 28px !important;
+}
+
+.lede {
+  font-size: 23px;
+  line-height: 1.48;
+  font-weight: 300;
+  max-width: 30ch;
+  margin-bottom: 22px !important;
+  text-wrap: pretty;
+}
+
+.body {
+  font-size: 18px;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.body + .body {
+  margin-top: 1.05em;
+}
+
+.aside {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 17px;
+  margin-top: 14px !important;
+}
+
+.openingFoot {
+  margin-top: auto !important;
+  padding-top: 64px;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 17px;
+  max-width: 34ch;
+}
+
+.platePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 48px;
+}
+
+.platePage .plantSvg {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+}
+
+.homeCaption {
+  margin-top: 18px;
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 36ch;
+  line-height: 1.5;
+}
+
+.plateNo {
+  font-family: var(--display);
+  font-style: normal;
+  font-size: 1.1em;
+  color: var(--ink);
+}
+
+.plateLink {
+  display: inline-block;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink);
+  min-height: 44px;
+  padding-top: 6px;
+}
+
+.captionNote {
+  display: block;
+  margin-top: 6px;
+}
+
+.notesPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.numeral {
+  font-family: var(--display);
+  font-size: 30px;
+  color: var(--ink-soft);
+  margin-bottom: 18px !important;
+}
+
+.plateTitle {
+  font-size: clamp(38px, 3.6vw, 50px);
+  line-height: 1.05;
+}
+
+.notesPage .body {
+  margin-top: 28px;
+  max-width: 44ch;
+}
+
+.readOn {
+  display: inline-block;
+  margin-top: 24px;
+  font-style: italic;
+  min-height: 44px;
+  padding-top: 8px;
+}
+
+/* ---------------------------------------------------------------- catalogue */
+
+.catalogue {
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0;
+  padding: 72px 0 64px;
+}
+
+.catalogueHead {
+  grid-column: 1 / -1;
+  padding: 0 84px 36px;
+}
+
+.catalogueList {
+  list-style: none;
+  margin: 0;
+  padding: 0 84px;
+}
+
+.catalogueRow {
+  display: grid;
+  grid-template-columns: 3.2em 34px 1fr auto;
+  align-items: center;
+  column-gap: 14px;
+  min-height: 56px;
+  text-decoration: none !important;
+  border-bottom: 1px solid var(--rule);
+}
+
+.catalogueRow:hover .catName {
+  text-decoration: underline;
+  text-decoration-color: var(--rose);
+  text-underline-offset: 0.22em;
+}
+
+.catNo {
+  font-family: var(--display);
+  color: var(--ink-soft);
+  font-size: 17px;
+}
+
+.sprig {
+  width: 30px;
+  height: 42px;
+  overflow: visible;
+}
+
+.sprigInk path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+}
+
+.catName {
+  font-family: var(--display);
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.catYear {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+/* ---------------------------------------------------------------- correspondence */
+
+.letter {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 56px 60px 52px;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px rgba(74, 59, 44, 0.1);
+  transform: rotate(-0.6deg);
+}
+
+.letterTitle {
+  font-size: 34px;
+  font-style: italic;
+  margin-bottom: 18px !important;
+}
+
+/* ---------------------------------------------------------------- the plant */
+
+.plantSvg {
+  display: block;
+  overflow: visible;
+}
+
+.ink path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.leader {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 0.6;
+}
+
+.leaderDot {
+  fill: var(--ink-soft);
+}
+
+.annotNum {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 500;
+  fill: var(--ink-soft);
+}
+
+.annotText {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 21px;
+  fill: var(--ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .plantSvg[data-state="idle"] .ink path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .plantSvg[data-state="idle"] .wash path,
+  .plantSvg[data-state="idle"] .annotations {
+    opacity: 0;
+  }
+  .plantSvg[data-state="play"] .ink path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation-name: specimens-draw;
+    animation-duration: var(--t, 1s);
+    animation-delay: var(--d, 0s);
+    animation-timing-function: cubic-bezier(0.45, 0.1, 0.3, 1);
+    animation-fill-mode: forwards;
+  }
+  .plantSvg[data-state="play"] .wash path {
+    opacity: 0;
+    animation-name: specimens-settle;
+    animation-duration: 1.6s;
+    animation-delay: calc(var(--d, 0s) + 0.5s);
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+  .plantSvg[data-state="play"] .annotations {
+    opacity: 0;
+    animation-name: specimens-settle;
+    animation-duration: 1.2s;
+    animation-delay: 3s;
+    animation-fill-mode: forwards;
+  }
+}
+
+/* The keyframes live in chrome.tsx as global CSS: Bun's CSS modules hash
+   keyframe names here but leave the animation-name references unhashed. */
+
+/* ---------------------------------------------------------------- project page */
+
+.projectPage {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 16px 40px 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  grid-template-areas:
+    "plate title"
+    "plate notes";
+  grid-template-rows: auto 1fr;
+  column-gap: 72px;
+}
+
+.projectPage .titleBlock {
+  grid-area: title;
+  padding-top: 64px;
+}
+
+.plate {
+  grid-area: plate;
+  margin: 0;
+  align-self: start;
+  position: sticky;
+  top: 12px;
+}
+
+.pagePlant {
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 150px);
+}
+
+.slug_m4l_builder .pagePlant {
+  max-height: calc(100vh - 280px);
+}
+
+.projectTitle {
+  font-size: clamp(46px, 4.6vw, 68px);
+  line-height: 1;
+}
+
+.fieldNotes {
+  grid-area: notes;
+  padding-top: 36px;
+}
+
+.fieldNotes .lede {
+  max-width: 34ch;
+  margin-bottom: 36px !important;
+}
+
+.quote {
+  margin: 0 0 40px;
+  padding: 0 0 0 22px;
+  border-left: 1px solid var(--wash);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 19px;
+  max-width: 40ch;
+}
+
+.runIn {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.plateCaption {
+  margin: 10px auto 0;
+  max-width: 54ch;
+  text-align: center;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.habitat {
+  display: block;
+  margin-top: 8px;
+}
+
+.habitat em {
+  font-style: normal;
+}
+
+.key {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.keyNo {
+  font-family: var(--display);
+  font-weight: 500;
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--ink-soft);
+}
+
+.turn {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 40px 64px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-style: italic;
+  font-size: 17px;
+  border-top: 1px solid var(--rule);
+}
+
+.turn a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.missing {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 120px 40px 160px;
+}
+
+.missing .body {
+  margin-top: 24px;
+}
+
+/* Project pages lie on the paper itself, not on the table. */
+.root:has(.projectPage),
+.root:has(.missing) {
+  background: var(--paper);
+}
+
+/* ---------------------------------------------------------------- m4l-builder: the capsule knob */
+
+.knobWrap {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "knob choices"
+    "knob readout";
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+  margin: 4px auto 6px;
+}
+
+.knob {
+  grid-area: knob;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.root .knob:focus-visible {
+  border-radius: 50%;
+  outline-offset: 2px;
+}
+
+.knob:active {
+  cursor: grabbing;
+}
+
+.knob svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.knobWash {
+  fill: #c49a4a;
+  fill-opacity: 0.3;
+}
+
+.knobInk {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.9;
+}
+
+.knobTick {
+  fill: var(--ink-soft);
+}
+
+.knobMark {
+  stroke: var(--rose);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.knobChoices {
+  grid-area: choices;
+  display: flex;
+  gap: 4px;
+  align-self: end;
+}
+
+.knobChoice {
+  font: italic 17px var(--serif);
+  color: var(--ink-soft);
+  background: none;
+  border: 0;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 10px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.knobChoice[aria-pressed="true"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--rose);
+  text-underline-offset: 0.25em;
+}
+
+.knobReadout {
+  grid-area: readout;
+  align-self: start;
+  padding-left: 10px;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------------- mina: the night plate */
+
+.night {
+  --paper: #232a42;
+  --ground: #232a42;
+  --ink: #ece3cc;
+  --ink-soft: #c3bba9;
+  --rule: rgba(236, 227, 204, 0.16);
+  --wash: #d9a7b8;
+  --rose: #d9a7b8;
+  color-scheme: dark;
+}
+
+.night::before {
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  filter: invert(1);
+}
+
+/* ---------------------------------------------------------------- narrow screens */
+
+@media (min-width: 761px) {
+  .key {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 980px) {
+  .page {
+    padding: 56px 48px 52px;
+  }
+  .catalogueHead,
+  .catalogueList {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+}
+
+@media (max-width: 760px) {
+  .root {
+    font-size: 17px;
+  }
+  .head {
+    flex-wrap: wrap;
+    padding: 16px 20px 8px;
+    gap: 4px 18px;
+  }
+  .headPlate {
+    display: none;
+  }
+  .headName {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .headNav {
+    margin-left: 0;
+    width: 100%;
+    gap: 0 20px;
+  }
+  .headNav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .book {
+    padding: 0 0 64px;
+  }
+  .spread {
+    grid-template-columns: 1fr;
+    margin-bottom: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  .spread::after {
+    display: none;
+  }
+  .root:has(.book) {
+    background: var(--paper);
+  }
+  .flip .notesPage {
+    order: 0;
+  }
+  .page {
+    padding: 40px 20px;
+  }
+  .kicker {
+    margin-bottom: 40px !important;
+  }
+  .name {
+    font-size: 52px;
+  }
+  .lede {
+    font-size: 21px;
+  }
+  .platePage {
+    min-height: 92svh;
+    padding-top: 12px;
+  }
+  .platePage .plantSvg {
+    max-width: 100%;
+    max-height: 70svh;
+  }
+  .notesPage {
+    padding-top: 72px;
+    padding-bottom: 8px;
+    border-top: 1px solid var(--rule);
+  }
+  .catalogue {
+    grid-template-columns: 1fr;
+    padding: 56px 0 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .catalogueHead,
+  .catalogueList {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .catName {
+    font-size: 21px;
+  }
+  .letter {
+    margin: 24px 16px 0;
+    padding: 40px 24px;
+    transform: none;
+  }
+  .projectPage {
+    grid-template-columns: 1fr;
+    grid-template-areas: "title" "plate" "notes";
+    padding: 0 20px 48px;
+  }
+  .projectPage .titleBlock {
+    padding-top: 24px;
+  }
+  .plate {
+    position: static;
+    margin-top: 12px;
+  }
+  /* Crop the label margins away on a phone; the numerals stay in view. */
+  .plate {
+    overflow-x: clip;
+  }
+  .pagePlant {
+    max-height: none;
+    width: 170%;
+    margin-left: -35%;
+  }
+  .annotText {
+    display: none;
+  }
+  .annotNum {
+    font-size: 34px;
+  }
+  .key {
+    margin: 12px 0 0;
+    padding: 18px 0 0;
+    border-top: 1px solid var(--rule);
+    font-style: italic;
+    font-size: 16px;
+    columns: 2;
+    column-gap: 20px;
+  }
+  .key li {
+    break-inside: avoid;
+    margin-bottom: 6px;
+    display: grid;
+    grid-template-columns: 1.6em 1fr;
+  }
+  .plateCaption {
+    text-align: left;
+    margin-top: 20px;
+  }
+  .knobWrap {
+    margin-top: 20px;
+  }
+  .turn {
+    flex-direction: column;
+    gap: 0;
+    padding: 20px;
+  }
+}

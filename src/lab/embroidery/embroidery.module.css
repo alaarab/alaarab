@@ -1,0 +1,811 @@
+/* Embroidery: undyed linen, four natural dyes, one band. */
+
+.root {
+  --ground: #e9e1cf;
+  --label: #f1ebdc;
+  --ink: #3b2b1f;
+  --muted: #5c4837;
+  --link: #8a3222;
+  --thread: #a3412d;
+  --focus: #8a3222;
+  --weft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.33  0 0 0 0 0.25  0 0 0 0 0.16  1.1 0 0 0 -0.46'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23f)'/%3E%3C/svg%3E");
+  --warp: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85 0.012' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.33  0 0 0 0 0.25  0 0 0 0 0.16  1.1 0 0 0 -0.46'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23f)'/%3E%3C/svg%3E");
+  --slub: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04 0.2' numOctaves='2' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.33  0 0 0 0 0.25  0 0 0 0 0.16  0.7 0 0 0 -0.29'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23f)'/%3E%3C/svg%3E");
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--ground);
+  color: var(--ink);
+  color-scheme: light;
+  font-family: "Alegreya", Georgia, serif;
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-nums;
+  padding: 0 16px 64px;
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--weft), var(--warp), var(--slub);
+  background-size: 260px 260px, 260px 260px, 520px 520px;
+  opacity: 0.3;
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: "Alegreya", Georgia, serif;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+
+.root a {
+  color: var(--link);
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.root a:hover {
+  text-decoration-style: solid;
+}
+
+.root a:focus-visible,
+.knob:focus-visible {
+  outline: 2px dashed var(--focus);
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Stitch reveal ---------- */
+
+.cloth {
+  display: block;
+  overflow: visible;
+}
+
+.draw {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 2.6s cubic-bezier(0.45, 0.1, 0.4, 1);
+  transition-delay: calc(var(--i, 0) * 0.5s);
+}
+
+/* Transitions rather than @keyframes: Bun's CSS modules rename keyframes but not
+   the animation-name that refers to them. */
+.cloth[data-sewn] .draw {
+  stroke-dashoffset: 0;
+}
+
+.knot {
+  opacity: 0;
+  transform: scale(0.4);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  transition-delay: calc(var(--i, 0) * 0.5s + 0.4s + var(--n, 0) * 0.14s);
+}
+
+.cloth[data-sewn] .knot {
+  opacity: 1;
+  transform: none;
+}
+
+/* Knots outside a Cloth (the key, the counts) are simply there. */
+svg:not(.cloth) .knot {
+  opacity: 1;
+  transform: none;
+}
+
+.waveStroke {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transition: transform 0.55s cubic-bezier(0.4, 0.1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .draw {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+  .knot {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .waveStroke {
+    transition: none;
+  }
+}
+
+/* ---------- Home: masthead ---------- */
+
+.masthead {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(64px, 12vh, 132px) 0 clamp(56px, 9vh, 96px);
+  text-align: center;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(3rem, 7vw, 4.75rem);
+  line-height: 1;
+  font-weight: 500;
+}
+
+.nameRule {
+  width: 200px;
+  height: 8px;
+  margin: 18px auto 30px;
+}
+
+.title {
+  margin: 0 auto;
+  max-width: 34rem;
+  font-size: clamp(1.3rem, 2.2vw, 1.55rem);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.intro {
+  margin: 18px auto 0;
+  max-width: 32rem;
+  color: var(--muted);
+}
+
+.contactLine {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 22px;
+}
+
+.contactLine a,
+.signatureLinks a,
+.pageContact a,
+.outLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* ---------- Home: the band ---------- */
+
+.bandSection {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.bandHeading {
+  margin: 0 0 28px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.band {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 40px;
+}
+
+.length {
+  position: relative;
+  padding: 42px 12px 44px;
+  display: flex;
+  justify-content: center;
+  /* The band is a slightly finer strip of the same cloth. */
+  background: color-mix(in srgb, var(--label) 22%, transparent);
+}
+
+/* A small sprig between scenes, as on the Bayeux band. */
+.sprig {
+  position: absolute;
+  top: 50%;
+  right: -11px;
+  translate: 0 -60%;
+  width: 22px;
+  height: 56px;
+  z-index: 1;
+}
+
+.length:nth-child(3n) .sprig,
+.length:last-child .sprig {
+  display: none;
+}
+
+.edge {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.edge[data-side="top"] {
+  top: 6px;
+  left: 0;
+  width: 100%;
+  height: 26px;
+}
+
+.edge[data-side="bottom"] {
+  bottom: 6px;
+  left: 0;
+  width: 100%;
+  height: 26px;
+}
+
+.edge[data-side="left"],
+.edge[data-side="right"] {
+  display: none;
+  top: 0;
+  width: 26px;
+  height: 100%;
+}
+
+.edge[data-side="left"] {
+  left: 6px;
+}
+
+.edge[data-side="right"] {
+  right: 6px;
+}
+
+.emblemLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px 6px;
+  text-decoration: none !important;
+  color: var(--ink) !important;
+}
+
+.emblem {
+  width: 168px;
+  height: 168px;
+}
+
+.emblemName {
+  font-family: "Alegreya SC", "Alegreya", Georgia, serif;
+  font-weight: 500;
+  font-size: 1.12rem;
+  letter-spacing: 0.06em;
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color 0.2s;
+}
+
+.emblemLink:hover .emblemName,
+.emblemLink:focus-visible .emblemName {
+  text-decoration-color: var(--thread);
+}
+
+.yearMark {
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  translate: -50% 0;
+  width: 62px;
+  padding: 0 7px;
+  background: var(--ground);
+}
+
+.yearMark svg {
+  display: block;
+  width: 48px;
+  height: 24px;
+}
+
+/* ---------- Home: the key ---------- */
+
+.keySection {
+  max-width: 44rem;
+  margin: clamp(96px, 14vh, 150px) auto 0;
+}
+
+.label {
+  position: relative;
+  padding: 44px clamp(24px, 5vw, 56px) 40px;
+  background: var(--label);
+  box-shadow: 0 1px 0 rgba(59, 43, 31, 0.08), 0 8px 18px -12px rgba(59, 43, 31, 0.28);
+  rotate: -0.4deg;
+}
+
+.labelStitch {
+  position: absolute;
+  inset: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.labelHeading {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.labelNote {
+  margin: 2px 0 20px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.keyList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 40px;
+}
+
+.keyList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  break-inside: avoid;
+}
+
+.keyList a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.keyKnot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+
+.keyYear {
+  margin-left: auto;
+  padding-left: 10px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+/* ---------- Home: signature ---------- */
+
+.signatureWrap {
+  display: flex;
+  justify-content: center;
+  margin: clamp(80px, 12vh, 120px) 0 24px;
+}
+
+.signature {
+  position: relative;
+  max-width: 26rem;
+  padding: 36px 36px 26px;
+  background: var(--label);
+  rotate: 0.6deg;
+  box-shadow: 0 8px 18px -12px rgba(59, 43, 31, 0.28);
+  text-align: center;
+}
+
+.signatureWords {
+  display: block;
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.signatureNote {
+  margin: 10px 0 4px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.signatureLinks {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 20px;
+}
+
+/* ---------- Project pages ---------- */
+
+.topNav {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+}
+
+.topNav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.root .topName {
+  font-family: "Alegreya SC", "Alegreya", Georgia, serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.projectMain {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(24px, 6vh, 64px) 0 0;
+}
+
+.projectMain[data-layout="side"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 38rem);
+  gap: clamp(40px, 6vw, 88px);
+  align-items: start;
+}
+
+.projectMain[data-layout="side"] .artCol {
+  position: sticky;
+  top: 32px;
+}
+
+.projectMain[data-layout="wide"] .notes,
+.projectMain[data-layout="quiet"] .notes {
+  max-width: 38rem;
+  margin: clamp(40px, 7vh, 72px) auto 0;
+}
+
+.projectMain[data-layout="quiet"] {
+  max-width: 44rem;
+}
+
+.pieceFigure {
+  margin: 0;
+}
+
+.pieceArt {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.pieceSmall {
+  max-width: 320px;
+}
+
+.pieceLong {
+  max-width: 900px;
+}
+
+.pieceCaption {
+  margin: 14px auto 0;
+  max-width: 28rem;
+  text-align: center;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.notesMeta {
+  margin: 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.pageTitle {
+  margin: 4px 0 18px;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.notes p {
+  margin: 0 0 1.1em;
+  max-width: 38rem;
+}
+
+.notes .lead {
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+.quote {
+  margin: 1.6em 0;
+  padding: 0 0 0 22px;
+  border-left: 2px dashed var(--thread);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+
+.quote p {
+  margin: 0;
+}
+
+.notes .outcome {
+  font-style: italic;
+}
+
+.notes .stack {
+  color: var(--muted);
+}
+
+.counts {
+  list-style: none;
+  margin: 0 0 1.2em;
+  padding: 0;
+}
+
+.counts li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0.2em 0;
+}
+
+.counts .keyKnot {
+  translate: 0 1px;
+}
+
+.outLinks,
+.pageContact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+}
+
+.along {
+  max-width: 1120px;
+  margin: clamp(72px, 10vh, 120px) auto 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.root .alongLink {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 1.15rem;
+}
+
+.alongLink[data-dir="next"] {
+  text-align: right;
+}
+
+.alongLink:hover .alongDir {
+  color: var(--link);
+}
+
+.alongDir {
+  display: block;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.miniEmblem {
+  width: 64px;
+  height: 64px;
+  flex: none;
+}
+
+.pageFoot {
+  max-width: 1120px;
+  margin: 48px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Mina: dusk, smaller, quieter. */
+.root[data-page="mina"] {
+  --muted: #514a45;
+  --link: #2f4466;
+  --focus: #2f4466;
+}
+
+.root[data-page="mina"] .pageTitle {
+  font-size: clamp(2.2rem, 4vw, 2.8rem);
+  text-align: center;
+}
+
+.root[data-page="mina"] .notesMeta {
+  text-align: center;
+}
+
+/* ---------- m4l-builder panel ---------- */
+
+.m4lPanel {
+  margin: 0 auto;
+  max-width: 960px;
+}
+
+.m4lCloth {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 4vw, 48px);
+  padding: clamp(28px, 4vw, 48px);
+  background: color-mix(in srgb, var(--label) 70%, var(--ground));
+  box-shadow: 0 10px 22px -14px rgba(59, 43, 31, 0.45);
+}
+
+.knob {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: ns-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.knobArt {
+  width: 170px;
+  height: 170px;
+}
+
+.knobLabel {
+  font-family: "Alegreya SC", "Alegreya", Georgia, serif;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+}
+
+.knobValue {
+  display: inline-block;
+  min-width: 1.2em;
+  font-family: "Alegreya", Georgia, serif;
+  font-style: italic;
+  color: var(--link);
+}
+
+.waveArt {
+  flex: 1;
+  min-width: 0;
+  height: auto;
+}
+
+/* ---------- Not found ---------- */
+
+.missing {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding-top: 40px;
+  text-align: center;
+}
+
+/* ---------- Phone ---------- */
+
+@media (max-width: 760px) {
+  .root {
+    font-size: 1.0625rem;
+  }
+
+  .band {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .length {
+    padding: 30px 40px 26px;
+  }
+
+  .edge[data-side="top"],
+  .edge[data-side="bottom"] {
+    display: none;
+  }
+
+  .length:nth-child(3n) .sprig {
+    display: block;
+  }
+
+  .sprig {
+    top: auto;
+    bottom: -28px;
+    right: 50%;
+    translate: 50% 0;
+    rotate: 90deg;
+  }
+
+  .edge[data-side="left"],
+  .edge[data-side="right"] {
+    display: block;
+  }
+
+  .emblem {
+    width: 132px;
+    height: 132px;
+  }
+
+  .yearMark {
+    bottom: auto;
+    top: 4px;
+    background: none;
+  }
+
+  .keyList {
+    columns: 1;
+  }
+
+  .projectMain[data-layout="side"] {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .projectMain[data-layout="side"] .artCol {
+    position: static;
+  }
+
+  .pieceArt {
+    max-width: 340px;
+  }
+
+  .pieceSmall {
+    max-width: 260px;
+  }
+
+  .pieceLong {
+    max-width: 100%;
+  }
+
+  .m4lCloth {
+    flex-direction: column;
+  }
+
+  .knobArt {
+    width: 140px;
+    height: 140px;
+  }
+
+  .waveArt {
+    width: 100%;
+  }
+
+  .along {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .alongLink[data-dir="next"] {
+    align-self: flex-end;
+  }
+
+  .signature {
+    padding: 32px 22px 22px;
+  }
+}

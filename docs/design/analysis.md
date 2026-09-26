@@ -117,10 +117,4 @@ These two issues (dev build and no gzip) are real production bugs, not design qu
 
 ## Where to go
 
-Three directions that each take one real part of Ala's work as the organizing idea, with working prototypes:
-
-- [A · Device Rack](direction-a-rack.md): every project is a hardware device in a rack, taken from the music and instrument work.
-- [B · Ledger](direction-b-ledger.md): the whole portfolio is one reconciled, sortable ledger, taken from the ERP and crypto reconciliation work.
-- [C · Transit Map](direction-c-transit.md): lines of work run through time as a transit map and projects are the stations, taken from how the threads cross.
-
-Run them with `bun run lab` and open http://localhost:3300/lab to compare all three side by side. (`bun run dev` is currently broken under Bun 1.3.14 with "import_Terminal_module is not defined" on every route, so the lab script builds the SPA and serves it with an SPA fallback instead.)
+Round 1 tried three information-dense directions (see [round-1/](round-1/)). They were rejected as busy and blocky. Round 2 has ten soft, painted, bookish directions; see [README.md](README.md) for the list, how to run them (`bun run lab`, then http://localhost:3300/lab), and a ranking.

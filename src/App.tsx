@@ -6,13 +6,8 @@ import { Now } from "./pages/Now";
 import { ProjectDetail } from "./pages/ProjectDetail";
 import { Projects } from "./pages/Projects";
 import { Resume } from "./pages/Resume";
-import { TransitHome } from "./lab/transit/Home";
-import { TransitProject } from "./lab/transit/Project";
 import { LabIndex } from "./lab/LabIndex";
-import { LedgerHome } from "./lab/ledger/Home";
-import { LedgerProject } from "./lab/ledger/Project";
-import { RackHome } from "./lab/rack/Home";
-import { RackProject } from "./lab/rack/Project";
+import { LabHome, LabProject } from "./lab/LabRoute";
 
 export function App() {
   return (
@@ -24,14 +19,10 @@ export function App() {
         <Route path="/now" element={<Now />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:slug" element={<ProjectDetail />} />
-        {/* Design-direction prototypes (dev server only, not prerendered). */}
+        {/* Design-direction prototypes, served by `bun run lab`; not prerendered. */}
         <Route path="/lab" element={<LabIndex />} />
-        <Route path="/lab/rack" element={<RackHome />} />
-        <Route path="/lab/rack/projects/:slug" element={<RackProject />} />
-        <Route path="/lab/ledger" element={<LedgerHome />} />
-        <Route path="/lab/ledger/projects/:slug" element={<LedgerProject />} />
-        <Route path="/lab/transit" element={<TransitHome />} />
-        <Route path="/lab/transit/projects/:slug" element={<TransitProject />} />
+        <Route path="/lab/:direction" element={<LabHome />} />
+        <Route path="/lab/:direction/projects/:slug" element={<LabProject />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
