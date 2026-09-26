@@ -1,0 +1,1723 @@
+/* Direction C · Transit Map. Light signage system; line colors are the only strong color. */
+
+.root {
+  --paper: #fbfaf7;
+  --paper-2: #f2f0ea;
+  --white: #ffffff;
+  --ink: #141414;
+  --ink-2: #45433e;
+  --ink-3: #66635c;
+  --rule: #d6d2c8;
+  --fade: #dcd9d1;
+  --fade-ink: #b4b0a7;
+  --sans: "Overpass", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Overpass Mono", ui-monospace, Menlo, monospace;
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1320px;
+  --radius: 6px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.root h1,
+.root h2,
+.root h3 {
+  font-family: var(--sans);
+  font-style: normal;
+  letter-spacing: -0.01em;
+}
+
+.root ::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.root :where(a, button):focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -80px;
+  z-index: 10;
+  background: var(--ink);
+  color: var(--white);
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+.skip:focus {
+  top: 12px;
+}
+
+/* ---------- Bullets ---------- */
+
+.bullet {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--white);
+  font-family: var(--sans);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.bullet_sm {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  padding-top: 2px;
+}
+
+.bullet_md {
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  padding-top: 2px;
+}
+
+.bullet_lg {
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  padding-top: 3px;
+}
+
+/* ---------- Station sign header ---------- */
+
+.sign {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 24px var(--gutter) 0;
+}
+
+.signPanel {
+  position: relative;
+  background: var(--ink);
+  color: var(--white);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: clamp(28px, 4vw, 48px) clamp(20px, 4vw, 48px) clamp(28px, 4vw, 44px);
+}
+
+/* The thin white rule that runs along the top of a station sign. */
+.signPanel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 2px;
+  background: var(--white);
+}
+
+.signLines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: clamp(18px, 3vw, 28px);
+}
+
+.signName {
+  font-size: clamp(56px, 10vw, 136px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em !important;
+}
+
+.stationName {
+  font-size: clamp(48px, 9vw, 120px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em !important;
+  overflow-wrap: anywhere;
+}
+
+.signTitle {
+  margin-top: 20px;
+  max-width: 44ch;
+  font-size: clamp(19px, 2vw, 24px);
+  font-weight: 500;
+  line-height: 1.35;
+  color: #e9e7e1;
+}
+
+.signStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 36px;
+  border: 2px solid var(--ink);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--white);
+  padding: 14px clamp(20px, 4vw, 48px);
+  font-weight: 600;
+}
+
+.stripLabel {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+  margin-right: 6px;
+}
+
+.stripNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 4px;
+  margin-left: auto;
+}
+
+.stripNav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  font-weight: 800;
+  border-bottom: 3px solid transparent;
+}
+
+.stripNav a:hover {
+  border-bottom-color: var(--ink);
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 88px) var(--gutter) 0;
+}
+
+.sectionHead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 16px 48px;
+  align-items: end;
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+  border-bottom: 4px solid var(--ink);
+}
+
+.h2 {
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em !important;
+}
+
+.h2Small {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  border-bottom: 4px solid var(--ink);
+}
+
+.lede {
+  max-width: 62ch;
+  color: var(--ink-2);
+  font-size: 17px;
+}
+
+/* ---------- Key (legend + filter) ---------- */
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.keyItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 16px 8px 10px;
+  border: 2px solid var(--rule);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s var(--ease), background 0.15s var(--ease), color 0.15s var(--ease);
+}
+
+.keyItem:hover {
+  border-color: var(--line);
+}
+
+.keyItem[aria-pressed="true"] {
+  background: var(--line);
+  border-color: var(--line);
+  color: var(--white);
+}
+
+.keyItem[aria-pressed="true"] .bullet {
+  background: var(--white);
+  color: var(--line);
+}
+
+.keyName {
+  font-weight: 800;
+  font-size: 16px;
+  padding-top: 2px;
+}
+
+.keyCount {
+  font-family: var(--mono);
+  font-size: 12px;
+  opacity: 0.8;
+  padding-top: 2px;
+}
+
+.keyLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-left: auto;
+  color: var(--ink-3);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.keyLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.keyLegend svg {
+  color: var(--ink);
+}
+
+/* ---------- The map ---------- */
+
+.mapFrame {
+  position: relative;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--white);
+  overflow: hidden;
+}
+
+.map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.era {
+  fill: var(--white);
+}
+
+.eraAlt {
+  fill: var(--paper-2);
+}
+
+.eraYear {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.eraSub {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--ink-3);
+}
+
+.track,
+.trackGap {
+  fill: none;
+  stroke: var(--line);
+  stroke-linejoin: round;
+  transition: stroke 0.2s var(--ease);
+}
+
+.track {
+  stroke-width: 11;
+  stroke-linecap: round;
+}
+
+.trackGap {
+  stroke-width: 7;
+  stroke-dasharray: 11 9;
+}
+
+.hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 30;
+  pointer-events: stroke;
+}
+
+.mapBullet circle {
+  fill: var(--line);
+  transition: fill 0.2s var(--ease);
+}
+
+.mapBullet text {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 800;
+  fill: var(--white);
+  text-anchor: middle;
+}
+
+.faded .track,
+.faded .trackGap {
+  stroke: var(--fade);
+}
+
+.faded .mapBullet circle {
+  fill: var(--fade);
+}
+
+.station {
+  cursor: pointer;
+  outline: none;
+}
+
+.hitDot {
+  fill: transparent;
+}
+
+.marker {
+  transition: transform 0.2s var(--ease);
+}
+
+.dot {
+  fill: var(--white);
+  stroke: var(--line);
+  stroke-width: 4;
+}
+
+.interDot {
+  fill: var(--white);
+  stroke: var(--ink);
+  stroke-width: 4.5;
+}
+
+.focusRing {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 3;
+}
+
+.station:focus-visible .focusRing {
+  stroke: var(--ink);
+}
+
+.station:focus-visible .labelName,
+.station:hover .labelName {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.label {
+  paint-order: stroke;
+  stroke: var(--white);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+  transition: fill 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+.labelName {
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 800;
+  fill: var(--ink);
+}
+
+.labelYear {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--ink-3);
+}
+
+.station.faded .dot,
+.station.faded .interDot {
+  stroke: var(--fade);
+}
+
+.station.faded .labelName,
+.station.faded .labelYear {
+  fill: var(--fade-ink);
+}
+
+.station.lit .marker {
+  transform: scale(1.4);
+}
+
+.mapNote {
+  display: none;
+}
+
+/* Tooltip card */
+
+.tip {
+  --tx: 26px;
+  --ty: -26px;
+  position: absolute;
+  z-index: 2;
+  width: 320px;
+  pointer-events: none;
+  transform: translate(var(--tx), var(--ty));
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(20, 20, 20, 0.16);
+  padding: 14px 16px 16px;
+}
+
+.tip[data-side="left"] {
+  --tx: calc(-100% - 26px);
+}
+
+.tip[data-v="up"] {
+  --ty: calc(-100% + 26px);
+}
+
+.tipHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.tipStatus {
+  text-align: right;
+}
+
+.tipTitle {
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.tipBody {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.tipLines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 12px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tipLines li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- Timetable ---------- */
+
+.timetable {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 48px 48px;
+  align-items: start;
+}
+
+.ttLine {
+  border-top: 8px solid var(--line);
+  padding-top: 16px;
+}
+
+.ttHead {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.ttName {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  padding-top: 4px;
+}
+
+.ttDesc {
+  margin-top: 4px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.ttList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ttStop {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding-bottom: 26px;
+}
+
+/* Track above and below the station dot. */
+.ttStop::before,
+.ttStop::after {
+  content: "";
+  position: absolute;
+  left: 17px;
+  width: 10px;
+  background: var(--line);
+}
+
+.ttStop::before {
+  top: 0;
+  height: 22px;
+}
+
+.ttStop::after {
+  top: 22px;
+  bottom: 0;
+}
+
+.ttStop[data-end="first"]::before,
+.ttStop[data-end="last"]::after {
+  display: none;
+}
+
+.ttStop[data-gap]::after,
+.ttStop[data-gap] + .ttStop::before {
+  left: 19px;
+  width: 6px;
+  background: repeating-linear-gradient(to bottom, var(--line) 0 10px, transparent 10px 18px);
+}
+
+.ttDot,
+.ttInter {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.ttDot {
+  width: 20px;
+  height: 20px;
+  margin-top: 12px;
+  border: 4px solid var(--line);
+}
+
+.ttInter {
+  width: 28px;
+  height: 28px;
+  margin-top: 8px;
+  border: 5px solid var(--ink);
+}
+
+.ttBody {
+  padding-left: 8px;
+}
+
+.ttMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  padding-top: 4px;
+}
+
+.ttTitle {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.15;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s var(--ease);
+}
+
+.ttTitle:hover {
+  text-decoration-color: var(--line);
+}
+
+.ttSummary {
+  margin-top: 4px;
+  font-size: 15.5px;
+  color: var(--ink-2);
+  max-width: 48ch;
+}
+
+.ttChange {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.ttChangeLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+}
+
+/* ---------- Route history ---------- */
+
+.route {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.routeStop {
+  display: grid;
+  grid-template-columns: 170px 56px minmax(0, 1fr);
+  position: relative;
+}
+
+.routeYears {
+  padding-top: 16px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-align: right;
+  padding-right: 8px;
+}
+
+.routeMark {
+  position: relative;
+}
+
+.routeMark::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  margin-left: -5px;
+  background: var(--ink);
+}
+
+.routeStop:first-child .routeMark::before {
+  top: 22px;
+}
+
+.routeStop:last-child .routeMark::before {
+  bottom: auto;
+  height: 22px;
+}
+
+.routeMark::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 13px;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--white);
+  border: 4px solid var(--ink);
+}
+
+.routeStop[data-here] .routeMark::after {
+  top: 6px;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  background: var(--ink);
+  border: 6px solid var(--white);
+  box-shadow: 0 0 0 3px var(--ink);
+}
+
+.routeBody {
+  padding: 12px 0 34px 12px;
+  max-width: 72ch;
+}
+
+.hereTag {
+  display: inline-block;
+  margin-bottom: 8px;
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 14px;
+  padding: 5px 10px 3px;
+  border-radius: 3px;
+}
+
+.routePlace {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.routeRole {
+  margin-top: 4px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.routeLoc {
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.routeSummary {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 16px;
+}
+
+/* ---------- Contact ---------- */
+
+.infoSign {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--ink);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 24px 14px;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.infoMark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 0.8em;
+  padding-top: 0.08em;
+  margin-top: -0.12em;
+}
+
+.contactList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contactList li {
+  border-bottom: 2px solid var(--ink);
+}
+
+.contactList a {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  padding: 12px 8px;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 800;
+  transition: background 0.15s var(--ease);
+}
+
+.contactList a:hover {
+  background: var(--paper-2);
+}
+
+.contactValue {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.arrow {
+  font-weight: 800;
+  font-size: 1.1em;
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  max-width: var(--max);
+  margin: clamp(64px, 8vw, 104px) auto 0;
+  padding: 20px var(--gutter) 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  border-top: 2px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.footer a {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ---------- Station page ---------- */
+
+.topBar {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 12px var(--gutter) 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  font-weight: 800;
+}
+
+.topBar a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+}
+
+.topBar a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.topHome {
+  margin-right: auto;
+  padding-left: 0 !important;
+  font-size: 20px;
+}
+
+.stationPage {
+  display: block;
+}
+
+.signFacts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border: 2px solid var(--ink);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--white);
+}
+
+.signFacts div {
+  padding: 14px 20px 16px;
+  border-left: 2px solid var(--rule);
+}
+
+.signFacts div:first-child {
+  border-left: 0;
+}
+
+.signFacts dt {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+.signFacts dd {
+  margin: 4px 0 0;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.strips {
+  display: grid;
+  gap: 28px;
+}
+
+.strip {
+  border: 2px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--white);
+  padding: 16px 20px 20px;
+}
+
+.stripHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.stripPos {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.stripTrack {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
+  margin-top: 16px;
+  padding-top: 40px;
+}
+
+/* The line itself, drawn between whichever neighbours exist. */
+.stripTrack::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  height: 11px;
+  left: 50%;
+  right: 50%;
+  border-radius: 6px;
+  background: var(--line);
+}
+
+.stripTrack[data-prev]::before {
+  left: 6px;
+}
+
+.stripTrack[data-next]::before {
+  right: 6px;
+}
+
+.stripHere {
+  position: relative;
+}
+
+.stripHereDot {
+  position: absolute;
+  left: 50%;
+  top: -46px;
+  width: 36px;
+  height: 36px;
+  margin-left: -18px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--white);
+  border: 6px solid var(--ink);
+}
+
+.stripStop,
+.stripEnd {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 44px;
+}
+
+.stripStop[data-dir="next"],
+.stripEnd[data-dir="next"] {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.stripStop::before {
+  content: "";
+  position: absolute;
+  top: -36px;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--white);
+  border: 4px solid var(--line);
+}
+
+.stripStop[data-dir="prev"]::before {
+  left: 2px;
+}
+
+.stripStop[data-dir="next"]::before {
+  right: 2px;
+}
+
+.stripKind {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+.stripTitle {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.stripStop:hover .stripTitle {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.stripYear {
+  font-size: 14px;
+  color: var(--ink-3);
+}
+
+.stripNone {
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+/* Departure board */
+
+.board {
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--white);
+  overflow: hidden;
+}
+
+.boardRow {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  border-top: 2px solid var(--ink);
+}
+
+.boardRow:first-child {
+  border-top: 0;
+}
+
+.boardLabel {
+  background: var(--ink);
+  color: var(--white);
+  font-size: 22px;
+  font-weight: 800;
+  padding: 20px 20px 16px;
+  border-top: 2px solid #3a3a3a;
+}
+
+.boardRow:first-child .boardLabel {
+  border-top: 0;
+}
+
+.boardText {
+  padding: 20px 28px 22px;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 72ch;
+}
+
+.factsGrid {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 88px) var(--gutter) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 48px;
+}
+
+.metrics {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: m;
+}
+
+.metrics li {
+  counter-increment: m;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.metrics li::before {
+  content: counter(m);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 20px;
+  padding-top: 3px;
+  box-sizing: border-box;
+}
+
+.stack {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 32px;
+}
+
+.stack li {
+  break-inside: avoid;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.notice {
+  max-width: calc(var(--max) - 2 * var(--gutter));
+  margin: clamp(48px, 7vw, 88px) var(--gutter) 0;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+@media (min-width: 1320px) {
+  .notice {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.noticeHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 17px;
+  padding: 10px 18px 8px;
+}
+
+.noticeMark {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 16px;
+  padding-top: 2px;
+  box-sizing: border-box;
+}
+
+.noticeQuote {
+  margin: 0;
+  padding: 22px 24px 26px;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 700;
+  line-height: 1.3;
+  max-width: 44ch;
+}
+
+.exits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.exits li {
+  border-bottom: 2px solid var(--ink);
+}
+
+.exits a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 10px 8px;
+}
+
+.exits a:hover {
+  background: var(--paper-2);
+}
+
+.exitTag {
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 14px;
+  padding: 5px 9px 3px;
+  border-radius: 3px;
+}
+
+.exitName {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.exitHost {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.backRow {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 48px var(--gutter) 0;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  font-weight: 800;
+}
+
+.backLink:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 960px) {
+  .mapBlock {
+    display: none;
+  }
+
+  .mapNote {
+    display: block;
+    padding: 16px 18px;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    font-weight: 700;
+    background: var(--white);
+  }
+
+  .sectionHead {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .root {
+    font-size: 16px;
+  }
+
+  .stripNav {
+    margin-left: -12px;
+  }
+
+  .timetable {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .routeStop {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .routeYears {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: left;
+    padding: 14px 0 0 12px;
+  }
+
+  .routeMark {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .routeBody {
+    grid-column: 2;
+    padding-top: 4px;
+  }
+
+  .contactList a {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2px 12px;
+  }
+
+  .contactValue {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .signFacts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .signFacts div:nth-child(3) {
+    border-left: 0;
+  }
+
+  .signFacts div:nth-child(n + 3) {
+    border-top: 2px solid var(--rule);
+  }
+
+  .stripTrack {
+    grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+  }
+
+  .stripTitle {
+    font-size: 17px;
+  }
+
+  .boardRow {
+    grid-template-columns: 1fr;
+  }
+
+  .boardLabel {
+    font-size: 18px;
+    padding: 12px 18px 9px;
+  }
+
+  .boardText {
+    padding: 16px 18px 18px;
+    font-size: 17px;
+  }
+
+  .factsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .exits a {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .exitHost {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .exits .arrow {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root *,
+  .root *::before,
+  .root *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ---------- Iteration 2 ---------- */
+
+.first {
+  padding-top: clamp(40px, 5vw, 56px);
+}
+
+.key {
+  flex-wrap: wrap;
+}
+
+.keyItem {
+  padding: 8px 14px 8px 10px;
+}
+
+.keyCount {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  opacity: 1;
+  padding: 2px 4px 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.keyItem[aria-pressed="true"] .keyCount {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+}
+
+.mapBlock .keyLegend {
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+@media (min-width: 1100px) {
+  .timetable {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .timetable > :first-child {
+    grid-row: span 2;
+  }
+}
+
+.eraAlt {
+  fill: #f5f3ee;
+}
+
+.footer,
+.notice {
+  width: min(calc(100% - 2 * var(--gutter)), calc(var(--max) - 2 * var(--gutter)));
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.stripHereLabel {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+  padding-top: 2px;
+}
+
+.ttName {
+  scroll-margin-top: 24px;
+}
+
+@media (max-width: 960px) {
+  .mapNote {
+    padding: 16px 16px 8px;
+  }
+
+  .mapNote p {
+    margin-bottom: 8px;
+  }
+
+  .mapNote ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mapNote li + li {
+    border-top: 1px solid var(--rule);
+  }
+
+  .mapNote a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    font-weight: 800;
+    font-size: 18px;
+  }
+
+  .mapNote a .keyCount {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .topBar {
+    font-size: 15px;
+  }
+
+  .topBar a {
+    padding: 0 7px;
+  }
+
+  .topHome {
+    font-size: 17px;
+  }
+}
+
+.station:focus-visible {
+  outline: none;
+}
+
+.station:focus-visible .focusRing {
+  stroke-width: 4;
+}
+
+@media (max-width: 480px) {
+  .stripPos {
+    display: block;
+  }
+}
+
+/* ---------- Iteration 3: compact home sign so the map sits above the fold ---------- */
+
+.signIntro {
+  margin-top: 12px;
+  max-width: 52ch;
+  font-size: 16px;
+  color: #bdbab2;
+}
+
+@media (min-width: 961px) {
+  .sign .signPanel:has(.signText) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "lines lines"
+      "name text";
+    align-items: end;
+    column-gap: clamp(40px, 5vw, 80px);
+    padding: 40px 48px 28px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .signPanel:has(.signText) .signLines {
+    grid-area: lines;
+    margin-bottom: 18px;
+  }
+
+  .signPanel:has(.signText) .signName {
+    grid-area: name;
+    font-size: clamp(64px, 7vw, 104px);
+    white-space: nowrap;
+  }
+
+  .signText {
+    grid-area: text;
+    padding-bottom: 8px;
+  }
+
+  .signText .signTitle {
+    margin-top: 0;
+    font-size: 21px;
+  }
+
+  /* The info strip becomes the bottom rail of the sign. */
+  .signPanel:has(.signText) + .signStrip {
+    background: var(--ink);
+    color: var(--white);
+    border-color: var(--ink);
+    padding: 4px 48px 6px;
+    position: relative;
+  }
+
+  .signPanel:has(.signText) + .signStrip::before {
+    content: "";
+    position: absolute;
+    left: 48px;
+    right: 48px;
+    top: 0;
+    height: 1px;
+    background: #4a4944;
+  }
+
+  .signPanel:has(.signText) + .signStrip .stripLabel {
+    color: #b9b6ae;
+  }
+
+  .signPanel:has(.signText) + .signStrip .stripNav a:hover {
+    border-bottom-color: var(--white);
+  }
+
+  .signPanel:has(.signText) + .signStrip :focus-visible {
+    outline-color: var(--white);
+  }
+
+  .first {
+    padding-top: 36px;
+  }
+
+  .mapHead {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: 32px;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+  }
+
+  .mapHead .h2 {
+    font-size: 40px;
+  }
+
+  .mapHead .lede {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .mapBlock .key {
+    margin-bottom: 14px;
+  }
+}
+
+@media (min-width: 961px) {
+  .sign:has(.signText) {
+    padding-top: 16px;
+  }
+
+  .sign .signPanel:has(.signText) {
+    grid-template-areas:
+      "name lines"
+      "name text";
+    grid-template-rows: auto 1fr;
+    padding-top: 36px;
+  }
+
+  .signPanel:has(.signText) .signLines {
+    margin-bottom: 20px;
+  }
+
+  .mapHead .lede {
+    max-width: none;
+  }
+}
