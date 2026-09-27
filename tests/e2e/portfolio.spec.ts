@@ -136,3 +136,67 @@ test.describe("prerendered metadata", () => {
     );
   });
 });
+
+test.describe("blog", () => {
+  test("the index renders with its own metadata", async ({ page, request }) => {
+    await page.goto("/blog");
+    await expect(page).toHaveTitle(/Blog \| Ala Arab/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Blog" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Subscribe to the feed" }),
+    ).toHaveAttribute("href", "/blog/feed.xml");
+
+    const html = await (await request.get("/blog")).text();
+    expect(html).toContain("<title>Blog | Ala Arab</title>");
+    expect(html).toContain('rel="canonical" href="https://alaarab.com/blog"');
+    expect(html).toContain('type="application/atom+xml"');
+  });
+
+  test("drafts stay out of the index, feed, sitemap, and routes", async ({
+    page,
+    request,
+  }) => {
+    await page.goto("/blog");
+    await expect(page.getByText("Sample post")).toHaveCount(0);
+
+    expect((await request.get("/blog/sample-post")).status()).toBe(404);
+
+    const feed = await request.get("/blog/feed.xml");
+    expect(feed.status()).toBe(200);
+    expect(feed.headers()["content-type"]).toContain("application/atom+xml");
+    expect(await feed.text()).not.toContain("sample-post");
+
+    expect(await (await request.get("/sitemap.xml")).text()).not.toContain(
+      "sample-post",
+    );
+  });
+
+  test("a draft can be previewed with ?preview", async ({ page }) => {
+    await page.goto("/blog/sample-post?preview");
+
+    await expect(page.getByRole("note")).toContainText("Draft preview");
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: "Sample post: what a post can hold",
+      }),
+    ).toBeVisible();
+    await expect(page).toHaveTitle(/^Draft: Sample post/);
+    await expect(
+      page.getByRole("heading", { level: 2, name: "A section heading" }),
+    ).toHaveAttribute("id", "a-section-heading");
+    await expect(page.getByRole("link", { name: "Phren" })).toHaveAttribute(
+      "href",
+      "/projects/phren",
+    );
+  });
+
+  test("an unknown post shows the 404 page", async ({ page }) => {
+    await page.goto("/blog/not-a-real-post");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Nothing here." }),
+    ).toBeVisible();
+  });
+});

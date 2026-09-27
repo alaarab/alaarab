@@ -15,6 +15,7 @@ import { projects } from "../src/data/siteContent";
 import {
   allRoutes,
   applyRouteMeta,
+  buildFeed,
   buildRobots,
   buildSitemap,
   notFoundMeta,
@@ -83,7 +84,8 @@ for (const project of projects) {
 
 await Bun.write(join(distDir, "sitemap.xml"), buildSitemap());
 await Bun.write(join(distDir, "robots.txt"), buildRobots());
+await Bun.write(join(distDir, "blog", "feed.xml"), buildFeed());
 
 console.log(
-  `Prerendered ${pages} routes + 404.html, og.png, sitemap.xml, robots.txt → dist/`,
+  `Prerendered ${pages} routes + 404.html, og.png, sitemap.xml, robots.txt, blog/feed.xml → dist/`,
 );
