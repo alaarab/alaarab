@@ -1,6 +1,7 @@
 import { type CSSProperties, type ReactNode, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { about, coursework, educationItems, experienceItems, interests, siteMeta } from "../data/siteContent";
+import { hasPublishedPosts } from "../lib/posts";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import type { Project } from "../types";
 import { Thumb } from "./mount";
@@ -84,6 +85,7 @@ export function EmbroideryHome() {
           <a href={siteMeta.linkedinHref}>LinkedIn</a>
           <a href="/resume">Resume</a>
           <a href="/now">Now</a>
+          {hasPublishedPosts && <Link to="/blog">Blog</Link>}
         </nav>
       </header>
 
@@ -172,6 +174,7 @@ export function EmbroideryHome() {
             <a href={siteMeta.emailHref}>{siteMeta.email}</a>
             <a href={siteMeta.linkedinHref}>LinkedIn</a>
             <a href="/resume">Resume</a>
+            {hasPublishedPosts && <Link to="/blog">Blog</Link>}
           </p>
         </div>
       </footer>

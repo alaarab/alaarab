@@ -937,6 +937,165 @@
   text-align: center;
 }
 
+/* ---------- Blog ---------- */
+
+.topLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0 22px;
+}
+
+.blogMain {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(24px, 6vh, 56px) 0 0;
+}
+
+.feedLink {
+  margin: 14px 0 0;
+  font-size: 1rem;
+}
+
+.postList {
+  list-style: none;
+  margin: clamp(48px, 8vh, 80px) 0 0;
+  padding: 0;
+}
+
+.postItem + .postItem {
+  margin-top: 44px;
+}
+
+.root .postItemTitle {
+  margin: 2px 0 6px;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.postItemSummary {
+  margin: 0;
+}
+
+.postEmpty {
+  margin: clamp(48px, 8vh, 80px) 0 0;
+  text-align: center;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.draftBanner {
+  margin: 0 0 32px;
+  padding: 12px 18px;
+  border: 2px dashed var(--thread);
+  background: var(--label);
+  font-size: 1rem;
+}
+
+.postHead {
+  text-align: center;
+}
+
+.postBody {
+  margin-top: clamp(40px, 7vh, 64px);
+}
+
+.postBody p,
+.postBody ul,
+.postBody ol {
+  margin: 0 0 1.1em;
+}
+
+.postBody ul,
+.postBody ol {
+  padding-left: 1.4em;
+}
+
+.postBody li + li {
+  margin-top: 0.35em;
+}
+
+.root .postBody h2 {
+  margin: 1.9em 0 0.5em;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.root .postBody h3 {
+  margin: 1.6em 0 0.4em;
+  font-size: 1.25rem;
+  font-style: italic;
+}
+
+.postBody h2,
+.postBody h3 {
+  scroll-margin-top: 24px;
+}
+
+.root code {
+  font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.82em;
+  font-variant-numeric: normal;
+}
+
+.postBody :not(pre) > code {
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  background: var(--label);
+}
+
+.postCode {
+  margin: 0 0 1.4em;
+  padding: 16px 18px;
+  overflow-x: auto;
+  border: 1px dashed var(--muted);
+  border-radius: 4px;
+  background: var(--label);
+  line-height: 1.5;
+}
+
+.postCode:focus-visible {
+  outline: 2px dashed var(--focus);
+  outline-offset: 3px;
+}
+
+.postQuote {
+  margin: 1.6em 0;
+  padding: 0 0 0 22px;
+  border-left: 2px dashed var(--thread);
+}
+
+.postQuote blockquote {
+  margin: 0;
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
+.postQuote blockquote p {
+  margin: 0;
+}
+
+.postQuote figcaption {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.postFoot {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--muted);
+}
+
+.postFoot p {
+  margin: 0 0 0.6em;
+}
+
+.postTags {
+  color: var(--muted);
+  font-style: italic;
+}
+
 /* ---------- Phone ---------- */
 
 @media (max-width: 760px) {

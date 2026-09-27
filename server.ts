@@ -3,8 +3,10 @@ import { join } from "node:path";
 import index from "./index.html";
 import {
   SITE_ORIGIN,
+  buildFeed,
   buildRobots,
   buildSitemap,
+  knownPostSlugs,
   knownProjectSlugs,
 } from "./src/lib/routeMeta";
 
@@ -17,6 +19,10 @@ const TEXT_HEADERS = { "content-type": "text/plain; charset=utf-8" };
 
 const sitemap = () => new Response(buildSitemap(SITE_ORIGIN), { headers: XML_HEADERS });
 const robots = () => new Response(buildRobots(SITE_ORIGIN), { headers: TEXT_HEADERS });
+const feed = () =>
+  new Response(buildFeed(SITE_ORIGIN), {
+    headers: { "content-type": "application/atom+xml; charset=utf-8" },
+  });
 
 if (isProd) {
   // Production serves the prerendered static build: one HTML file per route
@@ -41,6 +47,7 @@ if (isProd) {
     routes: {
       "/sitemap.xml": sitemap,
       "/robots.txt": robots,
+      "/blog/feed.xml": feed,
       "/og.png": () =>
         new Response(Bun.file(join(DIST, "og.png")), {
           headers: { "cache-control": "public, max-age=86400" },
@@ -53,6 +60,13 @@ if (isProd) {
         const { slug } = req.params;
         if (!knownProjectSlugs.has(slug)) return notFound();
         return html(join(DIST, "projects", slug, "index.html"));
+      },
+      "/blog": () => html(join(DIST, "blog", "index.html")),
+      // Drafts are never prerendered, so their URLs 404 like any unknown slug.
+      "/blog/:slug": (req) => {
+        const { slug } = req.params;
+        if (!knownPostSlugs.has(slug)) return notFound();
+        return html(join(DIST, "blog", slug, "index.html"));
       },
       // Hashed, content-addressed assets at the dist root. Anything else 404s.
       "/*": async (req) => {
@@ -80,6 +94,7 @@ if (isProd) {
     routes: {
       "/sitemap.xml": sitemap,
       "/robots.txt": robots,
+      "/blog/feed.xml": feed,
       "/og.png": () => new Response(Bun.file(join(import.meta.dir, "public", "og.png"))),
       "/*": index,
     },

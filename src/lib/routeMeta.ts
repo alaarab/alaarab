@@ -1,4 +1,6 @@
+import { blogMeta } from "../data/posts";
 import { nowMeta, projects, siteMeta } from "../data/siteContent";
+import { blogPath, postBySlug, publishedPosts } from "./posts";
 
 /**
  * Per-route <head> metadata, plus the sitemap/robots builders. This is the
@@ -21,6 +23,11 @@ export interface RouteMeta {
   ogImage: string;
   /** Alt text for the Open Graph image. */
   ogImageAlt: string;
+  /** og:type; defaults to "website". Blog posts are "article". */
+  ogType?: "website" | "article";
+  /** article:published_time and article:modified_time, YYYY-MM-DD. */
+  published?: string;
+  modified?: string;
 }
 
 const HOME_DESCRIPTION =
@@ -60,6 +67,13 @@ const STATIC_ROUTES: RouteMeta[] = [
     ogImage: OG_IMAGE_PATH,
     ogImageAlt: SITE_OG_ALT,
   },
+  {
+    path: "/blog",
+    title: `${blogMeta.title} | Ala Arab`,
+    description: blogMeta.intro,
+    ogImage: OG_IMAGE_PATH,
+    ogImageAlt: SITE_OG_ALT,
+  },
 ];
 
 const NOT_FOUND_META: RouteMeta = {
@@ -82,12 +96,31 @@ function projectMeta(slug: string): RouteMeta | null {
   };
 }
 
+/** Published posts only: a draft's URL is a 404 everywhere. */
+function postMeta(slug: string): RouteMeta | null {
+  const post = postBySlug(slug);
+  if (!post) return null;
+  return {
+    path: blogPath(post.slug),
+    title: `${post.title} | Ala Arab`,
+    description: post.summary,
+    ogImage: OG_IMAGE_PATH,
+    ogImageAlt: SITE_OG_ALT,
+    ogType: "article",
+    published: post.date,
+    modified: post.updated ?? post.date,
+  };
+}
+
 /** Every page the prerender step should emit, in sitemap order. */
 export function allRoutes(): RouteMeta[] {
   const projectRoutes = projects
     .map((project) => projectMeta(project.slug))
     .filter((meta): meta is RouteMeta => meta !== null);
-  return [...STATIC_ROUTES, ...projectRoutes];
+  const postRoutes = publishedPosts
+    .map((post) => postMeta(post.slug))
+    .filter((meta): meta is RouteMeta => meta !== null);
+  return [...STATIC_ROUTES, ...projectRoutes, ...postRoutes];
 }
 
 /** Resolve the metadata for any path, falling back to the 404 page. */
@@ -97,6 +130,10 @@ export function metaForPath(pathname: string): RouteMeta {
   if (projectMatch) {
     return projectMeta(projectMatch[1]) ?? NOT_FOUND_META;
   }
+  const postMatch = path.match(/^\/blog\/([^/]+)$/);
+  if (postMatch) {
+    return postMeta(postMatch[1]) ?? NOT_FOUND_META;
+  }
   return STATIC_ROUTES.find((route) => route.path === path) ?? NOT_FOUND_META;
 }
 
@@ -105,6 +142,8 @@ export const notFoundMeta = NOT_FOUND_META;
 export const knownProjectSlugs = new Set(
   projects.map((project) => project.slug),
 );
+
+export const knownPostSlugs = new Set(publishedPosts.map((post) => post.slug));
 
 function escapeText(value: string): string {
   return value
@@ -151,6 +190,18 @@ export function applyRouteMeta(
   const descAttr = escapeAttr(meta.description);
 
   let out = html;
+  out = replaceOrThrow(
+    out,
+    /<meta property="og:type" content="[^"]*" \/>/,
+    `<meta property="og:type" content="${meta.ogType ?? "website"}" />`
+      + (meta.published
+        ? `\n    <meta property="article:published_time" content="${escapeAttr(meta.published)}" />`
+        : "")
+      + (meta.modified
+        ? `\n    <meta property="article:modified_time" content="${escapeAttr(meta.modified)}" />`
+        : ""),
+    "og:type",
+  );
   out = replaceOrThrow(out, /<title>[^<]*<\/title>/, `<title>${title}</title>`, "<title>");
   out = replaceOrThrow(
     out,
@@ -217,7 +268,11 @@ export function applyRouteMeta(
 
 export function buildSitemap(origin: string = SITE_ORIGIN): string {
   const today = new Date().toISOString().slice(0, 10);
-  const body = allRoutes()
+  // The blog index stays out of the sitemap until something is published.
+  const routes = allRoutes().filter(
+    (route) => route.path !== "/blog" || publishedPosts.length > 0,
+  );
+  const body = routes
     .map((route) => {
       const loc = route.path === "/" ? `${origin}/` : `${origin}${route.path}`;
       return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>`;
@@ -228,4 +283,49 @@ export function buildSitemap(origin: string = SITE_ORIGIN): string {
 
 export function buildRobots(origin: string = SITE_ORIGIN): string {
   return `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`;
+}
+
+function escapeXml(value: string): string {
+  return escapeAttr(value).replace(/'/g, "&apos;");
+}
+
+/** An Atom feed of published posts, newest first. Summaries only. */
+export function buildFeed(origin: string = SITE_ORIGIN): string {
+  const feedUrl = `${origin}/blog/feed.xml`;
+  const updated = publishedPosts.reduce(
+    (latest, post) => {
+      const at = post.updated ?? post.date;
+      return at > latest ? at : latest;
+    },
+    "1970-01-01",
+  );
+  const entries = publishedPosts
+    .map((post) => {
+      const url = `${origin}${blogPath(post.slug)}`;
+      return [
+        "  <entry>",
+        `    <title>${escapeXml(post.title)}</title>`,
+        `    <link href="${escapeXml(url)}" />`,
+        `    <id>${escapeXml(url)}</id>`,
+        `    <published>${post.date}T00:00:00Z</published>`,
+        `    <updated>${post.updated ?? post.date}T00:00:00Z</updated>`,
+        `    <summary>${escapeXml(post.summary)}</summary>`,
+        "  </entry>",
+      ].join("\n");
+    })
+    .join("\n");
+  return [
+    '<?xml version="1.0" encoding="utf-8"?>',
+    '<feed xmlns="http://www.w3.org/2005/Atom">',
+    `  <title>${escapeXml(`${siteMeta.name}, ${blogMeta.title.toLowerCase()}`)}</title>`,
+    `  <subtitle>${escapeXml(blogMeta.intro)}</subtitle>`,
+    `  <link href="${escapeXml(`${origin}/blog`)}" />`,
+    `  <link rel="self" href="${escapeXml(feedUrl)}" />`,
+    `  <id>${escapeXml(feedUrl)}</id>`,
+    `  <updated>${updated}T00:00:00Z</updated>`,
+    `  <author><name>${escapeXml(siteMeta.name)}</name></author>`,
+    ...(entries ? [entries] : []),
+    "</feed>",
+    "",
+  ].join("\n");
 }
