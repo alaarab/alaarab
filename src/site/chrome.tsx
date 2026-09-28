@@ -1,11 +1,10 @@
 import { Link } from "react-router";
 import { siteMeta } from "../data/siteContent";
-import { hasPublishedPosts } from "../lib/posts";
 import { BASE } from "./themes";
 import styles from "./embroidery.module.css";
 
 /** The bar at the top of every inner page. */
-export function TopNav({ blog = hasPublishedPosts }: { blog?: boolean }) {
+export function TopNav() {
   return (
     <nav className={styles.topNav} aria-label="Site">
       <Link to={BASE} className={styles.topName}>
@@ -13,7 +12,7 @@ export function TopNav({ blog = hasPublishedPosts }: { blog?: boolean }) {
       </Link>
       <span className={styles.topLinks}>
         <Link to={"/#work"}>All work</Link>
-        {blog && <Link to="/blog">Blog</Link>}
+        <Link to="/blog">Blog</Link>
       </span>
     </nav>
   );
@@ -27,7 +26,7 @@ export function PageFoot() {
         <a href={siteMeta.emailHref}>{siteMeta.email}</a>
         <a href={siteMeta.linkedinHref}>LinkedIn</a>
         <a href="/resume">Resume</a>
-        {hasPublishedPosts && <Link to="/blog">Blog</Link>}
+        <Link to="/blog">Blog</Link>
       </p>
     </footer>
   );

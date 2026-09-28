@@ -1,6 +1,7 @@
-import { blogMeta } from "../data/posts";
+import { blogMeta } from "../data/blog";
 import { nowMeta, projects, siteMeta } from "../data/siteContent";
-import { blogPath, postBySlug, publishedPosts } from "./posts";
+import type { Post, PostSummary } from "../types";
+import { blogPath } from "./posts";
 
 /**
  * Per-route <head> metadata, plus the sitemap/robots builders. This is the
@@ -28,6 +29,8 @@ export interface RouteMeta {
   /** article:published_time and article:modified_time, YYYY-MM-DD. */
   published?: string;
   modified?: string;
+  /** Keep the page out of search results (the editor, 404s). */
+  noindex?: boolean;
 }
 
 const HOME_DESCRIPTION =
@@ -67,13 +70,6 @@ const STATIC_ROUTES: RouteMeta[] = [
     ogImage: OG_IMAGE_PATH,
     ogImageAlt: SITE_OG_ALT,
   },
-  {
-    path: "/blog",
-    title: `${blogMeta.title} | Ala Arab`,
-    description: blogMeta.intro,
-    ogImage: OG_IMAGE_PATH,
-    ogImageAlt: SITE_OG_ALT,
-  },
 ];
 
 const NOT_FOUND_META: RouteMeta = {
@@ -82,6 +78,7 @@ const NOT_FOUND_META: RouteMeta = {
   description: "That page does not exist, or it moved.",
   ogImage: OG_IMAGE_PATH,
   ogImageAlt: SITE_OG_ALT,
+  noindex: true,
 };
 
 function projectMeta(slug: string): RouteMeta | null {
@@ -96,10 +93,29 @@ function projectMeta(slug: string): RouteMeta | null {
   };
 }
 
-/** Published posts only: a draft's URL is a 404 everywhere. */
-function postMeta(slug: string): RouteMeta | null {
-  const post = postBySlug(slug);
-  if (!post) return null;
+/**
+ * Blog pages are rendered by the server from its database on each request
+ * (server/blog.ts), so they have no entry in allRoutes().
+ */
+export const blogIndexMeta: RouteMeta = {
+  path: "/blog",
+  title: `${blogMeta.title} | Ala Arab`,
+  description: blogMeta.intro,
+  ogImage: OG_IMAGE_PATH,
+  ogImageAlt: SITE_OG_ALT,
+};
+
+/** The editor at /write: an app shell, never indexed. */
+export const writeMeta: RouteMeta = {
+  path: "/write",
+  title: "Write | Ala Arab",
+  description: "Sign in to write.",
+  ogImage: OG_IMAGE_PATH,
+  ogImageAlt: SITE_OG_ALT,
+  noindex: true,
+};
+
+export function postMeta(post: Pick<Post, "slug" | "title" | "summary" | "date" | "updated">): RouteMeta {
   return {
     path: blogPath(post.slug),
     title: `${post.title} | Ala Arab`,
@@ -117,10 +133,7 @@ export function allRoutes(): RouteMeta[] {
   const projectRoutes = projects
     .map((project) => projectMeta(project.slug))
     .filter((meta): meta is RouteMeta => meta !== null);
-  const postRoutes = publishedPosts
-    .map((post) => postMeta(post.slug))
-    .filter((meta): meta is RouteMeta => meta !== null);
-  return [...STATIC_ROUTES, ...projectRoutes, ...postRoutes];
+  return [...STATIC_ROUTES, ...projectRoutes];
 }
 
 /** Resolve the metadata for any path, falling back to the 404 page. */
@@ -129,10 +142,6 @@ export function metaForPath(pathname: string): RouteMeta {
   const projectMatch = path.match(/^\/projects\/([^/]+)$/);
   if (projectMatch) {
     return projectMeta(projectMatch[1]) ?? NOT_FOUND_META;
-  }
-  const postMatch = path.match(/^\/blog\/([^/]+)$/);
-  if (postMatch) {
-    return postMeta(postMatch[1]) ?? NOT_FOUND_META;
   }
   return STATIC_ROUTES.find((route) => route.path === path) ?? NOT_FOUND_META;
 }
@@ -143,7 +152,7 @@ export const knownProjectSlugs = new Set(
   projects.map((project) => project.slug),
 );
 
-export const knownPostSlugs = new Set(publishedPosts.map((post) => post.slug));
+
 
 function escapeText(value: string): string {
   return value
@@ -170,7 +179,8 @@ function replaceOrThrow(
       `applyRouteMeta: could not find ${label} to rewrite. Did index.html's <head> change shape?`,
     );
   }
-  return html.replace(pattern, replacement);
+  // A function, so "$&" or "$1" in a post title is inserted literally.
+  return html.replace(pattern, () => replacement);
 }
 
 /**
@@ -202,6 +212,12 @@ export function applyRouteMeta(
         : ""),
     "og:type",
   );
+  if (meta.noindex) {
+    out = out.replace(
+      /<meta name="viewport" content="[^"]*" \/>/,
+      (match) => `${match}\n    <meta name="robots" content="noindex" />`,
+    );
+  }
   out = replaceOrThrow(out, /<title>[^<]*<\/title>/, `<title>${title}</title>`, "<title>");
   out = replaceOrThrow(
     out,
@@ -266,12 +282,13 @@ export function applyRouteMeta(
   return out;
 }
 
-export function buildSitemap(origin: string = SITE_ORIGIN): string {
+/** The sitemap: every static route, then the blog when it has posts. */
+export function buildSitemap(origin: string = SITE_ORIGIN, posts: PostSummary[] = []): string {
   const today = new Date().toISOString().slice(0, 10);
-  // The blog index stays out of the sitemap until something is published.
-  const routes = allRoutes().filter(
-    (route) => route.path !== "/blog" || publishedPosts.length > 0,
-  );
+  const routes = [
+    ...allRoutes(),
+    ...(posts.length ? [blogIndexMeta, ...posts.map(postMeta)] : []),
+  ];
   const body = routes
     .map((route) => {
       const loc = route.path === "/" ? `${origin}/` : `${origin}${route.path}`;
@@ -290,16 +307,16 @@ function escapeXml(value: string): string {
 }
 
 /** An Atom feed of published posts, newest first. Summaries only. */
-export function buildFeed(origin: string = SITE_ORIGIN): string {
+export function buildFeed(posts: PostSummary[], origin: string = SITE_ORIGIN): string {
   const feedUrl = `${origin}/blog/feed.xml`;
-  const updated = publishedPosts.reduce(
+  const updated = posts.reduce(
     (latest, post) => {
       const at = post.updated ?? post.date;
       return at > latest ? at : latest;
     },
     "1970-01-01",
   );
-  const entries = publishedPosts
+  const entries = posts
     .map((post) => {
       const url = `${origin}${blogPath(post.slug)}`;
       return [

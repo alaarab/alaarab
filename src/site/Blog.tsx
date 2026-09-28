@@ -1,20 +1,12 @@
-import { type ReactNode, useEffect, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router";
-import { blogMeta } from "../data/posts";
+import { type ReactNode } from "react";
+import { Link, useParams } from "react-router";
+import { blogMeta } from "../data/blog";
 import { siteMeta } from "../data/siteContent";
-import {
-  blogPath,
-  draftBySlug,
-  formatDate,
-  headingId,
-  postBySlug,
-  postNeighbours,
-  publishedPosts,
-  readingMinutes,
-} from "../lib/posts";
+import { blogPath, formatDate, headingId, readingMinutes } from "../lib/posts";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
 import { NotFound } from "../pages/NotFound";
-import type { Post, PostBlock } from "../types";
+import type { Post, PostBlock, PostRef, PostSummary } from "../types";
+import { useBlogPage } from "./blogData";
 import { PageFoot, TopNav } from "./chrome";
 import { Divider, thread } from "./stitch";
 import { FONT_HREF, projectPath } from "./themes";
@@ -26,6 +18,9 @@ const SITE_ORIGIN = "https://alaarab.com";
 
 const MARK = /\[([^\]]+)\]\(([^)\s]+)\)|`([^`]+)`/g;
 
+/** Links a post may carry: the web, mail, and paths or anchors on this site. */
+const SAFE_HREF = /^(https?:\/\/|mailto:|\/|#)/i;
+
 /** Plain text with [label](href) links and `code`. Nothing else is parsed. */
 function Inline({ text }: { text: string }) {
   const out: ReactNode[] = [];
@@ -36,7 +31,9 @@ function Inline({ text }: { text: string }) {
     const [, label, href, code] = m;
     if (code !== undefined) {
       out.push(<code key={at}>{code}</code>);
-    } else if (href.startsWith("/")) {
+    } else if (!SAFE_HREF.test(href)) {
+      out.push(label);
+    } else if (href.startsWith("/") && !href.startsWith("//")) {
       out.push(
         <Link key={at} to={href}>
           {label}
@@ -76,8 +73,8 @@ function Block({ block }: { block: PostBlock }) {
         </h3>
       );
     case "list": {
-      const items = block.items.map((item) => (
-        <li key={item}>
+      const items = block.items.map((item, k) => (
+        <li key={k}>
           <Inline text={item} />
         </li>
       ));
@@ -104,23 +101,49 @@ function Block({ block }: { block: PostBlock }) {
 }
 
 /** The date and reading time line above a title. */
-function Dateline({ post }: { post: Post }) {
-  const minutes = readingMinutes(post);
+function Dateline({ date, minutes }: { date: string; minutes: number }) {
   return (
     <p className={styles.notesMeta}>
-      <time dateTime={post.date}>{formatDate(post.date)}</time>. {minutes} min read.
+      <time dateTime={date}>{formatDate(date)}</time>. {minutes} min read.
     </p>
+  );
+}
+
+/** The shell every blog page shares. */
+function BlogPage({ children }: { children: ReactNode }) {
+  return (
+    <div className={styles.root}>
+      <link rel="stylesheet" href={FONT_HREF} precedence="default" />
+      <TopNav />
+      {children}
+      <PageFoot />
+    </div>
+  );
+}
+
+function PostList({ posts }: { posts: PostSummary[] }) {
+  if (!posts.length) return <p className={styles.postEmpty}>Nothing published yet.</p>;
+  return (
+    <ol className={styles.postList}>
+      {posts.map((post) => (
+        <li key={post.slug} className={styles.postItem}>
+          <Dateline date={post.date} minutes={post.minutes} />
+          <h2 className={styles.postItemTitle}>
+            <Link to={blogPath(post.slug)}>{post.title}</Link>
+          </h2>
+          <p className={styles.postItemSummary}>{post.summary}</p>
+        </li>
+      ))}
+    </ol>
   );
 }
 
 export function BlogIndex() {
   useDocumentTitle(`${blogMeta.title} | ${siteMeta.name}`);
+  const page = useBlogPage("/blog");
 
   return (
-    <div className={styles.root}>
-      <link rel="stylesheet" href={FONT_HREF} precedence="default" />
-      <TopNav blog={false} />
-
+    <BlogPage>
       <main className={styles.blogMain}>
         <header className={styles.projectHead}>
           <h1 className={styles.pageTitle}>{blogMeta.title}</h1>
@@ -130,26 +153,17 @@ export function BlogIndex() {
             <a href="/blog/feed.xml">Subscribe to the feed</a>
           </p>
         </header>
-
-        {publishedPosts.length > 0 ? (
-          <ol className={styles.postList}>
-            {publishedPosts.map((post) => (
-              <li key={post.slug} className={styles.postItem}>
-                <Dateline post={post} />
-                <h2 className={styles.postItemTitle}>
-                  <Link to={blogPath(post.slug)}>{post.title}</Link>
-                </h2>
-                <p className={styles.postItemSummary}>{post.summary}</p>
-              </li>
-            ))}
-          </ol>
+        {page.status === "ready" && page.data.kind === "index" ? (
+          <PostList posts={page.data.posts} />
+        ) : page.status === "loading" ? (
+          <p className={styles.postEmpty} aria-live="polite">
+            Loading posts.
+          </p>
         ) : (
-          <p className={styles.postEmpty}>Nothing published yet.</p>
+          <p className={styles.postEmpty}>The posts could not be loaded.</p>
         )}
       </main>
-
-      <PageFoot />
-    </div>
+    </BlogPage>
   );
 }
 
@@ -167,114 +181,113 @@ function articleSchema(post: Post) {
     mainEntityOfPage: url,
     author,
     publisher: author,
-    keywords: post.tags?.join(", "),
+    keywords: post.tags.length ? post.tags.join(", ") : undefined,
   };
+}
+
+/** A post's article: header, body, and foot. The editor's preview uses it too. */
+export function PostArticle({ post }: { post: Post }) {
+  const related = post.projects.map(projectBySlug).filter((p) => p !== undefined);
+  return (
+    <article className={styles.post} aria-labelledby="post-title">
+      <header className={styles.postHead}>
+        <Dateline date={post.date} minutes={readingMinutes(post.body)} />
+        <h1 id="post-title" className={styles.pageTitle}>
+          {post.title}
+        </h1>
+        <Divider pattern="running" c={thread.woad} className={styles.headDivider} />
+        <p className={styles.lead}>{post.summary}</p>
+      </header>
+
+      <div className={styles.postBody}>
+        {post.body.map((block, k) => (
+          <Block key={k} block={block} />
+        ))}
+      </div>
+
+      {(post.updated || related.length > 0 || post.tags.length > 0) && (
+        <footer className={styles.postFoot}>
+          {post.updated && (
+            <p className={styles.notesMeta}>
+              Updated <time dateTime={post.updated}>{formatDate(post.updated)}</time>.
+            </p>
+          )}
+          {related.length > 0 && (
+            <p>
+              About{" "}
+              {related.map((p, k) => (
+                <span key={p.slug}>
+                  {k > 0 && ", "}
+                  <Link to={projectPath(p.slug)}>{p.title}</Link>
+                </span>
+              ))}
+              .
+            </p>
+          )}
+          {post.tags.length > 0 && <p className={styles.postTags}>Tagged {post.tags.join(", ")}.</p>}
+        </footer>
+      )}
+    </article>
+  );
+}
+
+function Along({ newer, older }: { newer?: PostRef; older?: PostRef }) {
+  return (
+    <nav className={styles.along} aria-label="More posts">
+      {older ? (
+        <Link to={blogPath(older.slug)} className={styles.alongLink} data-dir="prev">
+          <span className={styles.alongDir}>Older</span>
+          {older.title}
+        </Link>
+      ) : (
+        <Link to="/blog" className={styles.alongLink} data-dir="prev">
+          <span className={styles.alongDir}>Back to</span>
+          All posts
+        </Link>
+      )}
+      {newer ? (
+        <Link to={blogPath(newer.slug)} className={styles.alongLink} data-dir="next">
+          <span className={styles.alongDir}>Newer</span>
+          {newer.title}
+        </Link>
+      ) : (
+        <span />
+      )}
+    </nav>
+  );
 }
 
 export function BlogPost() {
   const { slug = "" } = useParams<{ slug: string }>();
-  const [search] = useSearchParams();
-  const published = postBySlug(slug);
+  const page = useBlogPage(blogPath(slug));
+  const post = page.status === "ready" && page.data.kind === "post" ? page.data : null;
+  useDocumentTitle(
+    post ? `${post.post.title} | ${siteMeta.name}` : page.status === "loading" ? siteMeta.name : `Not found | ${siteMeta.name}`,
+  );
 
-  // Drafts only show with ?preview, and only after hydration: the server sends
-  // the 404 page for a draft's URL, and the first client render must match it.
-  const [draft, setDraft] = useState<Post | undefined>();
-  const wantsPreview = search.has("preview");
-  useEffect(() => {
-    setDraft(!published && wantsPreview ? draftBySlug(slug) : undefined);
-  }, [published, wantsPreview, slug]);
-
-  const post = published ?? draft;
-  useDocumentTitle(post ? `${draft ? "Draft: " : ""}${post.title} | ${siteMeta.name}` : `Not found | ${siteMeta.name}`);
-
+  if (page.status === "loading") {
+    return (
+      <BlogPage>
+        <main className={styles.blogMain}>
+          <p className={styles.postEmpty} aria-live="polite">
+            Loading the post.
+          </p>
+        </main>
+      </BlogPage>
+    );
+  }
   if (!post) return <NotFound />;
 
-  const { newer, older } = postNeighbours(post.slug);
-  const related = (post.projects ?? []).map(projectBySlug).filter((p) => p !== undefined);
-
   return (
-    <div className={styles.root}>
-      <link rel="stylesheet" href={FONT_HREF} precedence="default" />
-      <TopNav blog />
-
+    <BlogPage>
       <main className={styles.blogMain}>
-        {draft && (
-          <p className={styles.draftBanner} role="note">
-            Draft preview. This post is not published and is not linked, listed, or in the feed.
-          </p>
-        )}
-        <article className={styles.post} aria-labelledby="post-title">
-          <header className={styles.postHead}>
-            <Dateline post={post} />
-            <h1 id="post-title" className={styles.pageTitle}>
-              {post.title}
-            </h1>
-            <Divider pattern="running" c={thread.woad} className={styles.headDivider} />
-            <p className={styles.lead}>{post.summary}</p>
-          </header>
-
-          <div className={styles.postBody}>
-            {post.body.map((block, k) => (
-              <Block key={k} block={block} />
-            ))}
-          </div>
-
-          <footer className={styles.postFoot}>
-            {post.updated && (
-              <p className={styles.notesMeta}>
-                Updated <time dateTime={post.updated}>{formatDate(post.updated)}</time>.
-              </p>
-            )}
-            {related.length > 0 && (
-              <p>
-                About{" "}
-                {related.map((p, k) => (
-                  <span key={p.slug}>
-                    {k > 0 && ", "}
-                    <Link to={projectPath(p.slug)}>{p.title}</Link>
-                  </span>
-                ))}
-                .
-              </p>
-            )}
-            {post.tags && post.tags.length > 0 && (
-              <p className={styles.postTags}>
-                Tagged {post.tags.join(", ")}.
-              </p>
-            )}
-          </footer>
-        </article>
-
-        {!draft && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema(post)) }}
-          />
-        )}
+        <PostArticle post={post.post} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema(post.post)).replace(/</g, "\\u003c") }}
+        />
       </main>
-
-      <nav className={styles.along} aria-label="More posts">
-        {older ? (
-          <Link to={blogPath(older.slug)} className={styles.alongLink} data-dir="prev">
-            <span className={styles.alongDir}>Older</span>
-            {older.title}
-          </Link>
-        ) : (
-          <Link to="/blog" className={styles.alongLink} data-dir="prev">
-            <span className={styles.alongDir}>Back to</span>
-            All posts
-          </Link>
-        )}
-        {newer ? (
-          <Link to={blogPath(newer.slug)} className={styles.alongLink} data-dir="next">
-            <span className={styles.alongDir}>Newer</span>
-            {newer.title}
-          </Link>
-        ) : (
-          <span />
-        )}
-      </nav>
-      <PageFoot />
-    </div>
+      <Along newer={post.newer} older={post.older} />
+    </BlogPage>
   );
 }

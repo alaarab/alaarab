@@ -58,8 +58,9 @@ export interface EducationItem {
 }
 
 /**
- * One block of a blog post body. Text in `p`, list items and quotes may use two
- * inline marks: [label](href) for links and `backticks` for code.
+ * One block of a blog post body, parsed from the post's source text (see
+ * src/lib/postSource.ts). Text in `p`, list items, headings and quotes may use
+ * two inline marks: [label](href) for links and `backticks` for code.
  */
 export type PostBlock =
   | { type: "p"; text: string }
@@ -69,8 +70,9 @@ export type PostBlock =
   | { type: "quote"; text: string; cite?: string }
   | { type: "code"; code: string; lang?: string };
 
-export interface Post {
-  /** URL segment: /blog/<slug>. Lowercase, hyphenated, never changed once published. */
+/** The fields the author edits. Stored as a row in the server's blog database. */
+export interface PostInput {
+  /** URL segment: /blog/<slug>. Lowercase and hyphenated; fixed once published. */
   slug: string;
   title: string;
   /** One or two sentences. Used on the index, as the meta description, and in the feed. */
@@ -79,10 +81,36 @@ export interface Post {
   date: string;
   /** Last meaningful edit, YYYY-MM-DD. */
   updated?: string;
-  tags?: string[];
+  tags: string[];
   /** Slugs of projects the post is about; linked at the foot of the post. */
-  projects?: string[];
-  /** Drafts are left out of the index, routes, sitemap, and feed. */
-  draft?: boolean;
+  projects: string[];
+  /** Drafts are only visible to the signed-in author. */
+  draft: boolean;
+  /** The body as written, in the small markdown subset postSource parses. */
+  source: string;
+}
+
+/** A post as the author sees it in the editor. */
+export interface PostRecord extends PostInput {
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** A post ready to render. */
+export interface Post extends Omit<PostInput, "source"> {
   body: PostBlock[];
 }
+
+/** Enough of a post to link to it. */
+export interface PostRef {
+  slug: string;
+  title: string;
+}
+
+/** An index entry. */
+export type PostSummary = Omit<Post, "body"> & { minutes: number };
+
+/** What a public blog page needs, sent with the server-rendered HTML. */
+export type BlogPageData =
+  | { kind: "index"; posts: PostSummary[] }
+  | { kind: "post"; post: Post; newer?: PostRef; older?: PostRef };

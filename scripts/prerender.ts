@@ -15,7 +15,6 @@ import { projects } from "../src/data/siteContent";
 import {
   allRoutes,
   applyRouteMeta,
-  buildFeed,
   buildRobots,
   buildSitemap,
   notFoundMeta,
@@ -45,6 +44,10 @@ const { render } = (await import(serverEntry)) as {
 
 const ROOT_MARKER = '<div id="root"></div>';
 
+// The unrendered shell, kept for the server: it renders the blog and the
+// editor per request (server/blog.ts). Outside dist/ so it's never served.
+await Bun.write(join(repoRoot, "ssr-build", "shell.html"), template);
+
 /** Per-route head metadata plus the server-rendered body, in the shell. */
 function renderRoute(route: RouteMeta): string {
   const html = applyRouteMeta(template, route);
@@ -53,7 +56,7 @@ function renderRoute(route: RouteMeta): string {
       "prerender: could not find the #root marker to inject server markup.",
     );
   }
-  return html.replace(ROOT_MARKER, `<div id="root">${render(route.path)}</div>`);
+  return html.replace(ROOT_MARKER, () => `<div id="root">${render(route.path)}</div>`);
 }
 
 let pages = 0;
@@ -84,8 +87,7 @@ for (const project of projects) {
 
 await Bun.write(join(distDir, "sitemap.xml"), buildSitemap());
 await Bun.write(join(distDir, "robots.txt"), buildRobots());
-await Bun.write(join(distDir, "blog", "feed.xml"), buildFeed());
 
 console.log(
-  `Prerendered ${pages} routes + 404.html, og.png, sitemap.xml, robots.txt, blog/feed.xml → dist/`,
+  `Prerendered ${pages} routes + 404.html, og.png, sitemap.xml, robots.txt → dist/`,
 );
