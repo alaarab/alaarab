@@ -1,12 +1,12 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Link, useParams } from "react-router";
-import { siteMeta } from "../data/siteContent";
 import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { PageFoot, TopNav } from "./chrome";
 import { externalLinks, projectBySlug } from "./util";
 import { Explainer, Mounted, MountedVideo, Shots } from "./mount";
 import { readingOrder } from "./status";
 import { Divider, Knot } from "./stitch";
-import { BASE, FONT_HREF, projectPath, themeFor } from "./themes";
+import { FONT_HREF, projectPath, themeFor } from "./themes";
 import { type Media, visuals } from "./visuals";
 import styles from "./embroidery.module.css";
 
@@ -16,17 +16,6 @@ const list = (items: string[]) =>
 function neighbours(slug: string) {
   const k = readingOrder.findIndex((p) => p.slug === slug);
   return { prev: k > 0 ? readingOrder[k - 1] : undefined, next: k >= 0 ? readingOrder[k + 1] : undefined };
-}
-
-function TopNav() {
-  return (
-    <nav className={styles.topNav} aria-label="Site">
-      <Link to={BASE} className={styles.topName}>
-        Ala Arab
-      </Link>
-      <Link to={"/#work"}>All work</Link>
-    </nav>
-  );
 }
 
 function MediaBlock({ media, c, label }: { media: Media; c: string; label: string }) {
@@ -163,13 +152,7 @@ export function EmbroideryProject() {
           <span />
         )}
       </nav>
-      <footer className={styles.pageFoot}>
-        <p className={styles.pageContact}>
-          <a href={siteMeta.emailHref}>{siteMeta.email}</a>
-          <a href={siteMeta.linkedinHref}>LinkedIn</a>
-          <a href="/resume">Resume</a>
-        </p>
-      </footer>
+      <PageFoot />
     </div>
   );
 }

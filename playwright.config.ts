@@ -15,7 +15,8 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: `bun run build && NODE_ENV=production PORT=${PORT} bun server.ts`,
+    // A fresh blog database each run, and the localhost-only test sign-in.
+    command: `bun run build && rm -f .playwright/blog-e2e.sqlite* && NODE_ENV=production PORT=${PORT} BLOG_DB=.playwright/blog-e2e.sqlite BLOG_TEST_LOGIN=1 bun server.ts`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

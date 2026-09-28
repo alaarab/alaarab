@@ -84,6 +84,7 @@ export function EmbroideryHome() {
           <a href={siteMeta.linkedinHref}>LinkedIn</a>
           <a href="/resume">Resume</a>
           <a href="/now">Now</a>
+          <Link to="/blog">Blog</Link>
         </nav>
       </header>
 
@@ -172,6 +173,7 @@ export function EmbroideryHome() {
             <a href={siteMeta.emailHref}>{siteMeta.email}</a>
             <a href={siteMeta.linkedinHref}>LinkedIn</a>
             <a href="/resume">Resume</a>
+            <Link to="/blog">Blog</Link>
           </p>
         </div>
       </footer>

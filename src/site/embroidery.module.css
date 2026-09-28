@@ -883,6 +883,10 @@
   gap: 0 24px;
 }
 
+.pageContact {
+  justify-content: center;
+}
+
 .along {
   max-width: 1120px;
   margin: clamp(72px, 10vh, 120px) auto 0;
@@ -935,6 +939,385 @@
   margin: 0 auto;
   padding-top: 64px;
   text-align: center;
+}
+
+/* ---------- Blog ---------- */
+
+.topLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0 22px;
+}
+
+.blogMain {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(24px, 6vh, 56px) 0 0;
+}
+
+.feedLink {
+  margin: 14px 0 0;
+  font-size: 1rem;
+}
+
+.postList {
+  list-style: none;
+  margin: clamp(48px, 8vh, 80px) 0 0;
+  padding: 0;
+}
+
+.postItem + .postItem {
+  margin-top: 44px;
+}
+
+.root .postItemTitle {
+  margin: 2px 0 6px;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.postItemSummary {
+  margin: 0;
+}
+
+.postEmpty {
+  margin: clamp(48px, 8vh, 80px) 0 0;
+  text-align: center;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.draftBanner {
+  margin: 0 0 32px;
+  padding: 12px 18px;
+  border: 2px dashed var(--thread);
+  background: var(--label);
+  font-size: 1rem;
+}
+
+.postHead {
+  text-align: center;
+}
+
+.postBody {
+  margin-top: clamp(40px, 7vh, 64px);
+}
+
+.postBody p,
+.postBody ul,
+.postBody ol {
+  margin: 0 0 1.1em;
+}
+
+.postBody ul,
+.postBody ol {
+  padding-left: 1.4em;
+}
+
+.postBody li + li {
+  margin-top: 0.35em;
+}
+
+.root .postBody h2 {
+  margin: 1.9em 0 0.5em;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.root .postBody h3 {
+  margin: 1.6em 0 0.4em;
+  font-size: 1.25rem;
+  font-style: italic;
+}
+
+.postBody h2,
+.postBody h3 {
+  scroll-margin-top: 24px;
+}
+
+.root code {
+  font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.82em;
+  font-variant-numeric: normal;
+}
+
+.postBody :not(pre) > code {
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  background: var(--label);
+}
+
+.postCode {
+  margin: 0 0 1.4em;
+  padding: 16px 18px;
+  overflow-x: auto;
+  border: 1px dashed var(--muted);
+  border-radius: 4px;
+  background: var(--label);
+  line-height: 1.5;
+}
+
+.postCode:focus-visible {
+  outline: 2px dashed var(--focus);
+  outline-offset: 3px;
+}
+
+.postQuote {
+  margin: 1.6em 0;
+  padding: 0 0 0 22px;
+  border-left: 2px dashed var(--thread);
+}
+
+.postQuote blockquote {
+  margin: 0;
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
+.postQuote blockquote p {
+  margin: 0;
+}
+
+.postQuote figcaption {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.postFoot {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--muted);
+}
+
+.postFoot p {
+  margin: 0 0 0.6em;
+}
+
+.postTags {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ---------- Write (the author's editor) ---------- */
+
+.writeMain {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: clamp(24px, 5vh, 48px) 0 0;
+}
+
+.writeSignIn {
+  text-align: center;
+  padding-top: 48px;
+}
+
+.writeHead {
+  margin-bottom: 24px;
+}
+
+.root .writeButton,
+.writeActions button,
+.tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 2px dashed var(--thread);
+  border-radius: 4px;
+  background: var(--label);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.root .writeButton {
+  background: var(--thread);
+  border-style: solid;
+  color: #fff8ec;
+}
+
+.writeActions button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.root .dangerButton {
+  margin-left: auto;
+  border-color: #8a3222;
+  color: #8a3222;
+}
+
+.linkButton {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--link);
+  font: inherit;
+  text-decoration: underline dashed 1px;
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+}
+
+.writeActions button:focus-visible,
+.tabs button:focus-visible,
+.linkButton:focus-visible,
+.writeForm input:focus-visible,
+.writeForm textarea:focus-visible {
+  outline: 2px dashed var(--focus);
+  outline-offset: 3px;
+}
+
+.writeError {
+  margin: 6px 0 0;
+  color: #8a3222;
+  font-weight: 500;
+}
+
+.writeStatus {
+  min-height: 1.6em;
+  margin: 8px 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.writeList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.writeList li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--muted);
+}
+
+.root .writeListTitle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 1.2rem;
+}
+
+.writeListMeta {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tabs button[aria-pressed="true"] {
+  border-style: solid;
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.writeForm {
+  display: grid;
+  gap: 20px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.field label,
+.field legend {
+  font-weight: 500;
+}
+
+.fieldHint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 20px;
+}
+
+.writeForm input[type="text"],
+.writeForm input[type="date"],
+.writeForm textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--muted);
+  border-radius: 4px;
+  background: #fbf7ee;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.writeForm [aria-invalid="true"] {
+  border: 2px solid #8a3222;
+}
+
+.writeForm input[readonly] {
+  background: var(--label);
+  color: var(--muted);
+}
+
+.root .sourceArea {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0 16px;
+}
+
+.checks label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  font-weight: 400;
+}
+
+.checks input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--thread);
+}
+
+.writeActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.writePreview {
+  margin-top: 16px;
+  padding: 24px clamp(0px, 3vw, 32px);
+  border: 2px dashed var(--muted);
+  border-radius: 4px;
 }
 
 /* ---------- Phone ---------- */
