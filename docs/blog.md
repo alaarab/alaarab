@@ -1,67 +1,95 @@
-# Writing for the blog
+# The blog
 
-Posts are typed data in `src/data/posts.ts`, the same way projects live in
-`src/data/siteContent.ts`. There is no Markdown pipeline and no CMS. The page
-components (`src/site/Blog.tsx`) render whatever is in that array.
+Posts are written on the site itself, at `/write`, after signing in with
+GitHub. They live in a SQLite database on the server, not in this repo, so a
+draft is private until it's published.
 
 ## Routes
 
-- `/blog`: every published post, newest first.
-- `/blog/<slug>`: one post.
-- `/blog/feed.xml`: an Atom feed of published posts (title, date, summary).
+| Path | What it is |
+| --- | --- |
+| `/blog` | Published posts, newest first. |
+| `/blog/<slug>` | One post. Drafts and unknown slugs return the 404 page. |
+| `/blog/feed.xml` | Atom feed of published posts (title, date, summary). |
+| `/write` | The editor: sign in, list posts, write, preview, publish. Never indexed. |
 
-Published posts are prerendered like every other route, with their own title,
-description, canonical URL, `og:type=article`, `article:published_time`, and
-BlogPosting JSON-LD. They are listed in `sitemap.xml`.
+The server renders `/blog` pages per request from the database (`server/blog.ts`)
+using the same SSR bundle as the prerendered pages, and caches them in memory
+until a post changes. Each post gets its own title, description, canonical URL,
+`og:type=article`, `article:published_time`, and BlogPosting JSON-LD, and is
+listed in `sitemap.xml` and the feed once published.
 
-## A post
+## Writing a post
+
+In the editor: title (the slug fills itself in from it), a one or two sentence
+summary, date, optional "updated" date, tags, the projects it's about, and the
+post itself. **Save draft** keeps it private; **Publish** puts it live.
+A published post can be edited, unpublished, or deleted. Its slug is fixed once
+published so links keep working.
+
+The post is written in a small markdown subset (`src/lib/postSource.ts`):
+
+~~~
+A blank line separates paragraphs. Lines of one paragraph are joined.
+
+## Heading
+### Smaller heading
+
+- a list item          (or * item)
+1. a numbered item
+
+> A quote.
+> -- who said it       (optional last line)
 
 ```ts
-{
-  slug: "why-markdown-memory",          // URL segment; don't change it after publishing
-  title: "Why agent memory lives in markdown",
-  summary: "One or two sentences. Shown on the index, as the meta description, and in the feed.",
-  date: "2026-10-01",                   // YYYY-MM-DD
-  updated: "2026-10-04",                // optional
-  tags: ["phren"],                      // optional
-  projects: ["phren"],                  // optional; project slugs linked at the foot
-  draft: true,                          // remove (or set false) to publish
-  body: [ /* blocks */ ],
-}
+code, blank lines kept
 ```
 
-### Blocks
+Inline: [label](https://example.com) links and `code`.
+~~~
 
-| Block | Shape |
-| --- | --- |
-| Paragraph | `{ type: "p", text }` |
-| Heading | `{ type: "h2", text }` or `{ type: "h3", text }` (gets an anchor id from its text) |
-| List | `{ type: "list", items: [...], ordered?: true }` |
-| Quote | `{ type: "quote", text, cite? }` |
-| Code | `{ type: "code", code, lang? }` |
+Links may point at `https://`, `http://`, `mailto:`, or a path on this site
+(`/projects/phren`). Anything else renders as plain text. No raw HTML.
 
-Inside `p`, list items, headings, and quotes, two inline marks are parsed:
-`[label](href)` for links (a leading `/` makes it an in-site link) and
-`` `code` `` for inline code. Everything else renders as typed.
+## Sign-in
 
-## Drafts
+"Sign in with GitHub" works for one account: the GitHub user whose numeric id
+is `BLOG_ADMIN_GITHUB_ID` (Ala's is `1730921`). Anyone else is turned away. The
+GitHub token is used once to read who signed in, then dropped. The site keeps its
+own 30-day session, stored hashed in the database, in an HttpOnly, Secure,
+SameSite=Lax cookie. Every write must also come from this site (its `Origin`
+header is checked).
 
-A post with `draft: true` is left out of the index, the routes, the prerender,
-the sitemap, and the feed. Its URL returns the 404 page.
+## Server setup
 
-To read a draft as it will look, add `?preview` to its URL, locally
-(`bun dev`, then `http://localhost:3000/blog/<slug>?preview`) or on the live
-site. The preview carries a "Draft preview" banner. Drafts sit in the public
-repo and the client bundle, so don't put anything in one that can't be seen.
+1. Create a GitHub OAuth app (GitHub → Settings → Developer settings → OAuth
+   Apps → New):
+   - Homepage URL: `https://alaarab.com`
+   - Authorization callback URL: `https://alaarab.com/auth/github/callback`
+2. Give the server process these environment variables (for pm2, in its
+   ecosystem file or `pm2 restart alaarab --update-env` after exporting them):
 
-## Publishing
+   | Variable | Value |
+   | --- | --- |
+   | `GITHUB_CLIENT_ID` | from the OAuth app |
+   | `GITHUB_CLIENT_SECRET` | from the OAuth app; keep it out of git |
+   | `BLOG_ADMIN_GITHUB_ID` | `1730921` |
+   | `SITE_ORIGIN` | `https://alaarab.com` (the default) |
+   | `BLOG_DB` | optional; defaults to `data/blog.sqlite` in the repo checkout |
 
-1. Remove `draft: true` (or set it to `false`) and check `date`.
-2. `bun run typecheck && bun run build`, then `bun run test`.
-3. Commit and open a PR.
+   Without the GitHub variables the blog still serves, and `/write` says
+   sign-in isn't set up.
+3. Back up the database. `data/` is ignored by git, so `git pull` deploys don't
+   touch it, but it is the only copy of the posts. For a consistent copy while
+   the server runs: `sqlite3 data/blog.sqlite ".backup 'blog-backup.sqlite'"`.
 
-The "Blog" links in the home page and inner-page navigation only appear once at
-least one post is published, as does the `/blog` entry in the sitemap.
+## Local development
 
-`src/data/posts.ts` ships with one draft, `sample-post`, which demonstrates
-every block. Delete it once there is a real post.
+`bun dev` serves the site with an empty database at `data/blog.sqlite`. To sign
+in locally with GitHub, make a second OAuth app with the callback
+`http://localhost:3000/auth/github/callback` and run with
+`SITE_ORIGIN=http://localhost:3000` plus the three GitHub variables.
+
+The end-to-end tests use a separate database and a test-only sign-in
+(`BLOG_TEST_LOGIN=1`), which also only answers requests addressed to
+`localhost`. Never set it on the real server.

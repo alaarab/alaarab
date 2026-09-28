@@ -138,15 +138,18 @@ test.describe("prerendered metadata", () => {
 });
 
 test.describe("blog", () => {
+  // One author, one database: these steps build on each other.
+  test.describe.configure({ mode: "serial" });
+
+  const stamp = Date.now();
+  const title = `An end-to-end post ${stamp}`;
+  const slug = `an-end-to-end-post-${stamp}`;
+
   test("the index renders with its own metadata", async ({ page, request }) => {
     await page.goto("/blog");
     await expect(page).toHaveTitle(/Blog \| Ala Arab/);
-    await expect(
-      page.getByRole("heading", { level: 1, name: "Blog" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: "Subscribe to the feed" }),
-    ).toHaveAttribute("href", "/blog/feed.xml");
+    await expect(page.getByRole("heading", { level: 1, name: "Blog" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Subscribe to the feed" })).toHaveAttribute("href", "/blog/feed.xml");
 
     const html = await (await request.get("/blog")).text();
     expect(html).toContain("<title>Blog | Ala Arab</title>");
@@ -154,49 +157,112 @@ test.describe("blog", () => {
     expect(html).toContain('type="application/atom+xml"');
   });
 
-  test("drafts stay out of the index, feed, sitemap, and routes", async ({
-    page,
-    request,
-  }) => {
-    await page.goto("/blog");
-    await expect(page.getByText("Sample post")).toHaveCount(0);
+  test("the editor asks for sign-in and the API refuses without it", async ({ page, request }) => {
+    await page.goto("/write");
+    await expect(page.getByRole("link", { name: "Sign in with GitHub" })).toHaveAttribute("href", "/auth/github?next=%2Fwrite");
 
-    expect((await request.get("/blog/sample-post")).status()).toBe(404);
+    const shell = await request.get("/write");
+    expect(shell.headers()["x-robots-tag"]).toBe("noindex");
+    expect(await shell.text()).toContain('<meta name="robots" content="noindex" />');
 
-    const feed = await request.get("/blog/feed.xml");
-    expect(feed.status()).toBe(200);
-    expect(feed.headers()["content-type"]).toContain("application/atom+xml");
-    expect(await feed.text()).not.toContain("sample-post");
-
-    expect(await (await request.get("/sitemap.xml")).text()).not.toContain(
-      "sample-post",
-    );
+    expect((await request.get("/api/admin/posts")).status()).toBe(401);
+    const write = await request.post("/api/admin/posts", {
+      data: { title: "x", slug: "x", summary: "x", date: "2026-01-01", source: "x", draft: false },
+    });
+    expect(write.status()).toBe(401);
   });
 
-  test("a draft can be previewed with ?preview", async ({ page }) => {
-    await page.goto("/blog/sample-post?preview");
+  test("GitHub sign-in reports when it isn't configured", async ({ page }) => {
+    await page.goto("/auth/github?next=/write");
+    await expect(page).toHaveURL(/\/write\?error=config$/);
+    await expect(page.getByRole("alert")).toContainText("isn't set up");
+  });
 
-    await expect(page.getByRole("note")).toContainText("Draft preview");
-    await expect(
-      page.getByRole("heading", {
-        level: 1,
-        name: "Sample post: what a post can hold",
-      }),
-    ).toBeVisible();
-    await expect(page).toHaveTitle(/^Draft: Sample post/);
-    await expect(
-      page.getByRole("heading", { level: 2, name: "A section heading" }),
-    ).toHaveAttribute("id", "a-section-heading");
-    await expect(page.getByRole("link", { name: "Phren" })).toHaveAttribute(
-      "href",
-      "/projects/phren",
+  test("the author writes a draft that stays private, then publishes it", async ({ page, request }) => {
+    await page.goto("/write");
+    await page.evaluate(() => fetch("/auth/test-login", { method: "POST" }));
+    await page.goto("/write");
+    await expect(page.getByText("Signed in as test-author.")).toBeVisible();
+
+    await page.getByRole("link", { name: "New post" }).click();
+    await page.getByLabel("Title").fill(title);
+    await expect(page.getByLabel("Slug")).toHaveValue(slug);
+    await page.getByLabel("Summary").fill("A post written by the end-to-end tests.");
+    await page.getByLabel("Post", { exact: true }).fill(
+      "First paragraph with a [link](https://example.com) and `code`.\n\n## A heading\n\n- one\n- two",
     );
+    await page.getByRole("button", { name: "Save draft" }).click();
+    await expect(page.getByRole("status")).toContainText("Draft saved");
+    await expect(page).toHaveURL(new RegExp(`/write/${slug}$`));
+
+    // A draft is private.
+    expect((await request.get(`/blog/${slug}`)).status()).toBe(404);
+    expect(await (await request.get("/blog/feed.xml")).text()).not.toContain(slug);
+    expect(await (await request.get("/blog")).text()).not.toContain(title);
+
+    await page.getByRole("button", { name: "Preview" }).click();
+    await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "A heading" })).toHaveAttribute("id", "a-heading");
+    await page.getByRole("button", { name: "Edit" }).click();
+
+    await page.getByRole("button", { name: "Publish" }).click();
+    await expect(page.getByRole("status")).toContainText("Published");
+
+    const res = await request.get(`/blog/${slug}`);
+    expect(res.status()).toBe(200);
+    const html = await res.text();
+    expect(html).toContain(`<title>${title} | Ala Arab</title>`);
+    expect(html).toContain('property="og:type" content="article"');
+    expect(html).toContain(`rel="canonical" href="https://alaarab.com/blog/${slug}"`);
+    expect(html).toContain('"@type":"BlogPosting"');
+    expect(html).toContain("A post written by the end-to-end tests.");
+
+    expect(await (await request.get("/blog")).text()).toContain(title);
+    expect(await (await request.get("/blog/feed.xml")).text()).toContain(`https://alaarab.com/blog/${slug}`);
+    expect(await (await request.get("/sitemap.xml")).text()).toContain(`https://alaarab.com/blog/${slug}`);
+
+    await page.goto(`/blog/${slug}`);
+    await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    await expect(page.getByRole("link", { name: "link", exact: true })).toHaveAttribute("href", "https://example.com");
+  });
+
+  test("writes are refused from other origins, and published slugs are fixed", async ({ page }) => {
+    await page.goto("/write");
+    await page.evaluate(() => fetch("/auth/test-login", { method: "POST" }));
+    const post = await (await page.request.get(`/api/admin/posts/${slug}`)).json();
+
+    const foreign = await page.request.put(`/api/admin/posts/${slug}`, {
+      headers: { origin: "https://evil.example" },
+      data: post,
+    });
+    expect(foreign.status()).toBe(403);
+
+    const renamed = await page.request.put(`/api/admin/posts/${slug}`, {
+      headers: { origin: "http://localhost:3210" },
+      data: { ...post, slug: `${slug}-renamed` },
+    });
+    expect(renamed.status()).toBe(409);
+  });
+
+  test("unpublishing hides the post and deleting removes it", async ({ page, request }) => {
+    await page.goto("/write");
+    await page.evaluate(() => fetch("/auth/test-login", { method: "POST" }));
+    await page.goto(`/write/${slug}`);
+    await page.getByRole("button", { name: "Unpublish" }).click();
+    await expect(page.getByRole("status")).toContainText("Unpublished");
+    expect((await request.get(`/blog/${slug}`)).status()).toBe(404);
+
+    page.once("dialog", (d) => d.accept());
+    await page.getByRole("button", { name: "Delete" }).click();
+    await expect(page).toHaveURL(/\/write$/);
+    expect((await page.request.get(`/api/admin/posts/${slug}`)).status()).toBe(404);
+
+    await page.getByRole("button", { name: "Sign out" }).click();
+    await expect(page.getByRole("link", { name: "Sign in with GitHub" })).toBeVisible();
   });
 
   test("an unknown post shows the 404 page", async ({ page }) => {
     await page.goto("/blog/not-a-real-post");
-    await expect(
-      page.getByRole("heading", { level: 1, name: "Nothing here." }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Nothing here." })).toBeVisible();
   });
 });

@@ -1,30 +1,23 @@
-import { posts } from "../data/posts";
-import type { Post, PostBlock } from "../types";
-
-const byDateDesc = (a: Post, b: Post) =>
-  b.date.localeCompare(a.date) || a.title.localeCompare(b.title);
-
-/** Published posts, newest first. Drafts never appear here. */
-export const publishedPosts: Post[] = posts
-  .filter((post) => !post.draft)
-  .sort(byDateDesc);
-
-export const hasPublishedPosts = publishedPosts.length > 0;
+import type { Post, PostBlock, PostInput, PostSummary } from "../types";
+import { parsePostSource } from "./postSource";
 
 export const blogPath = (slug: string) => `/blog/${slug}`;
 
-export const postBySlug = (slug: string | undefined): Post | undefined =>
-  publishedPosts.find((post) => post.slug === slug);
+/** Lowercase words joined by single hyphens. */
+export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-/** A draft, for the ?preview view only. */
-export const draftBySlug = (slug: string | undefined): Post | undefined =>
-  posts.find((post) => post.draft && post.slug === slug);
+/** Newest first, then by title. */
+export const byDateDesc = (a: { date: string; title: string }, b: { date: string; title: string }) =>
+  b.date.localeCompare(a.date) || a.title.localeCompare(b.title);
 
-/** The published posts either side of this one: newer and older. */
-export function postNeighbours(slug: string) {
-  const k = publishedPosts.findIndex((post) => post.slug === slug);
-  if (k < 0) return {};
-  return { newer: publishedPosts[k - 1], older: publishedPosts[k + 1] };
+export function toPost(input: PostInput): Post {
+  const { source, ...rest } = input;
+  return { ...rest, body: parsePostSource(source) };
+}
+
+export function toSummary(post: Post): PostSummary {
+  const { body, ...rest } = post;
+  return { ...rest, minutes: readingMinutes(body) };
 }
 
 const MONTHS = [
@@ -45,8 +38,19 @@ const MONTHS = [
 /** "2026-09-27" → "September 27, 2026". Fixed format, so server and client agree. */
 export function formatDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d || m > 12) return iso;
   return `${MONTHS[m - 1]} ${d}, ${y}`;
 }
+
+/** A real calendar date in YYYY-MM-DD form. */
+export function isIsoDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
+}
+
+/** Today in YYYY-MM-DD, UTC. */
+export const today = () => new Date().toISOString().slice(0, 10);
 
 /** Text with the inline marks removed: [label](href) → label, `code` → code. */
 export const stripMarks = (text: string) =>
@@ -64,8 +68,8 @@ function blockText(block: PostBlock): string {
 }
 
 /** Whole minutes at 220 words a minute, at least one. */
-export function readingMinutes(post: Post): number {
-  const words = post.body
+export function readingMinutes(body: PostBlock[]): number {
+  const words = body
     .map((block) => stripMarks(blockText(block)))
     .join(" ")
     .split(/\s+/)
