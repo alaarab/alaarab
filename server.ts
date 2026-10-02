@@ -5,6 +5,7 @@ import {
   SITE_ORIGIN,
   buildRobots,
   buildSitemap,
+  canonicalPagePath,
   knownProjectSlugs,
 } from "./src/lib/routeMeta";
 
@@ -51,12 +52,29 @@ if (isProd) {
       "/now": () => html(join(DIST, "now", "index.html")),
       "/projects/:slug": (req) => {
         const { slug } = req.params;
+        // The parameter route wins over /* for this static-host alias.
+        if (slug === "index.html") {
+          return new Response(null, {
+            status: 308,
+            headers: { location: `/projects${new URL(req.url).search}`, "cache-control": "no-cache" },
+          });
+        }
         if (!knownProjectSlugs.has(slug)) return notFound();
         return html(join(DIST, "projects", slug, "index.html"));
       },
       // Hashed, content-addressed assets at the dist root. Anything else 404s.
       "/*": async (req) => {
-        const pathname = new URL(req.url).pathname;
+        const url = new URL(req.url);
+        const pathname = url.pathname;
+        const canonical = canonicalPagePath(pathname);
+        if (canonical && canonical !== pathname) {
+          return new Response(null, {
+            status: 308,
+            headers: { location: `${canonical}${url.search}`, "cache-control": "no-cache" },
+          });
+        }
+        // Old build artifacts must never expose removed or duplicate HTML routes.
+        if (pathname.endsWith(".html")) return notFound();
         const resolved = join(DIST, pathname);
         if (pathname === "/" || !resolved.startsWith(DIST)) return notFound();
         const file = Bun.file(resolved);

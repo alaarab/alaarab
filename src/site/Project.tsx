@@ -1,13 +1,15 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Link, useParams } from "react-router";
 import { siteMeta } from "../data/siteContent";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
 import { externalLinks, projectBySlug } from "./util";
 import { Explainer, Mounted, MountedVideo, Shots } from "./mount";
 import { readingOrder } from "./status";
 import { Divider, Knot } from "./stitch";
-import { BASE, FONT_HREF, projectPath, themeFor } from "./themes";
+import { FONT_HREF, projectPath, themeFor } from "./themes";
 import { type Media, visuals } from "./visuals";
+import { SiteNav } from "./Page";
+import { SkipLink } from "../components/SkipLink";
+import { NotFound } from "../pages/NotFound";
 import styles from "./embroidery.module.css";
 
 const list = (items: string[]) =>
@@ -16,17 +18,6 @@ const list = (items: string[]) =>
 function neighbours(slug: string) {
   const k = readingOrder.findIndex((p) => p.slug === slug);
   return { prev: k > 0 ? readingOrder[k - 1] : undefined, next: k >= 0 ? readingOrder[k + 1] : undefined };
-}
-
-function TopNav() {
-  return (
-    <nav className={styles.topNav} aria-label="Site">
-      <Link to={BASE} className={styles.topName}>
-        Ala Arab
-      </Link>
-      <Link to={"/#work"}>All work</Link>
-    </nav>
-  );
 }
 
 function MediaBlock({ media, c, label }: { media: Media; c: string; label: string }) {
@@ -59,23 +50,8 @@ const isPhone = (m: Media) => ("steps" in m ? Boolean(m.steps[0]?.phone) : "vide
 export function EmbroideryProject() {
   const { slug = "" } = useParams<{ slug: string }>();
   const project = projectBySlug(slug);
-  useDocumentTitle(`${project?.title ?? "Not found"} | Ala Arab`);
 
-  if (!project) {
-    return (
-      <div className={styles.root}>
-        <link rel="stylesheet" href={FONT_HREF} precedence="default" />
-        <TopNav />
-        <main className={styles.missing}>
-          <h1 className={styles.pageTitle}>Nothing sewn here yet</h1>
-          <Divider pattern="running" className={styles.headDivider} />
-          <p>
-            There is no project called <em>{slug}</em>. Everything I've made is listed on the <Link to={"/#work"}>front page</Link>.
-          </p>
-        </main>
-      </div>
-    );
-  }
+  if (!project) return <NotFound />;
 
   const theme = themeFor(project.slug);
   const v = visuals[project.slug];
@@ -94,9 +70,10 @@ export function EmbroideryProject() {
   return (
     <div className={styles.root} data-page={project.slug} style={{ "--ground": theme.ground, "--thread": c } as CSSProperties}>
       <link rel="stylesheet" href={FONT_HREF} precedence="default" />
-      <TopNav />
+      <SkipLink />
+      <SiteNav />
 
-      <main className={styles.projectMain}>
+      <main id="main" className={styles.projectMain}>
         <header className={styles.projectHead}>
           <p className={styles.notesMeta}>
             {project.year}. {project.status}.
@@ -167,7 +144,7 @@ export function EmbroideryProject() {
         <p className={styles.pageContact}>
           <a href={siteMeta.emailHref}>{siteMeta.email}</a>
           <a href={siteMeta.linkedinHref}>LinkedIn</a>
-          <a href="/resume">Resume</a>
+          <Link to="/resume">Resume</Link>
         </p>
       </footer>
     </div>
