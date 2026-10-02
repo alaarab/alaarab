@@ -3,8 +3,8 @@
   "short_name": "Ala Arab",
   "start_url": "/",
   "display": "minimal-ui",
-  "background_color": "#0e0c0a",
-  "theme_color": "#0e0c0a",
+  "background_color": "#e9e1cf",
+  "theme_color": "#e9e1cf",
   "description": "Portfolio of Ala Arab, full-stack developer in Los Angeles.",
   "icons": [
     {
