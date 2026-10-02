@@ -4,7 +4,7 @@ test.describe("homepage", () => {
   test("leads with who Ala is, then the work", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page).toHaveTitle(/Ala Arab \| Portfolio/);
+    await expect(page).toHaveTitle(/Ala Arab \| Full-stack developer, Los Angeles/);
     await expect(
       page.getByRole("heading", { level: 1, name: "Ala Arab" }),
     ).toBeVisible();
@@ -45,7 +45,7 @@ test.describe("projects", () => {
       page.getByRole("heading", { level: 1, name: "Selected projects." }),
     ).toBeVisible();
 
-    const viewLinks = page.getByRole("link", { name: "View project" });
+    const viewLinks = page.locator('main a[href^="/projects/"]');
     await expect(viewLinks).toHaveCount(15);
 
     await viewLinks.first().click();
