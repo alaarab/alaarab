@@ -1,29 +1,5 @@
-import { Link } from "react-router";
-import { SkipLink } from "../components/SkipLink";
-import { siteMeta } from "../data/siteContent";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
-import styles from "../styles/Portfolio.module.css";
+import { Page } from "../site/Page";
 
 export function NotFound() {
-  useDocumentTitle(`Not found | ${siteMeta.name}`);
-
-  return (
-    <div className={styles.projectsShell}>
-      <SkipLink />
-      <header className={styles.projectsHeader}>
-        <div id="main">
-          <p className={styles.eyebrow}>404</p>
-          <h1>Nothing here.</h1>
-          <p className={styles.heroText}>
-            That page does not exist, or it moved. Here are the ways back.
-          </p>
-        </div>
-        <div className={styles.resumeLinks}>
-          <Link to="/">Portfolio</Link>
-          <Link to="/projects">Projects</Link>
-          <Link to="/resume">Resume</Link>
-        </div>
-      </header>
-    </div>
-  );
+  return <Page title="Nothing here." eyebrow="404" lead="That page does not exist, or it moved. Here are the ways back." />;
 }

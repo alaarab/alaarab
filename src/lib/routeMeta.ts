@@ -7,7 +7,8 @@ import { nowMeta, projects, siteMeta } from "../data/siteContent";
  * description, and canonical URL are identical however the page is served.
  */
 
-export const SITE_ORIGIN = process.env.SITE_ORIGIN ?? "https://alaarab.com";
+export const SITE_ORIGIN =
+  (typeof process !== "undefined" ? process.env.SITE_ORIGIN : undefined) ?? "https://alaarab.com";
 export const OG_IMAGE_PATH = "/og.png";
 
 export interface RouteMeta {
@@ -101,6 +102,13 @@ export function metaForPath(pathname: string): RouteMeta {
 }
 
 export const notFoundMeta = NOT_FOUND_META;
+
+/** Static-host aliases resolve to the same public URL as client navigation. */
+export function canonicalPagePath(pathname: string): string | null {
+  const path = pathname.replace(/\/index\.html$/, "/").replace(/\/+$/, "") || "/";
+  const meta = metaForPath(path);
+  return meta === NOT_FOUND_META ? null : meta.path;
+}
 
 export const knownProjectSlugs = new Set(
   projects.map((project) => project.slug),

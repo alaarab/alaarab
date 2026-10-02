@@ -1,124 +1,61 @@
 import { Link } from "react-router";
-import { SkipLink } from "../components/SkipLink";
-import {
-  educationItems,
-  experienceItems,
-  projects,
-  siteMeta,
-} from "../data/siteContent";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { educationItems, experienceItems, projects, siteMeta } from "../data/siteContent";
 import { buildPersonSchema } from "../lib/personSchema";
-import styles from "../styles/Portfolio.module.css";
+import { Page } from "../site/Page";
+import { projectPath } from "../site/themes";
+import styles from "../site/embroidery.module.css";
 
 export function Resume() {
-  useDocumentTitle(`${siteMeta.name} | Resume`);
-
-  const personSchema = buildPersonSchema({
-    siteMeta,
-    experienceItems,
-    educationItems,
-  });
-
+  const personSchema = buildPersonSchema({ siteMeta, experienceItems, educationItems });
   return (
-    <div className={styles.resumeShell}>
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, locally generated JSON
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-      />
-      <SkipLink />
-      <header className={styles.resumeHeader}>
-        <div>
-          <p className={styles.eyebrow}>Resume</p>
-          <h1>{siteMeta.name}</h1>
-          <p className={styles.resumeLead}>{siteMeta.title}</p>
-        </div>
-        <div className={styles.resumeLinks} data-print-hide>
-          <Link to="/">Back to portfolio</Link>
-          <a href={siteMeta.emailHref}>Email</a>
-          <a href={siteMeta.linkedinHref} target="_blank" rel="noreferrer">
-            LinkedIn
-          </a>
-          <button
-            type="button"
-            className={styles.printButton}
-            onClick={() => window.print()}
-          >
-            Print or save as PDF
-          </button>
-        </div>
-      </header>
-
-      <main id="main" className={styles.resumeContent}>
-        <section className={styles.resumeSection}>
-          <h2>Summary</h2>
+    <Page title={siteMeta.name} eyebrow="Resume" lead={siteMeta.title} actions={
+      <button type="button" className={styles.printButton} onClick={() => window.print()}>Print or save as PDF</button>
+    }>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+      <div className={styles.documentSections}>
+        <section className={styles.documentSection}>
+          <h2 className={styles.expRole}>Summary</h2>
           <p>{siteMeta.summary}</p>
         </section>
-
-        <section className={styles.resumeSection}>
-          <h2>Experience</h2>
-          <div className={styles.resumeStack}>
+        <section className={styles.documentSection}>
+          <h2 className={styles.expRole}>Experience</h2>
+          <ol className={styles.resumeEntries}>
             {experienceItems.map((item) => (
-              <article
-                key={`${item.company}-${item.years}`}
-                className={styles.resumeCard}
-              >
-                <div className={styles.resumeRow}>
-                  <div>
-                    <h3>{item.role}</h3>
-                    <p className={styles.company}>{item.company}</p>
-                  </div>
-                  <div className={styles.resumeMeta}>
-                    <span>{item.years}</span>
-                    <span>{item.location}</span>
-                  </div>
-                </div>
+              <li key={`${item.company}-${item.years}`}>
+                <h3 className={styles.expRole}>{item.role}</h3>
+                <p className={styles.expWhere}>{item.company}</p>
+                <p className={styles.entryMeta}>{item.years}, {item.location}</p>
                 <p>{item.summary}</p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
-
-        <section className={styles.resumeSection}>
-          <h2>Projects</h2>
-          <div className={styles.resumeStack}>
+        <section className={styles.documentSection}>
+          <h2 className={styles.expRole}>Projects</h2>
+          <ul className={styles.resumeEntries}>
             {projects.map((item) => (
-              <article key={item.slug} className={styles.resumeCard}>
-                <div className={styles.resumeRow}>
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p className={styles.company}>{item.category}</p>
-                  </div>
-                  <div className={styles.resumeMeta}>
-                    <span>{item.year}</span>
-                    <span>{item.status}</span>
-                  </div>
-                </div>
+              <li key={item.slug}>
+                <h3 className={styles.otherHead}><Link to={projectPath(item.slug)}>{item.title}</Link></h3>
+                <p className={styles.expWhere}>{item.category}</p>
+                <p className={styles.entryMeta}>{item.year}, {item.status}</p>
                 <p>{item.summary}</p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
-
-        <section className={styles.resumeSection}>
-          <h2>Education</h2>
-          <div className={styles.resumeStack}>
+        <section className={styles.documentSection}>
+          <h2 className={styles.expRole}>Education</h2>
+          <ul className={styles.resumeEntries}>
             {educationItems.map((item) => (
-              <article key={item.school} className={styles.resumeCard}>
-                <div className={styles.resumeRow}>
-                  <div>
-                    <h3>{item.school}</h3>
-                    <p>{item.detail}</p>
-                  </div>
-                  <div className={styles.resumeMeta}>
-                    <span>{item.years}</span>
-                  </div>
-                </div>
-              </article>
+              <li key={item.school}>
+                <h3 className={styles.expRole}>{item.school}</h3>
+                <p>{item.detail}</p>
+                <p className={styles.expWhere}>{item.years}</p>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
-      </main>
-    </div>
+      </div>
+    </Page>
   );
 }

@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router";
+import { RouteMetadata } from "./components/RouteMetadata";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { NotFound } from "./pages/NotFound";
 import { Now } from "./pages/Now";
@@ -11,6 +12,7 @@ export function App() {
   return (
     <>
       <ScrollToTop />
+      <RouteMetadata />
       <Routes>
         <Route path="/" element={<EmbroideryHome />} />
         <Route path="/resume" element={<Resume />} />
