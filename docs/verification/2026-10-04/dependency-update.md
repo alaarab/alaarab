@@ -39,3 +39,43 @@ The unchanged browser suite covers mobile bounds at 320px and 390px, direct URLs
 A redundant Chromium download attempt failed with the host's `/tmp` quota error. Tests then used the already installed matching Playwright Chromium v1243 and passed. No tests were weakened or deleted.
 
 No lint command is defined. No Swift, Python, or other dependency manifests are tracked, so no Xcode/simulator run applies. No merge, release, deployment, or production changes were performed.
+
+## Owner-authorized follow-up
+
+Re-fetched PR #8 into a separate worktree and ran `git rebase origin/main` on
+2026-10-04. Latest `main` remained `0ca8d82bf3ceef037efcbc762c09ee7bbd437d17`;
+the dependency commit was already based on it. Rechecked all eight direct
+packages and every lockfile package against npm, plus Bun and both CI action
+release APIs: all direct packages, Bun and CI actions remain newest stable.
+
+Two transitive dependencies cannot use their newest releases within upstream
+requirements (no override applied):
+
+| Package | Locked / newest allowed | Newest stable | Exact upstream constraint |
+| --- | --- | --- | --- |
+| `@remix-run/route-pattern` | 0.22.1 | 1.0.0 | `react-router@8.4.0` requires `^0.22.1` (>=0.22.1 <0.23.0) |
+| `undici-types` | 8.9.0 | 8.11.2 | `@types/node@26.6.4` requires `~8.9.0` (>=8.9.0 <8.10.0) |
+
+All other locked packages match their newest stable release. The React Router
+8 migration notes were checked: this app already uses ESM and imports from
+`react-router`, uses declarative routes rather than framework/Vite mode, and
+does not use removed future flags or route-module meta APIs. React 19.3.0 meets
+its >=19.2.7 peer minimum. TypeScript 7's native Darwin ARM64 compiler installs
+and accepts the existing strict project configuration without changes.
+
+Fresh validation on the Mac mini, using an isolated Bun 1.4.2 binary and
+Node 26.0.0:
+
+- `bun install --frozen-lockfile`: passed; tracked lockfile unchanged.
+- `bun run typecheck`: passed.
+- `bun run build`: passed; 19 routes plus 404 prerendered.
+- `bun run test -- --workers=1`: 15 passed in 12.9 seconds; zero skipped.
+- `git diff --check`: passed.
+- Test files, test configuration and assertions are unchanged from `main`.
+
+The tracked repository contains no lint script/configuration, unit test suite,
+Swift/native manifest, Xcode project, or simulator test target. Those checks are
+not applicable, not claimed as passes. Browser UI tests are the complete
+existing test suite. Disk preflight showed about 22 GiB free, above the owner's
+20 GB requirement; no Xcode/simulator run was needed or started. Merge only is
+authorized; no release, deployment, package publication or version bump.
