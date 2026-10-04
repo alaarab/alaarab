@@ -51,7 +51,7 @@ These days I'm rebuilding that ERP from scratch as Intrapath. React on Bun this 
 
 ### About this repo
 
-This doubles as my portfolio site: a Bun-native app with React 19 and TypeScript 6. No meta-framework. Bun handles the dev server, bundling, and the production server. Content sits in one typed file, so projects update without anyone touching the layout.
+This doubles as my portfolio site: a Bun-native app with Bun 1.4.2, React 19, React Router 8, and TypeScript 7. No meta-framework. Bun handles the dev server, bundling, and the production server. Content sits in one typed file, so projects update without anyone touching the layout.
 
 ```bash
 bun install
