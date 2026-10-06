@@ -163,7 +163,8 @@
   margin: clamp(88px, 13vh, 150px) auto 0;
 }
 
-.masthead + .section {
+.masthead + .section,
+.masthead + main > .section:first-child {
   margin-top: clamp(56px, 8vh, 88px);
 }
 
@@ -552,10 +553,74 @@
   max-width: 1120px;
   margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
   padding: 18px 0;
+}
+
+.navLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+}
+
+.topNav a[aria-current="page"] {
+  text-decoration-style: solid;
+  color: var(--ink);
+}
+
+.documentMain {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-top: clamp(24px, 6vh, 56px);
+}
+
+.documentActions {
+  margin: 20px 0 0;
+}
+
+.printButton {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px dashed var(--thread);
+  background: var(--label);
+  color: var(--link);
+  cursor: pointer;
+}
+
+.documentNote {
+  text-align: center;
+  margin: 20px auto 0;
+  color: var(--muted);
+}
+
+.documentSections {
+  max-width: 40rem;
+  margin: 48px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.documentSection > h2 {
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed var(--thread);
+}
+
+.resumeEntries {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.resumeEntries .entryMeta {
+  margin: 6px 0 8px;
 }
 
 .root .topName {
@@ -1382,5 +1447,60 @@
 
   .signature {
     padding: 32px 22px 22px;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .entry {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .thumb {
+    width: 64px;
+  }
+}
+
+@media print {
+  .root {
+    min-height: 0;
+    padding: 0;
+    background: white;
+    font-size: 10.5pt;
+    --ink: #111;
+    --muted: #333;
+    --link: #111;
+  }
+
+  .root::before,
+  .headDivider,
+  .pageFoot {
+    display: none;
+  }
+
+  .documentMain {
+    padding-top: 0;
+  }
+
+  .pageTitle {
+    font-size: 26pt;
+  }
+
+  .lead {
+    font-size: 12pt;
+  }
+
+  .documentSections {
+    margin-top: 24px;
+    gap: 24px;
+  }
+
+  .documentSection > h2 {
+    break-after: avoid;
+  }
+
+  .resumeEntries li {
+    break-inside: avoid;
   }
 }

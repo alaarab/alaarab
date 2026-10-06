@@ -3,7 +3,8 @@ import { Link, useParams } from "react-router";
 import { blogMeta } from "../data/blog";
 import { siteMeta } from "../data/siteContent";
 import { blogPath, formatDate, headingId, readingMinutes } from "../lib/posts";
-import { useDocumentTitle } from "../lib/useDocumentTitle";
+import { useRouteMetadata } from "../components/RouteMetadata";
+import { blogIndexMeta, postMeta, notFoundMeta } from "../lib/routeMeta";
 import { NotFound } from "../pages/NotFound";
 import type { Post, PostBlock, PostRef, PostSummary } from "../types";
 import { useBlogPage } from "./blogData";
@@ -139,7 +140,7 @@ function PostList({ posts }: { posts: PostSummary[] }) {
 }
 
 export function BlogIndex() {
-  useDocumentTitle(`${blogMeta.title} | ${siteMeta.name}`);
+  useRouteMetadata(blogIndexMeta);
   const page = useBlogPage("/blog");
 
   return (
@@ -261,9 +262,7 @@ export function BlogPost() {
   const { slug = "" } = useParams<{ slug: string }>();
   const page = useBlogPage(blogPath(slug));
   const post = page.status === "ready" && page.data.kind === "post" ? page.data : null;
-  useDocumentTitle(
-    post ? `${post.post.title} | ${siteMeta.name}` : page.status === "loading" ? siteMeta.name : `Not found | ${siteMeta.name}`,
-  );
+  useRouteMetadata(post ? postMeta(post.post) : page.status === "loading" ? null : notFoundMeta);
 
   if (page.status === "loading") {
     return (
