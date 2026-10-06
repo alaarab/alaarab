@@ -14,6 +14,7 @@ export function SiteNav() {
         <NavLink to="/projects">All work</NavLink>
         <NavLink to="/resume">Resume</NavLink>
         <NavLink to="/now">Now</NavLink>
+        <NavLink to="/blog">Blog</NavLink>
       </div>
     </nav>
   );

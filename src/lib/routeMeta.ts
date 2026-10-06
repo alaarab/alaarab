@@ -1,4 +1,7 @@
+import { blogMeta } from "../data/blog";
 import { nowMeta, projects, siteMeta } from "../data/siteContent";
+import type { Post, PostSummary } from "../types";
+import { blogPath } from "./posts";
 
 /**
  * Per-route <head> metadata, plus the sitemap/robots builders. This is the
@@ -22,6 +25,13 @@ export interface RouteMeta {
   ogImage: string;
   /** Alt text for the Open Graph image. */
   ogImageAlt: string;
+  /** og:type; defaults to "website". Blog posts are "article". */
+  ogType?: "website" | "article";
+  /** article:published_time and article:modified_time, YYYY-MM-DD. */
+  published?: string;
+  modified?: string;
+  /** Keep the page out of search results (the editor, 404s). */
+  noindex?: boolean;
 }
 
 const HOME_DESCRIPTION =
@@ -69,6 +79,7 @@ const NOT_FOUND_META: RouteMeta = {
   description: "That page does not exist, or it moved.",
   ogImage: OG_IMAGE_PATH,
   ogImageAlt: SITE_OG_ALT,
+  noindex: true,
 };
 
 function projectMeta(slug: string): RouteMeta | null {
@@ -80,6 +91,41 @@ function projectMeta(slug: string): RouteMeta | null {
     description: project.summary,
     ogImage: `/og/${project.slug}.png`,
     ogImageAlt: `${project.title}, ${project.category}`,
+  };
+}
+
+/**
+ * Blog pages are rendered by the server from its database on each request
+ * (server/blog.ts), so they have no entry in allRoutes().
+ */
+export const blogIndexMeta: RouteMeta = {
+  path: "/blog",
+  title: `${blogMeta.title} | Ala Arab`,
+  description: blogMeta.intro,
+  ogImage: OG_IMAGE_PATH,
+  ogImageAlt: SITE_OG_ALT,
+};
+
+/** The editor at /write: an app shell, never indexed. */
+export const writeMeta: RouteMeta = {
+  path: "/write",
+  title: "Write | Ala Arab",
+  description: "Sign in to write.",
+  ogImage: OG_IMAGE_PATH,
+  ogImageAlt: SITE_OG_ALT,
+  noindex: true,
+};
+
+export function postMeta(post: Pick<Post, "slug" | "title" | "summary" | "date" | "updated">): RouteMeta {
+  return {
+    path: blogPath(post.slug),
+    title: `${post.title} | Ala Arab`,
+    description: post.summary,
+    ogImage: OG_IMAGE_PATH,
+    ogImageAlt: SITE_OG_ALT,
+    ogType: "article",
+    published: post.date,
+    modified: post.updated ?? post.date,
   };
 }
 
@@ -114,6 +160,8 @@ export const knownProjectSlugs = new Set(
   projects.map((project) => project.slug),
 );
 
+
+
 function escapeText(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -139,7 +187,8 @@ function replaceOrThrow(
       `applyRouteMeta: could not find ${label} to rewrite. Did index.html's <head> change shape?`,
     );
   }
-  return html.replace(pattern, replacement);
+  // A function, so "$&" or "$1" in a post title is inserted literally.
+  return html.replace(pattern, () => replacement);
 }
 
 /**
@@ -159,6 +208,24 @@ export function applyRouteMeta(
   const descAttr = escapeAttr(meta.description);
 
   let out = html;
+  out = replaceOrThrow(
+    out,
+    /<meta property="og:type" content="[^"]*" \/>/,
+    `<meta property="og:type" content="${meta.ogType ?? "website"}" />`
+      + (meta.published
+        ? `\n    <meta property="article:published_time" content="${escapeAttr(meta.published)}" />`
+        : "")
+      + (meta.modified
+        ? `\n    <meta property="article:modified_time" content="${escapeAttr(meta.modified)}" />`
+        : ""),
+    "og:type",
+  );
+  if (meta.noindex) {
+    out = out.replace(
+      /<meta name="viewport" content="[^"]*" \/>/,
+      (match) => `${match}\n    <meta name="robots" content="noindex" />`,
+    );
+  }
   out = replaceOrThrow(out, /<title>[^<]*<\/title>/, `<title>${title}</title>`, "<title>");
   out = replaceOrThrow(
     out,
@@ -223,9 +290,14 @@ export function applyRouteMeta(
   return out;
 }
 
-export function buildSitemap(origin: string = SITE_ORIGIN): string {
+/** The sitemap: every static route, then the blog when it has posts. */
+export function buildSitemap(origin: string = SITE_ORIGIN, posts: PostSummary[] = []): string {
   const today = new Date().toISOString().slice(0, 10);
-  const body = allRoutes()
+  const routes = [
+    ...allRoutes(),
+    ...(posts.length ? [blogIndexMeta, ...posts.map(postMeta)] : []),
+  ];
+  const body = routes
     .map((route) => {
       const loc = route.path === "/" ? `${origin}/` : `${origin}${route.path}`;
       return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>`;
@@ -236,4 +308,49 @@ export function buildSitemap(origin: string = SITE_ORIGIN): string {
 
 export function buildRobots(origin: string = SITE_ORIGIN): string {
   return `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`;
+}
+
+function escapeXml(value: string): string {
+  return escapeAttr(value).replace(/'/g, "&apos;");
+}
+
+/** An Atom feed of published posts, newest first. Summaries only. */
+export function buildFeed(posts: PostSummary[], origin: string = SITE_ORIGIN): string {
+  const feedUrl = `${origin}/blog/feed.xml`;
+  const updated = posts.reduce(
+    (latest, post) => {
+      const at = post.updated ?? post.date;
+      return at > latest ? at : latest;
+    },
+    "1970-01-01",
+  );
+  const entries = posts
+    .map((post) => {
+      const url = `${origin}${blogPath(post.slug)}`;
+      return [
+        "  <entry>",
+        `    <title>${escapeXml(post.title)}</title>`,
+        `    <link href="${escapeXml(url)}" />`,
+        `    <id>${escapeXml(url)}</id>`,
+        `    <published>${post.date}T00:00:00Z</published>`,
+        `    <updated>${post.updated ?? post.date}T00:00:00Z</updated>`,
+        `    <summary>${escapeXml(post.summary)}</summary>`,
+        "  </entry>",
+      ].join("\n");
+    })
+    .join("\n");
+  return [
+    '<?xml version="1.0" encoding="utf-8"?>',
+    '<feed xmlns="http://www.w3.org/2005/Atom">',
+    `  <title>${escapeXml(`${siteMeta.name}, ${blogMeta.title.toLowerCase()}`)}</title>`,
+    `  <subtitle>${escapeXml(blogMeta.intro)}</subtitle>`,
+    `  <link href="${escapeXml(`${origin}/blog`)}" />`,
+    `  <link rel="self" href="${escapeXml(feedUrl)}" />`,
+    `  <id>${escapeXml(feedUrl)}</id>`,
+    `  <updated>${updated}T00:00:00Z</updated>`,
+    `  <author><name>${escapeXml(siteMeta.name)}</name></author>`,
+    ...(entries ? [entries] : []),
+    "</feed>",
+    "",
+  ].join("\n");
 }

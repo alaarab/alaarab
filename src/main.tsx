@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import { App } from "./App";
+import { BlogDataContext, readBlogPayload } from "./site/blogData";
 import "./styles/globals.css";
 
 const root = document.getElementById("root");
@@ -11,9 +12,11 @@ if (!root) {
 
 const app = (
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <BlogDataContext.Provider value={readBlogPayload()}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </BlogDataContext.Provider>
   </StrictMode>
 );
 

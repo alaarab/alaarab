@@ -84,6 +84,7 @@ export function EmbroideryHome() {
           <a href={siteMeta.linkedinHref}>LinkedIn</a>
           <Link to="/resume">Resume</Link>
           <Link to="/now">Now</Link>
+          <Link to="/blog">Blog</Link>
           <Link to="/projects">Projects</Link>
         </nav>
       </header>

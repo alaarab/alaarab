@@ -102,7 +102,7 @@ test("aliases redirect to canonical routes and all unknown pages share the Embro
       expect(resolved.status()).toBe(200);
     }
   }
-  for (const path of ["/not-a-page", "/projects/not-a-project", "/lab/embroidery", "/write", "/blog", "/removed/index.html"]) {
+  for (const path of ["/not-a-page", "/projects/not-a-project", "/lab/embroidery", "/removed/index.html"]) {
     const response = await page.goto(path);
     expect(response?.status(), path).toBe(404);
     await expect(page.getByRole("heading", { name: "Nothing here.", exact: true })).toBeVisible();
