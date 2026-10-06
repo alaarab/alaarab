@@ -44,6 +44,10 @@ const { render } = (await import(serverEntry)) as {
 
 const ROOT_MARKER = '<div id="root"></div>';
 
+// The unrendered shell, kept for the server: it renders the blog and the
+// editor per request (server/blog.ts). Outside dist/ so it's never served.
+await Bun.write(join(repoRoot, "ssr-build", "shell.html"), template);
+
 /** Per-route head metadata plus the server-rendered body, in the shell. */
 function renderRoute(route: RouteMeta): string {
   const html = applyRouteMeta(template, route);
@@ -52,7 +56,7 @@ function renderRoute(route: RouteMeta): string {
       "prerender: could not find the #root marker to inject server markup.",
     );
   }
-  return html.replace(ROOT_MARKER, `<div id="root">${render(route.path)}</div>`);
+  return html.replace(ROOT_MARKER, () => `<div id="root">${render(route.path)}</div>`);
 }
 
 let pages = 0;

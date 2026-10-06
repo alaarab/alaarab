@@ -21,3 +21,6 @@
 # local env files
 .env
 .env.*.local
+
+# blog database (server-side posts and sessions)
+/data

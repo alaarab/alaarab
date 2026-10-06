@@ -14,5 +14,5 @@
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true
   },
-  "include": ["src", "server.ts", "scripts", "tests", "playwright.config.ts"]
+  "include": ["src", "server", "server.ts", "scripts", "tests", "playwright.config.ts"]
 }
