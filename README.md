@@ -51,7 +51,7 @@ These days I'm rebuilding that ERP from scratch as Intrapath. React on Bun this 
 
 ### About this repo
 
-This doubles as my portfolio site: a Bun-native app with React 19 and TypeScript 6. No meta-framework. Bun handles the dev server, bundling, and the production server. Content sits in one typed file, so projects update without anyone touching the layout.
+This doubles as my portfolio site: a Bun-native app with Bun 1.4.2, React 19, React Router 8, and TypeScript 7. No meta-framework. Bun handles the dev server, bundling, and the production server. Content sits in one typed file, so projects update without anyone touching the layout.
 
 ```bash
 bun install
@@ -60,4 +60,6 @@ bun dev
 
 Then open [localhost:3000](http://localhost:3000).
 
-Blog posts are written on the site at `/write` and stored in a SQLite database on the server; [docs/blog.md](docs/blog.md) covers writing, sign-in, and server setup. Project content lives in `src/data/siteContent.ts` and styles sit in `src/styles`. `bun run build` bundles the app, builds a server-render bundle, and prerenders one static HTML file per route (`scripts/prerender.ts`). Each one gets its own title, description, canonical URL, Open Graph card, and server-rendered body, so crawlers and social unfurlers get real content and metadata, not an empty shell. React hydrates the prerendered markup on the client. Unknown URLs return a real 404. `bun run og` regenerates the social cards under `public/og/`. Run `bun run typecheck` and `bun run build` before shipping anything; `bun start` builds and serves the static output.
+Project content lives in `src/data/siteContent.ts`. The accepted Embroidery design lives in `src/site/embroidery.module.css`; `src/styles/globals.css` provides the shared reset. Home and project details live in `src/site/`, and supporting pages in `src/pages/` reuse the same linen and navigation. `bun run build` bundles the app, builds a server-render bundle, and prerenders one static HTML file per route (`scripts/prerender.ts`). Each one gets its own title, description, canonical URL, Open Graph card, and server-rendered body, so crawlers and social unfurlers get real content and metadata, not an empty shell. React hydrates the prerendered markup on the client. Unknown URLs return a real 404. `bun run og` regenerates the social cards under `public/og/`. Public routes are `/`, `/projects`, `/projects/:slug`, `/resume`, and `/now`. Trailing-slash and `index.html` aliases redirect to their canonical URLs; client navigation updates titles and social metadata. Run `bun run typecheck`, `bun run build`, and `bun run test -- --workers=2` before shipping anything; `bun start` builds and serves the static output.
+
+Blog posts are written at `/write` and stored in SQLite. See [docs/blog.md](docs/blog.md) for sign-in and server setup.

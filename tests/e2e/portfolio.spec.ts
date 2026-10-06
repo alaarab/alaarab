@@ -4,7 +4,7 @@ test.describe("homepage", () => {
   test("leads with who Ala is, then the work", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page).toHaveTitle(/Ala Arab \| Portfolio/);
+    await expect(page).toHaveTitle(/Ala Arab \| Full-stack developer, Los Angeles/);
     await expect(
       page.getByRole("heading", { level: 1, name: "Ala Arab" }),
     ).toBeVisible();
@@ -45,7 +45,7 @@ test.describe("projects", () => {
       page.getByRole("heading", { level: 1, name: "Selected projects." }),
     ).toBeVisible();
 
-    const viewLinks = page.getByRole("link", { name: "View project" });
+    const viewLinks = page.locator('main a[href^="/projects/"]');
     await expect(viewLinks).toHaveCount(15);
 
     await viewLinks.first().click();
@@ -224,6 +224,11 @@ test.describe("blog", () => {
     await page.goto(`/blog/${slug}`);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
     await expect(page.getByRole("link", { name: "link", exact: true })).toHaveAttribute("href", "https://example.com");
+    await page.getByRole("navigation", { name: "Site", exact: true }).getByRole("link", { name: "Blog", exact: true }).click();
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://alaarab.com/blog");
+    await page.getByRole("link", { name: title, exact: true }).click();
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://alaarab.com/blog/${slug}`);
+    await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
   });
 
   test("writes are refused from other origins, and published slugs are fixed", async ({ page }) => {

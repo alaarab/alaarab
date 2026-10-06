@@ -4,6 +4,5 @@
  */
 export const blogMeta = {
   title: "Blog",
-  // DRAFT copy: confirm or rewrite before the first post is published.
-  intro: "Write-ups on the projects on this site and the work behind them.",
+  intro: "Notes on software, side projects, and life.",
 };
