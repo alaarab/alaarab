@@ -1,3 +1,4 @@
+import { educationItems, experienceItems, siteMeta } from "../data/siteContent";
 import type { EducationItem, ExperienceItem, SiteMeta } from "../types";
 
 interface SchemaInput {
@@ -43,6 +44,11 @@ export function buildPersonSchema({
     })),
   };
 }
+
+/** The site owner's Person schema as a JSON-LD script body, for home and resume. */
+export const personJsonLd = JSON.stringify(
+  buildPersonSchema({ siteMeta, experienceItems, educationItems }),
+).replace(/</g, "\\u003c");
 
 function extractStartYear(years: string): string | undefined {
   const match = years.match(/\d{4}/);

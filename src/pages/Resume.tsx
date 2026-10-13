@@ -1,17 +1,16 @@
 import { Link } from "react-router";
 import { educationItems, experienceItems, projects, siteMeta } from "../data/siteContent";
-import { buildPersonSchema } from "../lib/personSchema";
+import { personJsonLd } from "../lib/personSchema";
 import { Page } from "../site/Page";
 import { projectPath } from "../site/themes";
 import styles from "../site/embroidery.module.css";
 
 export function Resume() {
-  const personSchema = buildPersonSchema({ siteMeta, experienceItems, educationItems });
   return (
     <Page title={siteMeta.name} eyebrow="Resume" lead={siteMeta.title} actions={
       <button type="button" className={styles.printButton} onClick={() => window.print()}>Print or save as PDF</button>
     }>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: personJsonLd }} />
       <div className={styles.documentSections}>
         <section className={styles.documentSection}>
           <h2 className={styles.expRole}>Summary</h2>
