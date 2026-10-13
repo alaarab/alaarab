@@ -47,6 +47,7 @@ export function Mounted({ shot, eager = false, c = thread.walnut }: { shot: Shot
           width={shot.w}
           height={shot.h}
           loading={eager ? "eager" : "lazy"}
+          fetchPriority={eager ? "high" : undefined}
           decoding="async"
           className={styles.shot}
         />

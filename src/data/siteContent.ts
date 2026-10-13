@@ -49,7 +49,7 @@ export const projects: Project[] = [
     stack: ["TypeScript", "MCP", "SwiftUI", "Node.js"],
     metrics: [
       "10 MCP tools by default, 61 in full",
-      "7 surfaces: shell, graph, web, VS Code, iOS",
+      "7 surfaces: shell, graph, web, VS Code, iOS, Herdr, Omarchy",
       "Claude / Copilot / Cursor / Codex",
     ],
     thread: "Agent tooling",
