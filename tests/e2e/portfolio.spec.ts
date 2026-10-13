@@ -174,6 +174,31 @@ test.describe("prerendered metadata", () => {
     await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
   });
 
+  test("the manifest's /favicon.ico is served", async ({ request }) => {
+    const res = await request.get("/favicon.ico");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("image/x-icon");
+    expect(res.headers()["cache-control"]).toBe("public, max-age=86400");
+  });
+
+  test("pages and bundles are gzipped when the client accepts it", async ({ request }) => {
+    const gzip = { "accept-encoding": "gzip" };
+    const home = await request.get("/", { headers: gzip });
+    expect(home.headers()["content-encoding"]).toBe("gzip");
+    expect(home.headers()["vary"]).toContain("Accept-Encoding");
+    expect(await home.text()).toContain('<div id="root">');
+
+    const script = (await home.text()).match(/src="(\/index-[^"]+\.js)"/)?.[1];
+    expect(script).toBeTruthy();
+    const js = await request.get(script!, { headers: gzip });
+    expect(js.status()).toBe(200);
+    expect(js.headers()["content-encoding"]).toBe("gzip");
+
+    const plain = await request.get(script!, { headers: { "accept-encoding": "identity" } });
+    expect(plain.headers()["content-encoding"]).toBeUndefined();
+    expect(await plain.body()).toEqual(await js.body());
+  });
+
   test("unknown routes return a 404 status", async ({ request }) => {
     expect((await request.get("/no-such-page")).status()).toBe(404);
     expect((await request.get("/projects/not-a-real-project")).status()).toBe(

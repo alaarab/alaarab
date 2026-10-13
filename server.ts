@@ -3,6 +3,7 @@ import { join } from "node:path";
 import index from "./index.html";
 import { createAuth } from "./server/auth";
 import { type Renderer, createBlog } from "./server/blog";
+import { gzipped, serveFile } from "./server/compress";
 import { openBlogDb } from "./server/db";
 import { SITE_ORIGIN, buildRobots, canonicalPagePath, knownProjectSlugs } from "./src/lib/routeMeta";
 
@@ -27,10 +28,10 @@ const auth = createAuth(db, {
 /** Routes the blog and the editor share in dev and production. */
 function blogRoutes(blog: ReturnType<typeof createBlog>) {
   return {
-    "/sitemap.xml": blog.sitemap,
-    "/robots.txt": robots,
-    "/blog/feed.xml": blog.feed,
-    "/api/blog/page": (req: Request) => blog.pageApi(req),
+    "/sitemap.xml": gzipped(blog.sitemap),
+    "/robots.txt": gzipped(robots),
+    "/blog/feed.xml": gzipped(blog.feed),
+    "/api/blog/page": gzipped((req: Request) => blog.pageApi(req)),
     "/api/me": (req: Request) => blog.me(req),
     "/api/admin/*": (req: Request) => blog.admin(req),
     "/auth/github": (req: Request) => auth.start(req),
@@ -57,14 +58,15 @@ if (isProd) {
   };
   const blog = createBlog(db, auth, renderer);
 
-  const html = (file: string, status = 200) =>
-    new Response(Bun.file(file), {
+  const html = (req: Request, file: string, status = 200) =>
+    serveFile(req, file, {
       status,
       headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
     });
-  const notFound = () => html(join(DIST, "404.html"), 404);
-  const writePage = (req: Request) =>
-    /^\/write(\/[a-z0-9-]+)?\/?$/.test(new URL(req.url).pathname) ? blog.writeShell(req) : notFound();
+  const notFound = (req: Request) => html(req, join(DIST, "404.html"), 404);
+  const writePage = gzipped((req: Request) =>
+    /^\/write(\/[a-z0-9-]+)?\/?$/.test(new URL(req.url).pathname) ? blog.writeShell(req) : notFound(req),
+  );
 
   const server = Bun.serve({
     port,
@@ -75,10 +77,15 @@ if (isProd) {
         new Response(Bun.file(join(DIST, "og.png")), {
           headers: { "cache-control": "public, max-age=86400" },
         }),
-      "/": () => html(join(DIST, "index.html")),
-      "/projects": () => html(join(DIST, "projects", "index.html")),
-      "/resume": () => html(join(DIST, "resume", "index.html")),
-      "/now": () => html(join(DIST, "now", "index.html")),
+      // The manifest points here; the bundler only emits a hashed copy.
+      "/favicon.ico": () =>
+        new Response(Bun.file(join(DIST, "favicon.ico")), {
+          headers: { "cache-control": "public, max-age=86400" },
+        }),
+      "/": (req) => html(req, join(DIST, "index.html")),
+      "/projects": (req) => html(req, join(DIST, "projects", "index.html")),
+      "/resume": (req) => html(req, join(DIST, "resume", "index.html")),
+      "/now": (req) => html(req, join(DIST, "now", "index.html")),
       "/projects/:slug": (req) => {
         const { slug } = req.params;
         // The parameter route wins over /* for this static-host alias.
@@ -88,11 +95,11 @@ if (isProd) {
             headers: { location: `/projects${new URL(req.url).search}`, "cache-control": "no-cache" },
           });
         }
-        if (!knownProjectSlugs.has(slug)) return notFound();
-        return html(join(DIST, "projects", slug, "index.html"));
+        if (!knownProjectSlugs.has(slug)) return notFound(req);
+        return html(req, join(DIST, "projects", slug, "index.html"));
       },
-      "/blog": (req) => blog.page(req),
-      "/blog/:slug": (req) => blog.page(req),
+      "/blog": gzipped((req) => blog.page(req)),
+      "/blog/:slug": gzipped((req) => blog.page(req)),
       "/write": writePage,
       "/write/*": writePage,
       // Hashed, content-addressed assets at the dist root. Anything else 404s.
@@ -107,17 +114,16 @@ if (isProd) {
           });
         }
         // Old build artifacts must never expose removed or duplicate HTML routes.
-        if (pathname.endsWith(".html")) return notFound();
+        if (pathname.endsWith(".html")) return notFound(req);
         const resolved = join(DIST, pathname);
-        if (pathname === "/" || !resolved.startsWith(DIST)) return notFound();
-        const file = Bun.file(resolved);
-        if (!(await file.exists())) return notFound();
+        if (pathname === "/" || !resolved.startsWith(DIST)) return notFound(req);
+        if (!(await Bun.file(resolved).exists())) return notFound(req);
         // OG cards keep a stable name, so cache them for a day rather than
         // forever; hashed bundles are content-addressed and immutable.
         const cacheControl = pathname.startsWith("/og/")
           ? "public, max-age=86400"
           : "public, max-age=31536000, immutable";
-        return new Response(file, { headers: { "cache-control": cacheControl } });
+        return serveFile(req, resolved, { headers: { "cache-control": cacheControl } });
       },
     },
   });
@@ -133,6 +139,7 @@ if (isProd) {
     routes: {
       ...blogRoutes(blog),
       "/og.png": () => new Response(Bun.file(join(import.meta.dir, "public", "og.png"))),
+      "/favicon.ico": () => new Response(Bun.file(join(import.meta.dir, "public", "favicon.ico"))),
       "/*": index,
     },
   });
