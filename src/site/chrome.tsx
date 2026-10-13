@@ -15,6 +15,9 @@ export function PageFoot() {
         <Link to="/resume">Resume</Link>
         <Link to="/blog">Blog</Link>
       </p>
+      <p className={styles.credit}>
+        by <a href={siteMeta.studioHref}>Alastack</a>
+      </p>
     </footer>
   );
 }

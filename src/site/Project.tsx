@@ -146,6 +146,9 @@ export function EmbroideryProject() {
           <a href={siteMeta.linkedinHref}>LinkedIn</a>
           <Link to="/resume">Resume</Link>
         </p>
+        <p className={styles.credit}>
+          by <a href={siteMeta.studioHref}>Alastack</a>
+        </p>
       </footer>
     </div>
   );

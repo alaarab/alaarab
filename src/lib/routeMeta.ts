@@ -36,7 +36,7 @@ export interface RouteMeta {
 }
 
 const HOME_DESCRIPTION =
-  "Portfolio of Ala Arab. Full-stack developer in Los Angeles building open-source tooling for AI agents, audio production, and ticket workflows, after a decade running an internal ERP at ADM Associates.";
+  "Portfolio of Ala Arab. Full-stack developer in Los Angeles building tooling for AI agents, audio production, and ticket workflows, after a decade running an internal ERP at ADM Associates.";
 
 const SITE_OG_ALT = "Ala Arab, full-stack developer in Los Angeles";
 
