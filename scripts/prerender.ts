@@ -78,6 +78,11 @@ await Bun.write(
   join(distDir, "og.png"),
   Bun.file(join(repoRoot, "public", "og.png")),
 );
+// The web manifest names /favicon.ico; the bundler only emits a hashed copy.
+await Bun.write(
+  join(distDir, "favicon.ico"),
+  Bun.file(join(repoRoot, "public", "favicon.ico")),
+);
 for (const project of projects) {
   await Bun.write(
     join(distDir, "og", `${project.slug}.png`),
@@ -89,5 +94,5 @@ await Bun.write(join(distDir, "sitemap.xml"), buildSitemap());
 await Bun.write(join(distDir, "robots.txt"), buildRobots());
 
 console.log(
-  `Prerendered ${pages} routes + 404.html, og.png, sitemap.xml, robots.txt → dist/`,
+  `Prerendered ${pages} routes + 404.html, og.png, favicon.ico, sitemap.xml, robots.txt → dist/`,
 );
