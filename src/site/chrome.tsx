@@ -12,7 +12,7 @@ export function PageFoot() {
       <p className={styles.pageContact}>
         <a href={siteMeta.emailHref}>{siteMeta.email}</a>
         <a href={siteMeta.linkedinHref}>LinkedIn</a>
-        <a href="/resume">Resume</a>
+        <Link to="/resume">Resume</Link>
         <Link to="/blog">Blog</Link>
       </p>
     </footer>

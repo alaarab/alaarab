@@ -1026,6 +1026,13 @@
   font-size: 1rem;
 }
 
+/* Standalone text links get a 44px tap target. Vertical padding on an inline
+   link grows its hit area without changing the line box, so nothing moves. */
+.feedLink a,
+.documentNote a {
+  padding-block: 12px;
+}
+
 .postList {
   list-style: none;
   margin: clamp(48px, 8vh, 80px) 0 0;

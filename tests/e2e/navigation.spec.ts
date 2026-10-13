@@ -91,6 +91,23 @@ for (const width of [320, 390]) {
   });
 }
 
+test("standalone text links on /blog and /now have a 44px tap target at phone width", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const [path, name] of [["/blog", "Subscribe to the feed"], ["/now", "nownownow.com"]]) {
+    await page.goto(path);
+    const box = await page.getByRole("link", { name, exact: true }).boundingBox();
+    expect(box?.height, `${path}: ${name}`).toBeGreaterThanOrEqual(44);
+  }
+});
+
+test("the blog footer's Resume link navigates on the client", async ({ page }) => {
+  await page.goto("/blog");
+  await page.evaluate(() => ((window as unknown as { stayed: boolean }).stayed = true));
+  await page.getByRole("contentinfo").getByRole("link", { name: "Resume", exact: true }).click();
+  await expect(page).toHaveTitle("Resume | Ala Arab");
+  expect(await page.evaluate(() => (window as unknown as { stayed?: boolean }).stayed)).toBe(true);
+});
+
 test("aliases redirect to canonical routes and all unknown pages share the Embroidery 404", async ({ page, request }) => {
   for (const path of ["/", "/projects", "/resume", "/now", "/projects/phren"]) {
     const aliases = path === "/" ? ["/index.html"] : [`${path}/`, `${path}/index.html`];
