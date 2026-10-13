@@ -147,6 +147,7 @@
 .contactLine a,
 .signatureLinks a,
 .pageContact a,
+.credit a,
 .outLinks a,
 .topNav a,
 .more a,
@@ -502,6 +503,8 @@
 
 .signatureWrap {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin: clamp(96px, 14vh, 150px) 0 24px;
 }
@@ -545,6 +548,15 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 20px;
+}
+
+/* ---------- Credit ---------- */
+
+.credit {
+  margin: 4px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-style: italic;
 }
 
 /* ---------- Project pages ---------- */
@@ -989,6 +1001,8 @@
   max-width: 1120px;
   margin: 48px auto 0;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 

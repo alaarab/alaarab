@@ -180,6 +180,9 @@ export function EmbroideryHome() {
             <Link to="/resume">Resume</Link>
           </p>
         </div>
+        <p className={styles.credit}>
+          by <a href={siteMeta.studioHref}>Alastack</a>
+        </p>
       </footer>
     </div>
   );
