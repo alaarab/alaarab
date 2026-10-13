@@ -49,6 +49,9 @@ export function Page({ title, eyebrow, lead, children, actions }: {
           <a href={siteMeta.linkedinHref}>LinkedIn</a>
           <Link to="/">Portfolio</Link>
         </p>
+        <p className={styles.credit}>
+          by <a href={siteMeta.studioHref}>Alastack</a>
+        </p>
       </footer>
     </div>
   );

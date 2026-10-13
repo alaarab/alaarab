@@ -7,6 +7,7 @@ export interface SiteMeta {
   email: string;
   emailHref: string;
   linkedinHref: string;
+  studioHref: string;
   availability: string;
 }
 

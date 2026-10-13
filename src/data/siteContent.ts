@@ -19,6 +19,7 @@ export const siteMeta: SiteMeta = {
   email: "alaarab@gmail.com",
   emailHref: "mailto:alaarab@gmail.com",
   linkedinHref: "https://www.linkedin.com/in/ala-arab-a995b155/",
+  studioHref: "https://alastack.com",
   availability: "Open to selected consulting.",
 };
 
@@ -43,12 +44,12 @@ export const projects: Project[] = [
     problem:
       "AI coding agents lose everything between sessions, so the same context has to be rebuilt over and over.",
     build:
-      "I built it as a TypeScript monorepo: an MCP server that exposes ten tools by default (an admin tool reaches the other fifty by name, so the schema stays small), a CLI, and hooks that capture findings and tasks into plain markdown. No database, no vendor lock-in. Findings have a lifecycle (supersede, retract, contradict) and trust that decays over time, and a fragment graph links concepts across projects. The store has seven front ends on top of the same files: a full-screen terminal shell, a braille-canvas terminal graph that lights up as agents read and write, a 3D web viewer, a VS Code extension, a SwiftUI iOS app with widgets and Siri intents, and Herdr and Omarchy plugins.",
+      "I built it as a TypeScript monorepo: an MCP server that exposes ten tools by default (an admin tool reaches the rest by name, so the schema stays small; the full profile exposes all 77), a CLI, and hooks that capture findings and tasks into plain markdown. No database, no vendor lock-in. Findings have a lifecycle (supersede, retract, contradict) and trust that decays over time, and a fragment graph links concepts across projects. The store has seven front ends on top of the same files: a full-screen terminal shell, a braille-canvas terminal graph that lights up as agents read and write, a 3D web viewer, a VS Code extension, a SwiftUI iOS app with widgets and Siri intents, and Herdr and Omarchy plugins.",
     impact:
       "It works across Claude, Copilot, Cursor, and Codex, installs as a Claude Code plugin, syncs shared stores over git, and reloads cleanly on a new machine with a single init command.",
     stack: ["TypeScript", "MCP", "SwiftUI", "Node.js"],
     metrics: [
-      "10 MCP tools by default, 61 in full",
+      "10 MCP tools by default, 77 in full",
       "7 surfaces: shell, graph, web, VS Code, iOS, Herdr, Omarchy",
       "Claude / Copilot / Cursor / Codex",
     ],
@@ -185,7 +186,7 @@ export const projects: Project[] = [
     slug: "atlas",
     accent: "#2ab8a8",
     title: "Atlas",
-    category: "Open source",
+    category: "Closed source",
     status: "Stable",
     year: "2026",
     summary:
@@ -197,7 +198,7 @@ export const projects: Project[] = [
     build:
       "A monorepo in four pieces. A multi-tenant API on Bun + Hono + Postgres with auth, orgs, tickets, actions, tags, attachments, full-text search, and inbound email, scoped by org from the session rather than the URL. A web SPA with dashboard, list, tile, and D3 graph views. A local-first desktop daemon that mirrors tickets to ~/.atlas as markdown. And an MCP server that lets any AI coding tool investigate a ticket in one call.",
     impact:
-      "Pluggable storage (filesystem or S3) and email (console, file, Postmark), hashed bearer tokens, and a CI pipeline with a sigstore-signed release flow, CycloneDX SBOM, and CodeQL.",
+      "Closed source, but publicly available. Pluggable storage (filesystem or S3) and email (console, file, Postmark), hashed bearer tokens, and a CI pipeline with a sigstore-signed release flow, CycloneDX SBOM, and CodeQL.",
     stack: ["Bun", "Hono", "Postgres", "D3", "MCP"],
     metrics: [
       "26 MCP tools",
