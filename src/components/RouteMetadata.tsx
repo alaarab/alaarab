@@ -14,17 +14,26 @@ export function RouteMetadata() {
 export function useRouteMetadata(meta: RouteMeta | null) {
   useEffect(() => {
     if (!meta) return;
-    // Preserve the build's configured origin from its prerendered canonical.
-    const origin = new URL(document.querySelector('link[rel="canonical"]')?.getAttribute("href") ?? SITE_ORIGIN).origin;
-    const canonical = `${origin}${meta.path}`;
+    // Preserve the build's configured origin from its prerendered og:image
+    // (always present; the canonical is absent on noindex pages).
+    const origin = new URL(document.querySelector('meta[property="og:image"]')?.getAttribute("content") ?? SITE_ORIGIN).origin;
+    const canonical = meta.noindex ? undefined : `${origin}${meta.path}`;
     document.title = meta.title;
-    document.querySelector('link[rel="canonical"]')?.setAttribute("href", canonical);
+    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) link?.remove();
+    else {
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "canonical";
+        document.head.appendChild(link);
+      }
+      link.setAttribute("href", canonical);
+    }
     const values: Record<string, string> = {
       'property="og:type"': meta.ogType ?? "website",
       'name="description"': meta.description,
       'property="og:title"': meta.title,
       'property="og:description"': meta.description,
-      'property="og:url"': canonical,
       'property="og:image"': `${origin}${meta.ogImage}`,
       'property="og:image:alt"': meta.ogImageAlt,
       'name="twitter:title"': meta.title,
@@ -35,6 +44,7 @@ export function useRouteMetadata(meta: RouteMeta | null) {
       document.querySelector(`meta[${selector}]`)?.setAttribute("content", value);
     }
     for (const [key, value] of Object.entries({
+      "og:url": canonical,
       "article:published_time": meta.published,
       "article:modified_time": meta.modified,
       robots: meta.noindex ? "noindex" : undefined,
