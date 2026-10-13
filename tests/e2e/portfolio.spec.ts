@@ -129,6 +129,51 @@ test.describe("prerendered metadata", () => {
     }
   });
 
+  test("the sitemap only dates pages with real change dates", async ({ request }) => {
+    const sitemap = await (await request.get("/sitemap.xml")).text();
+    for (const path of ["/", "/projects", "/resume", "/now", "/projects/phren"]) {
+      expect(sitemap).toContain(`<url><loc>https://alaarab.com${path}</loc></url>`);
+    }
+  });
+
+  test("the home page carries the same Person JSON-LD as the resume", async ({ request }) => {
+    const personOf = async (path: string) => {
+      const html = await (await request.get(path)).text();
+      const json = html.match(/<script type="application\/ld\+json">([^<]*)<\/script>/)?.[1];
+      expect(json, path).toBeTruthy();
+      return JSON.parse(json!);
+    };
+    const home = await personOf("/");
+    expect(home["@type"]).toBe("Person");
+    expect(home.name).toBe("Ala Arab");
+    expect(home).toEqual(await personOf("/resume"));
+  });
+
+  test("404 pages are noindex and carry no canonical or og:url", async ({ page, request }) => {
+    for (const path of ["/no-such-page", "/projects/not-a-real-project", "/blog/not-a-post"]) {
+      const html = await (await request.get(path)).text();
+      expect(html, path).toContain('<meta name="robots" content="noindex" />');
+      expect(html, path).not.toContain('rel="canonical"');
+      expect(html, path).not.toContain('property="og:url"');
+      expect(html, path).not.toContain("/404");
+    }
+
+    // Client navigation drops and restores them the same way.
+    await page.goto("/");
+    await page.evaluate(() => {
+      history.pushState({}, "", "/projects/not-a-project");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    });
+    await expect(page.getByRole("heading", { name: "Nothing here.", exact: true })).toBeVisible();
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex");
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+    await expect(page.locator('meta[property="og:url"]')).toHaveCount(0);
+    await page.goBack();
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://alaarab.com/");
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", "https://alaarab.com/");
+    await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+  });
+
   test("the manifest's /favicon.ico is served", async ({ request }) => {
     const res = await request.get("/favicon.ico");
     expect(res.status()).toBe(200);
@@ -244,7 +289,12 @@ test.describe("blog", () => {
 
     expect(await (await request.get("/blog")).text()).toContain(title);
     expect(await (await request.get("/blog/feed.xml")).text()).toContain(`https://alaarab.com/blog/${slug}`);
-    expect(await (await request.get("/sitemap.xml")).text()).toContain(`https://alaarab.com/blog/${slug}`);
+    // The sitemap dates a post by its own update (or publish) date.
+    const modified = html.match(/property="article:modified_time" content="([^"]+)"/)?.[1];
+    expect(modified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(await (await request.get("/sitemap.xml")).text()).toContain(
+      `<url><loc>https://alaarab.com/blog/${slug}</loc><lastmod>${modified}</lastmod></url>`,
+    );
 
     await page.goto(`/blog/${slug}`);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();

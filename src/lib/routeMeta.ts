@@ -30,7 +30,8 @@ export interface RouteMeta {
   /** article:published_time and article:modified_time, YYYY-MM-DD. */
   published?: string;
   modified?: string;
-  /** Keep the page out of search results (the editor, 404s). */
+  /** Keep the page out of search results (the editor, 404s). Such pages
+   * carry no canonical or og:url. */
   noindex?: boolean;
 }
 
@@ -233,16 +234,17 @@ export function applyRouteMeta(
     `<meta name="description" content="${descAttr}" />`,
     "description",
   );
+  // A noindex page has no public URL to point at, so it drops both tags.
   out = replaceOrThrow(
     out,
-    /<link rel="canonical" href="[^"]*" \/>/,
-    `<link rel="canonical" href="${escapeAttr(canonical)}" />`,
+    /\n?[ \t]*<link rel="canonical" href="[^"]*" \/>/,
+    meta.noindex ? "" : `\n    <link rel="canonical" href="${escapeAttr(canonical)}" />`,
     "canonical",
   );
   out = replaceOrThrow(
     out,
-    /<meta property="og:url" content="[^"]*" \/>/,
-    `<meta property="og:url" content="${escapeAttr(canonical)}" />`,
+    /\n?[ \t]*<meta property="og:url" content="[^"]*" \/>/,
+    meta.noindex ? "" : `\n    <meta property="og:url" content="${escapeAttr(canonical)}" />`,
     "og:url",
   );
   out = replaceOrThrow(
@@ -290,17 +292,29 @@ export function applyRouteMeta(
   return out;
 }
 
-/** The sitemap: every static route, then the blog when it has posts. */
+/** The newest post date (its update, if any), or undefined without posts. */
+function latestPostDate(posts: PostSummary[]): string | undefined {
+  return posts.reduce<string | undefined>((latest, post) => {
+    const at = post.updated ?? post.date;
+    return !latest || at > latest ? at : latest;
+  }, undefined);
+}
+
+/**
+ * The sitemap: every static route, then the blog when it has posts. Only the
+ * blog has real change dates (a post's update or publish date, and the newest
+ * of those for the index), so static routes carry no lastmod.
+ */
 export function buildSitemap(origin: string = SITE_ORIGIN, posts: PostSummary[] = []): string {
-  const today = new Date().toISOString().slice(0, 10);
   const routes = [
     ...allRoutes(),
-    ...(posts.length ? [blogIndexMeta, ...posts.map(postMeta)] : []),
+    ...(posts.length ? [{ ...blogIndexMeta, modified: latestPostDate(posts) }, ...posts.map(postMeta)] : []),
   ];
   const body = routes
     .map((route) => {
       const loc = route.path === "/" ? `${origin}/` : `${origin}${route.path}`;
-      return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>`;
+      const lastmod = route.modified ? `<lastmod>${route.modified}</lastmod>` : "";
+      return `  <url><loc>${loc}</loc>${lastmod}</url>`;
     })
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
@@ -317,13 +331,7 @@ function escapeXml(value: string): string {
 /** An Atom feed of published posts, newest first. Summaries only. */
 export function buildFeed(posts: PostSummary[], origin: string = SITE_ORIGIN): string {
   const feedUrl = `${origin}/blog/feed.xml`;
-  const updated = posts.reduce(
-    (latest, post) => {
-      const at = post.updated ?? post.date;
-      return at > latest ? at : latest;
-    },
-    "1970-01-01",
-  );
+  const updated = latestPostDate(posts) ?? "1970-01-01";
   const entries = posts
     .map((post) => {
       const url = `${origin}${blogPath(post.slug)}`;

@@ -1,6 +1,7 @@
 import { type CSSProperties, type ReactNode, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { about, coursework, educationItems, experienceItems, interests, siteMeta } from "../data/siteContent";
+import { personJsonLd } from "../lib/personSchema";
 import type { Project } from "../types";
 import { SkipLink } from "../components/SkipLink";
 import { Thumb } from "./mount";
@@ -70,6 +71,7 @@ export function EmbroideryHome() {
   return (
     <div className={styles.root}>
       <link rel="stylesheet" href={FONT_HREF} precedence="default" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: personJsonLd }} />
       <SkipLink />
 
       <header className={styles.masthead}>
