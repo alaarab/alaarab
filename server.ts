@@ -86,6 +86,7 @@ if (isProd) {
       "/projects": (req) => html(req, join(DIST, "projects", "index.html")),
       "/resume": (req) => html(req, join(DIST, "resume", "index.html")),
       "/now": (req) => html(req, join(DIST, "now", "index.html")),
+      "/intrapath/concepts": (req) => html(req, join(DIST, "intrapath", "concepts.html")),
       "/projects/:slug": (req) => {
         const { slug } = req.params;
         // The parameter route wins over /* for this static-host alias.
@@ -140,6 +141,7 @@ if (isProd) {
       ...blogRoutes(blog),
       "/og.png": () => new Response(Bun.file(join(import.meta.dir, "public", "og.png"))),
       "/favicon.ico": () => new Response(Bun.file(join(import.meta.dir, "public", "favicon.ico"))),
+      "/intrapath/concepts": () => new Response(Bun.file(join(import.meta.dir, "public", "intrapath", "concepts.html"))),
       "/*": index,
     },
   });
