@@ -179,10 +179,7 @@ export const projects: Project[] = [
       "Multi-tenant, per-seat billing",
       "Fail-closed authorization",
     ],
-    links: [
-      { label: "Project page", href: "/projects/intrapath" },
-      { label: "UX polish concepts", href: "/intrapath/concepts" },
-    ],
+    links: [{ label: "Project page", href: "/projects/intrapath" }],
     featured: true,
   },
   {
