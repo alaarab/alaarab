@@ -207,16 +207,6 @@ test.describe("prerendered metadata", () => {
   });
 });
 
-test("the Intrapath concepts page is linked from its project and served as is", async ({ page }) => {
-  await page.goto("/projects/intrapath");
-  await page.getByRole("link", { name: "UX polish concepts" }).click();
-  await expect(page).toHaveURL(/\/intrapath\/concepts$/);
-  await expect(page).toHaveTitle("Intrapath polish concepts | Ala Arab");
-  await expect(page.locator("section.concept")).toHaveCount(6);
-  await page.getByRole("link", { name: "← Intrapath" }).click();
-  await expect(page).toHaveURL(/\/projects\/intrapath$/);
-});
-
 test.describe("blog", () => {
   // One author, one database: these steps build on each other.
   test.describe.configure({ mode: "serial" });

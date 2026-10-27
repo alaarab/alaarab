@@ -83,11 +83,6 @@ await Bun.write(
   join(distDir, "favicon.ico"),
   Bun.file(join(repoRoot, "public", "favicon.ico")),
 );
-// A standalone design page, served as-is rather than rendered by React.
-await Bun.write(
-  join(distDir, "intrapath", "concepts.html"),
-  Bun.file(join(repoRoot, "public", "intrapath", "concepts.html")),
-);
 for (const project of projects) {
   await Bun.write(
     join(distDir, "og", `${project.slug}.png`),
