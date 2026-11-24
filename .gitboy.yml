@@ -1,0 +1,27 @@
+# Production deploy for alaarab.com, run by gitboy.dev (see github.com/alaarab/infra).
+#
+# GitHub is this repo's main home. gitboy-sync on Jets fast-forwards gitboy.dev from GitHub within
+# about 30 s, and a new main there runs this job on the Jets deploy runner. The job only asks the
+# Linode to deploy the commit: it builds it with Bun 1.4.2, switches /var/www/alaarab.com/current
+# (the blog database stays in /var/www/alaarab.com/shared/data), health-checks, and rolls back by
+# itself on failure. Roll back by hand: gitboy.dev/alaarab/alaarab -> Environments -> Redeploy.
+#
+# DEPLOY_SSH_KEY (repo) and DEPLOY_KNOWN_HOSTS (owner level) are protected variables on gitboy,
+# so only protected main gets them. The key can only say "deploy <commit>" for this app.
+stages: [deploy]
+
+deploy_production:
+  stage: deploy
+  tags: [deploy]
+  rules:
+    - if: '$GITBOY_PIPELINE_SOURCE == "push" && $GITBOY_REF_NAME == "main"'
+  timeout: 30 minutes
+  environment:
+    name: production
+    url: https://alaarab.com
+  variables:
+    DEPLOY_TARGET: alaarab@66.175.220.188
+    DEPLOY_PORT: "22"
+  script:
+    - k="$(mktemp)" && trap 'rm -f "$k"' EXIT && printf '%s\n' "$(cat "$DEPLOY_SSH_KEY")" >"$k"
+    - ssh -i "$k" -p "$DEPLOY_PORT" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$DEPLOY_KNOWN_HOSTS" -o LogLevel=ERROR "$DEPLOY_TARGET" "deploy $GITBOY_SHA"
