@@ -81,6 +81,29 @@ test("an unknown route shows the 404 page", async ({ page }) => {
   ).toBeVisible();
 });
 
+test.describe("page and file methods", () => {
+  for (const [method, path] of [
+    ["POST", "/"],
+    ["PUT", "/favicon.ico"],
+    ["POST", "/no-such-page"],
+    ["POST", "/projects/index.html"],
+    ["POST", "/blog/feed.xml"],
+  ]) {
+    test(`${method} ${path} returns 405 with the allowed methods`, async ({ request }) => {
+      const response = await request.fetch(path, { method, maxRedirects: 0 });
+      expect(response.status()).toBe(405);
+      expect(response.headers()["allow"]).toBe("GET, HEAD");
+    });
+  }
+
+  test("GET and HEAD still serve the home page", async ({ request }) => {
+    expect((await request.get("/")).status()).toBe(200);
+    const head = await request.head("/");
+    expect(head.status()).toBe(200);
+    expect(await head.text()).toBe("");
+  });
+});
+
 test.describe("prerendered metadata", () => {
   test("each route serves its own head without running JS", async ({
     request,
