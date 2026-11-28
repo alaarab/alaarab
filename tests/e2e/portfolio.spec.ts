@@ -301,7 +301,14 @@ test.describe("blog", () => {
     await expect(page.getByRole("link", { name: "link", exact: true })).toHaveAttribute("href", "https://example.com");
     await page.getByRole("navigation", { name: "Site", exact: true }).getByRole("link", { name: "Blog", exact: true }).click();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://alaarab.com/blog");
+    const blogApi = "**/api/blog/page*";
+    await page.route(blogApi, (route) => route.fulfill({ status: 503 }));
     await page.getByRole("link", { name: title, exact: true }).click();
+    await expect(page.getByRole("alert")).toHaveText("Couldn't load this page.");
+    await expect(page).not.toHaveTitle("Not found | Ala Arab");
+    await page.unroute(blogApi);
+    await page.getByRole("button", { name: "Try again" }).click();
+    await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://alaarab.com/blog/${slug}`);
     await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
   });
