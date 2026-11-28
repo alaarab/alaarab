@@ -33,41 +33,42 @@ export function readBlogPayload(): BlogPayload | null {
 export type BlogPageState =
   | { status: "ready"; data: BlogPageData }
   | { status: "loading" }
-  | { status: "missing" };
+  | { status: "missing" }
+  | { status: "error"; retry: () => void };
 
 /**
  * The page data for a blog path. The first render uses what the server sent,
- * so hydration matches; after a client-side navigation it is fetched.
+ * so hydration matches. Each blog path mounts its own page state.
  */
 export function useBlogPage(path: string): BlogPageState {
   const payload = useContext(BlogDataContext);
-  const fromServer: BlogPageState | null =
-    payload && payload.path === path
-      ? payload.data
-        ? { status: "ready", data: payload.data }
-        : { status: "missing" }
-      : null;
-  const [fetched, setFetched] = useState<{ path: string; state: BlogPageState } | null>(null);
+  const [page, setPage] = useState<BlogPageState>(() => {
+    if (payload?.path !== path) return { status: "loading" };
+    if (payload.data === null) return { status: "missing" };
+    return { status: "ready", data: payload.data };
+  });
+  const loading = page.status === "loading";
 
   useEffect(() => {
-    if (fromServer) return;
+    if (!loading) return;
     let live = true;
     fetch(`/api/blog/page?path=${encodeURIComponent(path)}`)
       .then(async (res) => {
-        const state: BlogPageState = res.ok
-          ? { status: "ready", data: (await res.json()) as BlogPageData }
-          : { status: "missing" };
-        if (live) setFetched({ path, state });
+        if (res.status === 404) {
+          if (live) setPage({ status: "missing" });
+          return;
+        }
+        if (!res.ok) throw new Error(`Blog request failed (${res.status})`);
+        const data = (await res.json()) as BlogPageData;
+        if (live) setPage({ status: "ready", data });
       })
-      .catch(() => live && setFetched({ path, state: { status: "missing" } }));
+      .catch(() => {
+        if (live) setPage({ status: "error", retry: () => setPage({ status: "loading" }) });
+      });
     return () => {
       live = false;
     };
-    // fromServer is derived from payload and path.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [path, payload]);
+  }, [path, loading]);
 
-  if (fromServer) return fromServer;
-  if (fetched?.path === path) return fetched.state;
-  return { status: "loading" };
+  return page;
 }

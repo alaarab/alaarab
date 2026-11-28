@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import { App } from "./App";
@@ -10,13 +10,23 @@ if (!root) {
   throw new Error("Missing #root element in index.html");
 }
 
-const app = (
-  <StrictMode>
-    <BlogDataContext.Provider value={readBlogPayload()}>
+function ClientApp() {
+  const [payload, setPayload] = useState(readBlogPayload);
+  // The initial page already captured the payload during hydration.
+  useEffect(() => setPayload(null), []);
+
+  return (
+    <BlogDataContext.Provider value={payload}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
     </BlogDataContext.Provider>
+  );
+}
+
+const app = (
+  <StrictMode>
+    <ClientApp />
   </StrictMode>
 );
 
