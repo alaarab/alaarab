@@ -100,12 +100,35 @@ test("standalone text links on /blog and /now have a 44px tap target at phone wi
   }
 });
 
-test("the blog footer's Resume link navigates on the client", async ({ page }) => {
+test("returning to the blog after client-side navigation refetches its data", async ({ page }) => {
   await page.goto("/blog");
   await page.evaluate(() => ((window as unknown as { stayed: boolean }).stayed = true));
   await page.getByRole("contentinfo").getByRole("link", { name: "Resume", exact: true }).click();
   await expect(page).toHaveTitle("Resume | Ala Arab");
+
+  const [blogRequest] = await Promise.all([
+    page.waitForRequest("**/api/blog/page?path=%2Fblog"),
+    page.getByRole("navigation", { name: "Site", exact: true }).getByRole("link", { name: "Blog", exact: true }).click(),
+  ]);
+  expect(blogRequest.method()).toBe("GET");
+  await expect(page).toHaveTitle("Blog | Ala Arab");
   expect(await page.evaluate(() => (window as unknown as { stayed?: boolean }).stayed)).toBe(true);
+});
+
+test("the blog index recovers from a network failure when retried", async ({ page }) => {
+  await page.goto("/resume");
+  const blogApi = "**/api/blog/page*";
+  await page.route(blogApi, (route) => route.abort());
+  await page.getByRole("navigation", { name: "Site", exact: true }).getByRole("link", { name: "Blog", exact: true }).click();
+  const error = page.getByRole("alert");
+  await expect(error).toHaveText("Couldn't load this page.");
+  await expect(page.getByRole("heading", { name: "Nothing here.", exact: true })).toHaveCount(0);
+
+  await page.unroute(blogApi);
+  await page.getByRole("button", { name: "Try again" }).click();
+  const content = page.getByRole("main").getByRole("list").or(page.getByText("Nothing published yet.", { exact: true }));
+  await expect(content).toBeVisible();
+  await expect(error).toHaveCount(0);
 });
 
 test("aliases redirect to canonical routes and all unknown pages share the Embroidery 404", async ({ page, request }) => {

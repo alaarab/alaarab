@@ -139,6 +139,17 @@ function PostList({ posts }: { posts: PostSummary[] }) {
   );
 }
 
+function BlogError({ retry }: { retry: () => void }) {
+  return (
+    <div className={styles.postEmpty}>
+      <div role="alert">Couldn't load this page.</div>
+      <button type="button" className={styles.linkButton} onClick={retry}>
+        Try again
+      </button>
+    </div>
+  );
+}
+
 export function BlogIndex() {
   useRouteMetadata(blogIndexMeta);
   const page = useBlogPage("/blog");
@@ -160,6 +171,8 @@ export function BlogIndex() {
           <p className={styles.postEmpty} aria-live="polite">
             Loading posts.
           </p>
+        ) : page.status === "error" ? (
+          <BlogError retry={page.retry} />
         ) : (
           <p className={styles.postEmpty}>The posts could not be loaded.</p>
         )}
@@ -260,17 +273,26 @@ function Along({ newer, older }: { newer?: PostRef; older?: PostRef }) {
 
 export function BlogPost() {
   const { slug = "" } = useParams<{ slug: string }>();
-  const page = useBlogPage(blogPath(slug));
-  const post = page.status === "ready" && page.data.kind === "post" ? page.data : null;
-  useRouteMetadata(post ? postMeta(post.post) : page.status === "loading" ? null : notFoundMeta);
+  const path = blogPath(slug);
+  return <BlogPostPage key={path} path={path} />;
+}
 
-  if (page.status === "loading") {
+function BlogPostPage({ path }: { path: string }) {
+  const page = useBlogPage(path);
+  const post = page.status === "ready" && page.data.kind === "post" ? page.data : null;
+  useRouteMetadata(post ? postMeta(post.post) : page.status === "missing" ? notFoundMeta : null);
+
+  if (page.status === "loading" || page.status === "error") {
     return (
       <BlogPage>
         <main className={styles.blogMain}>
-          <p className={styles.postEmpty} aria-live="polite">
-            Loading the post.
-          </p>
+          {page.status === "error" ? (
+            <BlogError retry={page.retry} />
+          ) : (
+            <p className={styles.postEmpty} aria-live="polite">
+              Loading the post.
+            </p>
+          )}
         </main>
       </BlogPage>
     );
