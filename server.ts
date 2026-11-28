@@ -15,6 +15,15 @@ const SSR = join(import.meta.dir, "ssr-build");
 const TEXT_HEADERS = { "content-type": "text/plain; charset=utf-8" };
 const robots = () => new Response(buildRobots(SITE_ORIGIN), { headers: TEXT_HEADERS });
 
+function getOnly<R extends Request>(handler: (req: R) => Response | Promise<Response>) {
+  return (req: R) => {
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      return new Response(null, { status: 405, headers: { allow: "GET, HEAD" } });
+    }
+    return handler(req);
+  };
+}
+
 // Blog posts and author sessions. See docs/blog.md for the environment.
 const db = openBlogDb(process.env.BLOG_DB ?? join(import.meta.dir, "data", "blog.sqlite"));
 const auth = createAuth(db, {
@@ -28,10 +37,10 @@ const auth = createAuth(db, {
 /** Routes the blog and the editor share in dev and production. */
 function blogRoutes(blog: ReturnType<typeof createBlog>) {
   return {
-    "/sitemap.xml": gzipped(blog.sitemap),
-    "/robots.txt": gzipped(robots),
-    "/blog/feed.xml": gzipped(blog.feed),
-    "/api/blog/page": gzipped((req: Request) => blog.pageApi(req)),
+    "/sitemap.xml": getOnly(gzipped(blog.sitemap)),
+    "/robots.txt": getOnly(gzipped(robots)),
+    "/blog/feed.xml": getOnly(gzipped(blog.feed)),
+    "/api/blog/page": getOnly(gzipped((req: Request) => blog.pageApi(req))),
     "/api/me": (req: Request) => blog.me(req),
     "/api/admin/*": (req: Request) => blog.admin(req),
     "/auth/github": (req: Request) => auth.start(req),
@@ -64,29 +73,31 @@ if (isProd) {
       headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
     });
   const notFound = (req: Request) => html(req, join(DIST, "404.html"), 404);
-  const writePage = gzipped((req: Request) =>
+  const writePage = getOnly(gzipped((req: Request) =>
     /^\/write(\/[a-z0-9-]+)?\/?$/.test(new URL(req.url).pathname) ? blog.writeShell(req) : notFound(req),
-  );
+  ));
 
   const server = Bun.serve({
     port,
     development: false,
     routes: {
       ...blogRoutes(blog),
-      "/og.png": () =>
+      "/og.png": getOnly(() =>
         new Response(Bun.file(join(DIST, "og.png")), {
           headers: { "cache-control": "public, max-age=86400" },
         }),
+      ),
       // The manifest points here; the bundler only emits a hashed copy.
-      "/favicon.ico": () =>
+      "/favicon.ico": getOnly(() =>
         new Response(Bun.file(join(DIST, "favicon.ico")), {
           headers: { "cache-control": "public, max-age=86400" },
         }),
-      "/": (req) => html(req, join(DIST, "index.html")),
-      "/projects": (req) => html(req, join(DIST, "projects", "index.html")),
-      "/resume": (req) => html(req, join(DIST, "resume", "index.html")),
-      "/now": (req) => html(req, join(DIST, "now", "index.html")),
-      "/projects/:slug": (req) => {
+      ),
+      "/": getOnly((req) => html(req, join(DIST, "index.html"))),
+      "/projects": getOnly((req) => html(req, join(DIST, "projects", "index.html"))),
+      "/resume": getOnly((req) => html(req, join(DIST, "resume", "index.html"))),
+      "/now": getOnly((req) => html(req, join(DIST, "now", "index.html"))),
+      "/projects/:slug": getOnly((req: Bun.BunRequest<"/projects/:slug">) => {
         const { slug } = req.params;
         // The parameter route wins over /* for this static-host alias.
         if (slug === "index.html") {
@@ -97,13 +108,13 @@ if (isProd) {
         }
         if (!knownProjectSlugs.has(slug)) return notFound(req);
         return html(req, join(DIST, "projects", slug, "index.html"));
-      },
-      "/blog": gzipped((req) => blog.page(req)),
-      "/blog/:slug": gzipped((req) => blog.page(req)),
+      }),
+      "/blog": getOnly(gzipped((req) => blog.page(req))),
+      "/blog/:slug": getOnly(gzipped((req) => blog.page(req))),
       "/write": writePage,
       "/write/*": writePage,
       // Hashed, content-addressed assets at the dist root. Anything else 404s.
-      "/*": async (req) => {
+      "/*": getOnly(async (req) => {
         const url = new URL(req.url);
         const pathname = url.pathname;
         const canonical = canonicalPagePath(pathname);
@@ -124,7 +135,7 @@ if (isProd) {
           ? "public, max-age=86400"
           : "public, max-age=31536000, immutable";
         return serveFile(req, resolved, { headers: { "cache-control": cacheControl } });
-      },
+      }),
     },
   });
 
@@ -138,8 +149,8 @@ if (isProd) {
     development: { hmr: true, console: true },
     routes: {
       ...blogRoutes(blog),
-      "/og.png": () => new Response(Bun.file(join(import.meta.dir, "public", "og.png"))),
-      "/favicon.ico": () => new Response(Bun.file(join(import.meta.dir, "public", "favicon.ico"))),
+      "/og.png": getOnly(() => new Response(Bun.file(join(import.meta.dir, "public", "og.png")))),
+      "/favicon.ico": getOnly(() => new Response(Bun.file(join(import.meta.dir, "public", "favicon.ico")))),
       "/*": index,
     },
   });
